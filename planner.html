@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #fafaf9;
+            --bg-secondary: #ffffff;
+            --text-primary: #1c1917;
+            --text-secondary: #78716c;
+            --border: #e7e5e4;
+            --accent: #0a0a0a;
+            --shadow: rgba(0, 0, 0, 0.04);
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        body[data-theme=\"minimal\"] {
+            --bg-primary: #f7f7f6;
+            --bg-secondary: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #6b6b6b;
+            --border: #e5e5e5;
+            --accent: #111111;
+            --shadow: rgba(0, 0, 0, 0.04);
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        body[data-theme=\"joyful\"] {
+            --bg-primary: #fff7ed;
+            --bg-secondary: #ffffff;
+            --text-primary: #3b1f14;
+            --text-secondary: #8a5a44;
+            --border: #f5d0b5;
+            --accent: #f97316;
+            --shadow: rgba(249, 115, 22, 0.15);
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+
+        body[data-theme=\"midnight\"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #111827;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #1f2937;
+            --accent: #38bdf8;
+            --shadow: rgba(56, 189, 248, 0.2);
+            --success: #34d399;
+            --danger: #f87171;
+        }
+
+        body[data-theme=\"library\"] {
+            --bg-primary: #f4efe7;
+            --bg-secondary: #fffaf3;
+            --text-primary: #2b1d16;
+            --text-secondary: #6e5b4f;
+            --border: #e6d8c7;
+            --accent: #1f3a5f;
+            --shadow: rgba(31, 58, 95, 0.12);
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        body[data-theme=\"mint\"] {
+            --bg-primary: #e7f5f2;
+            --bg-secondary: #ffffff;
+            --text-primary: #113b2f;
+            --text-secondary: #4b6f63;
+            --border: #cfe7df;
+            --accent: #10b981;
+            --shadow: rgba(16, 185, 129, 0.14);
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+
+        body[data-theme=\"sunset\"] {
+            --bg-primary: #fff1e6;
+            --bg-secondary: #ffffff;
+            --text-primary: #3b1d12;
+            --text-secondary: #87503a;
+            --border: #f7d3c0;
+            --accent: #fb7185;
+            --shadow: rgba(251, 113, 133, 0.18);
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+
+        body[data-theme=\"focus\"] {
+            --bg-primary: #f6f6f6;
+            --bg-secondary: #ffffff;
+            --text-primary: #151515;
+            --text-secondary: #707070;
+            --border: #e0e0e0;
+            --accent: #111827;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+
+        body[data-theme=\"campus\"] {
+            --bg-primary: #f3f6f1;
+            --bg-secondary: #ffffff;
+            --text-primary: #1f2a1f;
+            --text-secondary: #5a6a57;
+            --border: #d6e0d0;
+            --accent: #2f6f4e;
+            --shadow: rgba(47, 111, 78, 0.16);
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+
+        body[data-theme=\"notebook\"] {
+            --bg-primary: #f9f3e8;
+            --bg-secondary: #fffdf8;
+            --text-primary: #2d2a26;
+            --text-secondary: #6b5f52;
+            --border: #e9dccb;
+            --accent: #2563eb;
+            --shadow: rgba(37, 99, 235, 0.16);
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        body[data-theme=\"rainy\"] {
+            --bg-primary: #e9eef4;
+            --bg-secondary: #ffffff;
+            --text-primary: #1f2a37;
+            --text-secondary: #5b6b7a;
+            --border: #d6dde6;
+            --accent: #0ea5e9;
+            --shadow: rgba(14, 165, 233, 0.18);
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            box-shadow: 0 0 60px var(--shadow);
+            padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        }
+
+        /* Header */
+        .header {
+            padding: 20px 24px 12px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+        }
+
+        .header h1 span {
+            color: var(--accent);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-primary);
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .view-toggle button {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .view-toggle button.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .chip-button {
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chip-button.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* Date Navigation */
+        .date-nav {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 8px;
+            align-items: center;
+            padding: 12px 24px 16px;
+            background: var(--bg-secondary);
+        }
+
+        .date-nav .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .date-nav button {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .date-nav button:hover {
+            background: var(--bg-primary);
+        }
+
+        .date-nav .today-button {
+            width: auto;
+            padding: 0 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .current-date {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        /* Daily View */
+        .daily-view {
+            padding: 0 24px 24px;
+        }
+
+        .day-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            height: calc(100vh - 260px);
+        }
+
+        .time-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .time-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+
+        .time-slot {
+            display: grid;
+            grid-template-columns: 64px 1fr;
+            gap: 12px;
+            align-items: flex-start;
+            min-height: 56px;
+        }
+
+        .time-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding-top: 10px;
+        }
+
+        .slot-events {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .now-line {
+            position: absolute;
+            left: 64px;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 999px;
+            opacity: 0.8;
+            z-index: 5;
+        }
+
+        .now-line::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: -4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .swipe-card {
+            touch-action: pan-y;
+        }
+
+        .event-card {
+            padding: 12px 16px;
+            border-radius: 12px;
+            border-left: 3px solid;
+            background: var(--bg-primary);
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+        }
+
+        .event-card:hover {
+            transform: translateX(2px);
+        }
+
+        .event-card.completed {
+            opacity: 0.55;
+            background: #f1f5f9;
+        }
+
+        .event-card.completed .event-title {
+            text-decoration: line-through;
+        }
+
+        .event-card.just-completed {
+            animation: completion-pop 0.35s ease;
+            box-shadow: 0 8px 24px rgba(22, 163, 74, 0.25);
+        }
+
+        .event-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .event-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .card-check {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--success);
+            background: #fff;
+            opacity: 0;
+            transform: scale(0.7);
+            transition: all 0.2s ease;
+        }
+
+        .event-card.completed .card-check {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .day-tasks-panel {
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--bg-secondary);
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .task-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: var(--bg-primary);
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .task-row.completed {
+            opacity: 0.55;
+            text-decoration: line-through;
+        }
+
+        .task-checkbox {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Week View */
+        .week-view,
+        .all-view {
+            padding: 0 24px 24px;
+            display: none;
+        }
+
+        .week-view.active,
+        .all-view.active {
+            display: block;
+        }
+
+        .week-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .day-column {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .day-name {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .day-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .day-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .homework-item {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border-left: 3px solid;
+            background: var(--bg-primary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            position: relative;
+        }
+
+        .homework-item:hover {
+            transform: translateX(2px);
+        }
+
+        .homework-item.completed {
+            opacity: 0.55;
+            text-decoration: line-through;
+        }
+
+        .homework-class {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 2px;
+        }
+
+        /* All View */
+        .all-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .all-day {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px;
+            min-height: 140px;
+            background: var(--bg-secondary);
+        }
+
+        .all-day h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .all-day-items {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .all-pill {
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            border-left: 3px solid;
+            background: var(--bg-primary);
+        }
+
+        /* Add Button */
+        .add-button {
+            position: fixed;
+            bottom: calc(24px + env(safe-area-inset-bottom));
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            transition: all 0.2s ease;
+        }
+
+        .add-button:hover {
+            transform: scale(1.05);
+        }
+
+        .add-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal.lock {
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.65);
+        }
+
+        .lock-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .lock-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .passcode-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 10px 0 20px;
+        }
+
+        .passcode-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: transparent;
+        }
+
+        .passcode-dot.filled {
+            background: var(--text-primary);
+            border-color: var(--text-primary);
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .keypad button {
+            height: 56px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .keypad .keypad-action {
+            background: var(--bg-secondary);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 24px;
+            padding: 32px 24px;
+            max-width: 380px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.2s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            background: var(--bg-primary);
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--bg-secondary);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .color-picker {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .color-option {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--bg-secondary);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .theme-card {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 10px;
+            cursor: pointer;
+            background: var(--bg-primary);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .theme-card.active {
+            border-color: var(--accent);
+            box-shadow: 0 8px 18px var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .theme-preview {
+            height: 64px;
+            border-radius: 10px;
+            padding: 8px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .theme-line {
+            height: 10px;
+            border-radius: 6px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+        }
+
+        .theme-pill {
+            height: 14px;
+            border-radius: 999px;
+            background: var(--accent);
+        }
+
+        .theme-label {
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: #fecaca;
+        }
+
+        .recurring-days {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .day-checkbox {
+            display: none;
+        }
+
+        .day-label {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-primary);
+        }
+
+        .day-checkbox:checked + .day-label {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 24px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .helper-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        .time-picker {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .time-picker select {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            font-size: 14px;
+        }
+
+        .time-picker .time-clear {
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        @keyframes completion-pop {
+            0% { transform: scale(0.98); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 420px) {
+            .all-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1><span id="userNameDisplay">Your</span> Planner</h1>
+            <div class="view-toggle">
+                <button class="active" onclick="switchView('day', this)">Day</button>
+                <button onclick="switchView('week', this)">Week</button>
+                <button onclick="switchView('all', this)">All</button>
+            </div>
+            <div class="header-actions">
+                <button class="chip-button" id="notifyButton" onclick="toggleNotifications()">Reminders Off</button>
+                <button class="chip-button" onclick="goToday()">Today</button>
+                <button class="chip-button" onclick="openSettingsModal()">Settings</button>
+            </div>
+        </div>
+
+        <div class="date-nav">
+            <div class="nav-buttons">
+                <button onclick="changeDate(-1)">‹</button>
+                <button class="today-button" onclick="goToday()">Today</button>
+            </div>
+            <div class="current-date" id="currentDate"></div>
+            <div class="nav-buttons" style="justify-self: end;">
+                <button onclick="changeDate(1)">›</button>
+            </div>
+        </div>
+
+        <div class="daily-view" id="dailyView"></div>
+        <div class="week-view" id="weekView"></div>
+        <div class="all-view" id="allView"></div>
+
+        <button class="add-button" onclick="openAddModal()">+</button>
+    </div>
+
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Add Item</h2>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select id="itemCategory" onchange="updateFormFields()">
+                    <option value="event">Event</option>
+                    <option value="task">Task</option>
+                    <option value="reminder">Reminder</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Type</label>
+                <input type="text" id="itemKind" list="eventTypes" placeholder="Optional">
+                <datalist id="eventTypes"></datalist>
+                <datalist id="taskTypes"></datalist>
+                <datalist id="reminderTypes"></datalist>
+                <div class="helper-text">Create your own type or pick a suggestion.</div>
+            </div>
+
+            <div class="form-group" id="titleGroup">
+                <label>Title</label>
+                <input type="text" id="itemTitle" placeholder="e.g., Read Chapter 3">
+            </div>
+
+            <div class="form-group" id="repeatToggleGroup">
+                <label>Repeats weekly</label>
+                <select id="itemRepeats" onchange="updateRepeatVisibility()">
+                    <option value="no">No</option>
+                    <option value="weekly">Every week</option>
+                    <option value="biweekly">Every other week</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="dateGroup">
+                <label>Date</label>
+                <input type="date" id="itemDate">
+            </div>
+
+            <div class="form-group" id="timeGroup">
+                <label>Time</label>
+                <div class="time-picker" data-field="itemTime">
+                    <select class="time-hour"></select>
+                    <select class="time-minute"></select>
+                    <select class="time-ampm"></select>
+                    <button class="time-clear" type="button" onclick="clearTimePicker('itemTime')">Clear</button>
+                </div>
+            </div>
+
+            <div class="form-group" id="dueTimeGroup">
+                <label>Due time</label>
+                <div class="time-picker" data-field="itemDueTime">
+                    <select class="time-hour"></select>
+                    <select class="time-minute"></select>
+                    <select class="time-ampm"></select>
+                    <button class="time-clear" type="button" onclick="clearTimePicker('itemDueTime')">Clear</button>
+                </div>
+            </div>
+
+            <div class="form-group" id="descriptionGroup">
+                <label>Notes</label>
+                <textarea id="itemDescription" placeholder="Add details..."></textarea>
+            </div>
+
+            <div class="form-group" id="colorGroup">
+                <label>Color</label>
+                <div class="color-picker" id="colorPicker"></div>
+            </div>
+
+            <div class="form-group" id="recurringGroup" style="display: none;">
+                <label>Repeat days</label>
+                <div class="recurring-days">
+                    <input type="checkbox" id="mon" class="day-checkbox" value="1">
+                    <label for="mon" class="day-label">Mon</label>
+                    <input type="checkbox" id="tue" class="day-checkbox" value="2">
+                    <label for="tue" class="day-label">Tue</label>
+                    <input type="checkbox" id="wed" class="day-checkbox" value="3">
+                    <label for="wed" class="day-label">Wed</label>
+                    <input type="checkbox" id="thu" class="day-checkbox" value="4">
+                    <label for="thu" class="day-label">Thu</label>
+                    <input type="checkbox" id="fri" class="day-checkbox" value="5">
+                    <label for="fri" class="day-label">Fri</label>
+                    <input type="checkbox" id="sat" class="day-checkbox" value="6">
+                    <label for="sat" class="day-label">Sat</label>
+                    <input type="checkbox" id="sun" class="day-checkbox" value="0">
+                    <label for="sun" class="day-label">Sun</label>
+                </div>
+            </div>
+
+            <div class="form-group" id="reminderGroup">
+                <label>Reminder time</label>
+                <div class="time-picker" data-field="itemReminderTime">
+                    <select class="time-hour"></select>
+                    <select class="time-minute"></select>
+                    <select class="time-ampm"></select>
+                    <button class="time-clear" type="button" onclick="clearTimePicker('itemReminderTime')">Clear</button>
+                </div>
+                <div class="helper-text">Morning reminders fire at 8:00 AM if no time is set.</div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
+                <button class="btn btn-danger" id="deleteButton" style="display:none;" onclick="deleteCurrentItem()">Delete</button>
+                <button class="btn btn-primary" id="saveButton" onclick="addOrUpdateItem()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h2>Settings</h2>
+            <div class="form-group">
+                <label>Your name</label>
+                <input type="text" id="userNameInput" placeholder="e.g., Alex">
+            </div>
+            <div class="form-group">
+                <label>Theme</label>
+                <div class="theme-grid" id="themeGrid"></div>
+            </div>
+            <div class="form-group">
+                <label>Passcode lock</label>
+                <select id="passcodeToggle" onchange="updatePasscodeVisibility()">
+                    <option value="off">Off</option>
+                    <option value="on">On</option>
+                </select>
+                <div class="helper-text">If enabled, you will be asked to unlock on open.</div>
+            </div>
+            <div class="form-group" id="passcodeGroup">
+                <label>Set passcode</label>
+                <input type="password" id="passcodeInput" inputmode="numeric" placeholder="4-8 digits">
+                <div class="helper-text">Leave blank to keep current passcode.</div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeSettingsModal()">Close</button>
+                <button class="btn btn-primary" onclick="saveSettings()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal lock" id="lockModal">
+        <div class="modal-content">
+            <div class="lock-title">Locked</div>
+            <div class="lock-subtitle">Enter your passcode to continue.</div>
+            <div class="passcode-dots" id="passcodeDots">
+                <div class="passcode-dot"></div>
+                <div class="passcode-dot"></div>
+                <div class="passcode-dot"></div>
+                <div class="passcode-dot"></div>
+            </div>
+            <div class="keypad" id="passcodeKeypad">
+                <button onclick="pressPasscodeKey('1')">1</button>
+                <button onclick="pressPasscodeKey('2')">2</button>
+                <button onclick="pressPasscodeKey('3')">3</button>
+                <button onclick="pressPasscodeKey('4')">4</button>
+                <button onclick="pressPasscodeKey('5')">5</button>
+                <button onclick="pressPasscodeKey('6')">6</button>
+                <button onclick="pressPasscodeKey('7')">7</button>
+                <button onclick="pressPasscodeKey('8')">8</button>
+                <button onclick="pressPasscodeKey('9')">9</button>
+                <button class="keypad-action" onclick="clearPasscodeEntry()">Clear</button>
+                <button onclick="pressPasscodeKey('0')">0</button>
+                <button class="keypad-action" onclick="backspacePasscode()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDate = new Date();
+        let currentView = 'day';
+        let editingItem = null;
+
+        const colors = [
+            '#ef4444', '#f97316', '#f59e0b', '#84cc16',
+            '#10b981', '#06b6d4', '#3b82f6', '#6366f1',
+            '#8b5cf6', '#ec4899', '#64748b', '#000000'
+        ];
+
+        const defaultEventTypes = ['Class', 'Work', 'Lab', 'Meeting', 'Practice'];
+        const defaultTaskTypes = ['Homework', 'Study', 'Pay Bills', 'Take Pills', 'Errand'];
+        const defaultReminderTypes = ['Reminder', 'Call', 'Email', 'Check-in'];
+        const themeOptions = [
+            { id: 'minimal', label: 'Minimal', palette: { bg: '#f7f7f6', surface: '#ffffff', accent: '#111111', border: '#e5e5e5', text: '#1a1a1a' } },
+            { id: 'joyful', label: 'Joyful', palette: { bg: '#fff7ed', surface: '#ffffff', accent: '#f97316', border: '#f5d0b5', text: '#3b1f14' } },
+            { id: 'midnight', label: 'Midnight', palette: { bg: '#0f172a', surface: '#111827', accent: '#38bdf8', border: '#1f2937', text: '#f8fafc' } },
+            { id: 'library', label: 'Library', palette: { bg: '#f4efe7', surface: '#fffaf3', accent: '#1f3a5f', border: '#e6d8c7', text: '#2b1d16' } },
+            { id: 'mint', label: 'Mint Study', palette: { bg: '#e7f5f2', surface: '#ffffff', accent: '#10b981', border: '#cfe7df', text: '#113b2f' } },
+            { id: 'sunset', label: 'Sunset', palette: { bg: '#fff1e6', surface: '#ffffff', accent: '#fb7185', border: '#f7d3c0', text: '#3b1d12' } },
+            { id: 'focus', label: 'Focus Mode', palette: { bg: '#f6f6f6', surface: '#ffffff', accent: '#111827', border: '#e0e0e0', text: '#151515' } },
+            { id: 'campus', label: 'Campus', palette: { bg: '#f3f6f1', surface: '#ffffff', accent: '#2f6f4e', border: '#d6e0d0', text: '#1f2a1f' } },
+            { id: 'notebook', label: 'Notebook', palette: { bg: '#f9f3e8', surface: '#fffdf8', accent: '#2563eb', border: '#e9dccb', text: '#2d2a26' } },
+            { id: 'rainy', label: 'Rainy Day', palette: { bg: '#e9eef4', surface: '#ffffff', accent: '#0ea5e9', border: '#d6dde6', text: '#1f2a37' } }
+        ];
+
+        let events = [];
+        let tasks = [];
+        let reminders = [];
+        let reminderTimers = [];
+        let notificationsEnabled = false;
+        let userName = 'Your';
+        let theme = 'minimal';
+        let passcodeEnabled = false;
+        let passcodeValue = '';
+        let pendingTheme = 'minimal';
+        let nowLineTimer = null;
+        let lastAutoScrollHour = null;
+        let passcodeEntry = '';
+
+        // Load saved data and migrate legacy formats.
+        function loadData() {
+            const saved = localStorage.getItem('plannerData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.events || data.tasks || data.reminders) {
+                    events = data.events || [];
+                    tasks = data.tasks || [];
+                    reminders = data.reminders || [];
+                } else {
+                    const classes = data.classes || [];
+                    const homework = data.homework || [];
+                    const appointments = data.appointments || [];
+                    const routines = data.routines || [];
+
+                    events = [
+                        ...classes.map(cls => ({
+                            id: cls.id,
+                            category: 'event',
+                            title: cls.title,
+                            type: 'Class',
+                            time: cls.time || '',
+                            color: cls.color || colors[11],
+                            recurringDays: cls.recurringDays || [],
+                            repeatCycle: 'weekly',
+                            description: '',
+                            reminderTime: ''
+                        })),
+                        ...appointments.map(apt => ({
+                            id: apt.id,
+                            category: 'event',
+                            title: apt.title,
+                            type: 'Appointment',
+                            date: apt.date,
+                            time: apt.time || '',
+                            color: colors[11],
+                            description: apt.description || '',
+                            reminderTime: apt.reminderTime || '',
+                            completed: apt.completed || false
+                        })),
+                        ...routines.map(rt => ({
+                            id: rt.id,
+                            category: 'event',
+                            title: rt.title,
+                            type: 'Routine',
+                            time: rt.time || '',
+                            color: rt.color || colors[11],
+                            recurringDays: rt.recurringDays || [],
+                            repeatCycle: 'weekly',
+                            description: rt.description || '',
+                            reminderTime: rt.reminderTime || '',
+                            completedDates: rt.completedDates || []
+                        }))
+                    ];
+
+                    tasks = homework.map(hw => ({
+                        id: hw.id,
+                        category: 'task',
+                        title: hw.title,
+                        type: 'Homework',
+                        date: hw.date,
+                        dueTime: hw.dueTime || '',
+                        description: hw.description || '',
+                        reminderTime: hw.reminderTime || '',
+                        completed: hw.completed || false
+                    }));
+                }
+            }
+            notificationsEnabled = localStorage.getItem('plannerNotifications') === 'on';
+            userName = localStorage.getItem('plannerUserName') || 'Your';
+            theme = localStorage.getItem('plannerTheme') || 'minimal';
+            pendingTheme = theme;
+            passcodeEnabled = localStorage.getItem('plannerPasscodeEnabled') === 'on';
+            passcodeValue = localStorage.getItem('plannerPasscode') || '';
+        }
+
+        // Save data to localStorage.
+        function saveData() {
+            localStorage.setItem('plannerData', JSON.stringify({
+                events,
+                tasks,
+                reminders
+            }));
+        }
+
+        loadData();
+        applyUserSettings();
+        handleInitialLock();
+        updateCurrentDate();
+        renderView();
+        initializeColorPicker();
+        initializeTimePickers();
+        refreshTypeSuggestions();
+        renderThemeCards();
+        updateNotificationButton();
+        scheduleReminders();
+
+        // Switch between day, week, and all views.
+        function switchView(view, button) {
+            currentView = view;
+            document.querySelectorAll('.view-toggle button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (button) button.classList.add('active');
+
+            document.getElementById('dailyView').style.display = view === 'day' ? 'block' : 'none';
+            document.getElementById('weekView').classList.toggle('active', view === 'week');
+            document.getElementById('allView').classList.toggle('active', view === 'all');
+            renderView();
+        }
+
+        // Open the settings modal and preload values.
+        function openSettingsModal() {
+            document.getElementById('userNameInput').value = userName === 'Your' ? '' : userName;
+            pendingTheme = theme;
+            updateThemeCardSelection();
+            document.getElementById('passcodeToggle').value = passcodeEnabled ? 'on' : 'off';
+            document.getElementById('passcodeInput').value = '';
+            document.getElementById('passcodeGroup').style.display = passcodeEnabled ? 'block' : 'none';
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        // Close the settings modal.
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        // Save user name and theme preferences.
+        function saveSettings() {
+            const nameInput = document.getElementById('userNameInput').value.trim();
+            userName = nameInput || 'Your';
+            const selectedTheme = getSelectedThemeFromGrid();
+            if (selectedTheme) theme = selectedTheme;
+            passcodeEnabled = document.getElementById('passcodeToggle').value === 'on';
+            const passcodeInput = document.getElementById('passcodeInput').value.trim();
+            if (passcodeInput) {
+                passcodeValue = passcodeInput;
+                localStorage.setItem('plannerPasscode', passcodeValue);
+            }
+            localStorage.setItem('plannerPasscodeEnabled', passcodeEnabled ? 'on' : 'off');
+            localStorage.setItem('plannerUserName', userName);
+            localStorage.setItem('plannerTheme', theme);
+            applyUserSettings();
+            closeSettingsModal();
+            handleInitialLock();
+        }
+
+        // Apply user name and theme to the UI.
+        function applyUserSettings() {
+            document.getElementById('userNameDisplay').textContent = formatPlannerName(userName);
+            document.body.setAttribute('data-theme', theme);
+            updateThemeCardSelection();
+        }
+
+        // Format the header name with a possessive.
+        function formatPlannerName(name) {
+            if (!name || name.toLowerCase() === 'your') return 'Your';
+            const trimmed = name.trim();
+            if (!trimmed) return 'Your';
+            const lastChar = trimmed.charAt(trimmed.length - 1).toLowerCase();
+            if (lastChar === 's') return `${trimmed}'`;
+            return `${trimmed}'s`;
+        }
+
+        // Render theme preview cards in settings.
+        function renderThemeCards() {
+            const grid = document.getElementById('themeGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            themeOptions.forEach(option => {
+                const card = document.createElement('div');
+                card.className = 'theme-card';
+                card.dataset.theme = option.id;
+
+                const preview = document.createElement('div');
+                preview.className = 'theme-preview';
+                preview.style.background = option.palette.surface;
+                preview.style.borderColor = option.palette.border;
+
+                const line = document.createElement('div');
+                line.className = 'theme-line';
+                line.style.background = option.palette.bg;
+                line.style.borderColor = option.palette.border;
+
+                const pill = document.createElement('div');
+                pill.className = 'theme-pill';
+                pill.style.background = option.palette.accent;
+
+                preview.appendChild(line);
+                preview.appendChild(pill);
+
+                const label = document.createElement('div');
+                label.className = 'theme-label';
+                label.textContent = option.label;
+                label.style.color = option.palette.text;
+
+                card.appendChild(preview);
+                card.appendChild(label);
+
+                card.addEventListener('click', () => {
+                    pendingTheme = option.id;
+                    updateThemeCardSelection();
+                });
+
+                grid.appendChild(card);
+            });
+            updateThemeCardSelection();
+        }
+
+        // Update which theme card is selected.
+        function updateThemeCardSelection() {
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.classList.toggle('active', card.dataset.theme === pendingTheme);
+            });
+        }
+
+        // Read the selected theme from the preview grid.
+        function getSelectedThemeFromGrid() {
+            const active = document.querySelector('.theme-card.active');
+            return active ? active.dataset.theme : '';
+        }
+
+        // Show or hide passcode setup field when toggled.
+        function updatePasscodeVisibility() {
+            const enabled = document.getElementById('passcodeToggle').value === 'on';
+            document.getElementById('passcodeGroup').style.display = enabled ? 'block' : 'none';
+        }
+
+        // Lock the app on load if passcode is enabled.
+        function handleInitialLock() {
+            if (!passcodeEnabled || !passcodeValue) return;
+            openLockModal();
+        }
+
+        // Open the lock modal.
+        function openLockModal() {
+            passcodeEntry = '';
+            updatePasscodeDots();
+            document.getElementById('lockModal').classList.add('active');
+        }
+
+        // Close the lock modal.
+        function closeLockModal() {
+            document.getElementById('lockModal').classList.remove('active');
+        }
+
+        // Unlock the app if the passcode matches.
+        function unlockApp() {
+            if (passcodeEntry && passcodeEntry === passcodeValue) {
+                closeLockModal();
+            } else {
+                alert('Incorrect passcode.');
+                passcodeEntry = '';
+                updatePasscodeDots();
+            }
+        }
+
+        // Add a digit to the passcode entry.
+        function pressPasscodeKey(digit) {
+            if (passcodeEntry.length >= 8) return;
+            passcodeEntry += digit;
+            updatePasscodeDots();
+            if (passcodeEntry.length >= 4 && passcodeEntry === passcodeValue) {
+                unlockApp();
+            }
+        }
+
+        // Clear the passcode entry.
+        function clearPasscodeEntry() {
+            passcodeEntry = '';
+            updatePasscodeDots();
+        }
+
+        // Remove the last passcode digit.
+        function backspacePasscode() {
+            passcodeEntry = passcodeEntry.slice(0, -1);
+            updatePasscodeDots();
+        }
+
+        // Update the visual dot display for passcode entry.
+        function updatePasscodeDots() {
+            const dots = document.querySelectorAll('#passcodeDots .passcode-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('filled', index < passcodeEntry.length);
+            });
+        }
+        // Move the current date backward or forward by a number of days.
+        function changeDate(days) {
+            currentDate.setDate(currentDate.getDate() + days);
+            updateCurrentDate();
+            renderView();
+        }
+
+        // Jump the calendar back to today.
+        function goToday() {
+            currentDate = new Date();
+            updateCurrentDate();
+            renderView();
+        }
+
+        // Update the header date display.
+        function updateCurrentDate() {
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = currentDate.toLocaleDateString('en-US', options);
+        }
+
+        // Render the active view.
+        function renderView() {
+            if (currentView === 'day') {
+                renderDailyView();
+            } else if (currentView === 'week') {
+                renderWeekView();
+            } else {
+                renderAllView();
+            }
+        }
+
+        // Render the daily view with hourly slots and a tasks panel.
+        function renderDailyView() {
+            const container = document.getElementById('dailyView');
+            container.innerHTML = '';
+
+            const dateStr = formatDate(currentDate);
+            const dayEvents = getItemsForDay(events, dateStr, true, true);
+            const dayTasks = getItemsForDay(tasks, dateStr, true, true);
+            const dayReminders = getItemsForDay(reminders, dateStr, true, true);
+
+            const layout = document.createElement('div');
+            layout.className = 'day-layout';
+
+            const timeScroll = document.createElement('div');
+            timeScroll.className = 'time-scroll';
+
+            const grid = document.createElement('div');
+            grid.className = 'time-grid';
+
+            for (let hour = 0; hour < 24; hour++) {
+                const slot = document.createElement('div');
+                slot.className = 'time-slot';
+
+                const label = document.createElement('div');
+                label.className = 'time-label';
+                label.textContent = formatHourLabel(hour);
+
+                const slotEvents = document.createElement('div');
+                slotEvents.className = 'slot-events';
+
+                const eventsForHour = dayEvents.filter(ev => getHourFromTime(ev.time) === hour);
+                const remindersForHour = dayReminders.filter(rm => getHourFromTime(rm.time) === hour);
+
+                [...eventsForHour, ...remindersForHour].forEach(item => {
+                    const card = buildCard(item, 'event-card', dateStr);
+                    slotEvents.appendChild(card);
+                });
+
+                slot.appendChild(label);
+                slot.appendChild(slotEvents);
+                grid.appendChild(slot);
+            }
+
+            timeScroll.appendChild(grid);
+            layout.appendChild(timeScroll);
+
+            const tasksPanel = document.createElement('div');
+            tasksPanel.className = 'day-tasks-panel';
+            tasksPanel.innerHTML = '<div class="panel-title">Today\'s Tasks</div>';
+
+            const taskList = document.createElement('div');
+            taskList.className = 'task-list';
+
+            if (dayTasks.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'helper-text';
+                empty.textContent = 'No tasks for today.';
+                tasksPanel.appendChild(empty);
+            } else {
+                dayTasks.forEach(task => {
+                    const row = document.createElement('div');
+                    const completed = isCompleted(task, dateStr);
+                    row.className = `task-row ${completed ? 'completed' : ''}`;
+                    row.dataset.type = 'task';
+                    row.dataset.id = task.id;
+                    row.dataset.date = dateStr;
+                    row.innerHTML = `
+                        <input class="task-checkbox" type="checkbox" ${completed ? 'checked' : ''}>
+                        <div>${task.title}${task.dueTime ? ' · ' + formatTime(task.dueTime) : ''}</div>
+                    `;
+                    row.addEventListener('click', () => toggleComplete('task', task.id, dateStr, row));
+                    taskList.appendChild(row);
+                });
+                tasksPanel.appendChild(taskList);
+            }
+
+            const rowCount = Math.max(dayTasks.length, 1);
+            const baseHeight = 72;
+            const rowHeight = 44;
+            const desiredHeight = baseHeight + (rowCount * rowHeight);
+            const minHeight = 120;
+            const maxHeight = Math.round(window.innerHeight * 0.28);
+            const finalHeight = Math.min(Math.max(desiredHeight, minHeight), maxHeight);
+            tasksPanel.style.maxHeight = `${finalHeight}px`;
+
+            layout.appendChild(tasksPanel);
+            container.appendChild(layout);
+
+            startNowLineTimer();
+            updateNowLine();
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => scrollToCurrentTime(true));
+            });
+        }
+
+        // Scroll the day view to keep the last two hours visible.
+        function scrollToCurrentTime(force) {
+            if (!isToday(currentDate)) return;
+            const timeScroll = document.querySelector('.time-scroll');
+            if (!timeScroll) return;
+            const line = document.querySelector('.now-line');
+            const now = new Date();
+            const hour = now.getHours();
+            if (!line) return;
+            const lineTop = line.getBoundingClientRect().top + timeScroll.scrollTop - timeScroll.getBoundingClientRect().top;
+            const target = Math.max(0, lineTop - (timeScroll.clientHeight * 0.20));
+            if (force || hour !== lastAutoScrollHour) {
+                timeScroll.scrollTo({ top: target, behavior: 'smooth' });
+                lastAutoScrollHour = hour;
+            }
+        }
+
+        // Start or restart the timer that keeps the now-line up to date.
+        function startNowLineTimer() {
+            if (nowLineTimer) {
+                clearInterval(nowLineTimer);
+            }
+            nowLineTimer = setInterval(() => {
+                updateNowLine();
+                autoScrollIfHourChanged();
+            }, 60000);
+        }
+
+        // Update the position of the current time line in day view.
+        function updateNowLine() {
+            const grid = document.querySelector('.time-grid');
+            if (!grid) return;
+
+            let line = document.querySelector('.now-line');
+            if (!isToday(currentDate)) {
+                if (line) line.style.display = 'none';
+                return;
+            }
+
+            if (!line) {
+                line = document.createElement('div');
+                line.className = 'now-line';
+                grid.appendChild(line);
+            }
+
+            line.style.display = 'block';
+
+            const now = new Date();
+            const hour = now.getHours();
+            const minutes = now.getMinutes();
+            const slots = grid.querySelectorAll('.time-slot');
+            const slot = slots[hour];
+            if (!slot) return;
+
+            const nextSlot = slots[hour + 1] || slot;
+            const hourHeight = nextSlot.offsetTop - slot.offsetTop || slot.offsetHeight;
+            const top = slot.offsetTop + (minutes / 60) * hourHeight;
+            line.style.top = `${top}px`;
+        }
+
+        // Auto-scroll when the hour changes while on today's view.
+        function autoScrollIfHourChanged() {
+            if (!isToday(currentDate)) return;
+            const now = new Date();
+            const hour = now.getHours();
+            if (lastAutoScrollHour === null) {
+                lastAutoScrollHour = hour;
+                return;
+            }
+            if (hour !== lastAutoScrollHour) {
+                scrollToCurrentTime(true);
+            }
+        }
+
+        // Check if a date is today.
+        function isToday(date) {
+            const now = new Date();
+            return date.getFullYear() === now.getFullYear() &&
+                date.getMonth() === now.getMonth() &&
+                date.getDate() === now.getDate();
+        }
+
+        // Render the week view with only dated items (no recurring).
+        function renderWeekView() {
+            const container = document.getElementById('weekView');
+            container.innerHTML = '<div class="week-grid"></div>';
+            const grid = container.querySelector('.week-grid');
+
+            const startOfWeek = new Date(currentDate);
+            startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(startOfWeek);
+                date.setDate(startOfWeek.getDate() + i);
+                const dateStr = formatDate(date);
+
+                const dayEvents = getItemsForDay(events, dateStr, false, false);
+                const dayTasks = getItemsForDay(tasks, dateStr, false, false);
+                const dayReminders = getItemsForDay(reminders, dateStr, false, false);
+
+                const dayCol = document.createElement('div');
+                dayCol.className = 'day-column';
+
+                const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                const dayDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+                dayCol.innerHTML = `
+                    <div class="day-header">
+                        <div class="day-name">${dayName}</div>
+                        <div class="day-date">${dayDate}</div>
+                    </div>
+                    <div class="day-items"></div>
+                `;
+
+                const itemsContainer = dayCol.querySelector('.day-items');
+
+                [...dayEvents, ...dayReminders, ...dayTasks].forEach(item => {
+                    const pill = document.createElement('div');
+                    const completed = isCompleted(item, dateStr);
+                    pill.className = `homework-item swipe-card ${completed ? 'completed' : ''}`;
+                    pill.style.borderLeftColor = item.color || colors[11];
+                    pill.dataset.type = item.category;
+                    pill.dataset.id = item.id;
+                    pill.dataset.date = dateStr;
+                    const timeLabel = item.time || item.dueTime || '';
+                    pill.innerHTML = `
+                        <div class="homework-class">${item.type || item.category}</div>
+                        <div>${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}</div>
+                    `;
+                    attachSwipeAndTap(pill);
+                    itemsContainer.appendChild(pill);
+                });
+
+                if (itemsContainer.children.length === 0) {
+                    itemsContainer.innerHTML = '<div style="color: var(--text-secondary); font-size: 13px; padding: 8px 0;">No items</div>';
+                }
+
+                grid.appendChild(dayCol);
+            }
+        }
+
+        // Render the all view as a week calendar grid with everything included.
+        function renderAllView() {
+            const container = document.getElementById('allView');
+            container.innerHTML = '<div class="all-grid"></div>';
+            const grid = container.querySelector('.all-grid');
+
+            const startOfWeek = new Date(currentDate);
+            startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(startOfWeek);
+                date.setDate(startOfWeek.getDate() + i);
+                const dateStr = formatDate(date);
+
+                const items = [
+                    ...getItemsForDay(events, dateStr, true, true),
+                    ...getItemsForDay(tasks, dateStr, true, true),
+                    ...getItemsForDay(reminders, dateStr, true, true)
+                ];
+
+                const dayCard = document.createElement('div');
+                dayCard.className = 'all-day';
+                dayCard.innerHTML = `<h4>${date.toLocaleDateString('en-US', { weekday: 'short' })}</h4>`;
+
+                const itemList = document.createElement('div');
+                itemList.className = 'all-day-items';
+
+                items.forEach(item => {
+                    const pill = document.createElement('div');
+                    const timeLabel = item.time || item.dueTime || '';
+                    pill.className = 'all-pill';
+                    pill.style.borderLeftColor = item.color || colors[11];
+                    pill.textContent = `${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}`;
+                    itemList.appendChild(pill);
+                });
+
+                if (items.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = 'helper-text';
+                    empty.textContent = 'No items.';
+                    itemList.appendChild(empty);
+                }
+
+                dayCard.appendChild(itemList);
+                grid.appendChild(dayCard);
+            }
+        }
+
+        // Build a swipeable card element for events/reminders.
+        function buildCard(item, className, dateStr) {
+            const card = document.createElement('div');
+            const completed = isCompleted(item, dateStr);
+            card.className = `${className} swipe-card ${completed ? 'completed' : ''}`;
+            card.style.borderLeftColor = item.color || colors[11];
+            card.dataset.type = item.category || 'event';
+            card.dataset.id = item.id;
+            card.dataset.date = dateStr;
+            card.innerHTML = `
+                <div class="event-title">${item.title}</div>
+                ${item.description ? `<div class="event-meta">${item.description}</div>` : ''}
+                <div class="card-check">✓</div>
+            `;
+            attachSwipeAndTap(card);
+            return card;
+        }
+
+        // Add swipe-to-complete/delete and tap-to-edit behavior.
+        function attachSwipeAndTap(element) {
+            let startX = 0;
+            let startY = 0;
+            let moved = false;
+
+            element.addEventListener('pointerdown', (e) => {
+                startX = e.clientX;
+                startY = e.clientY;
+                moved = false;
+                element.setPointerCapture(e.pointerId);
+            });
+
+            element.addEventListener('pointermove', (e) => {
+                if (!startX && !startY) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) {
+                    moved = true;
+                    element.style.transform = `translateX(${dx}px)`;
+                    element.style.opacity = `${1 - Math.min(Math.abs(dx) / 160, 0.6)}`;
+                }
+            });
+
+            element.addEventListener('pointerup', (e) => {
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                element.releasePointerCapture(e.pointerId);
+                element.style.transform = '';
+                element.style.opacity = '';
+
+                if (!moved || Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy)) {
+                    openEditFromElement(element);
+                } else if (dx > 60) {
+                    completeFromElement(element);
+                } else if (dx < -60) {
+                    deleteFromElement(element);
+                }
+
+                startX = 0;
+                startY = 0;
+            });
+        }
+
+        // Open the edit modal from a rendered element.
+        function openEditFromElement(element) {
+            const type = element.dataset.type;
+            const id = element.dataset.id;
+            const dateStr = element.dataset.date;
+            openEditModal(type, id, dateStr);
+        }
+
+        // Complete an item from its element.
+        function completeFromElement(element) {
+            const type = element.dataset.type;
+            const id = element.dataset.id;
+            const dateStr = element.dataset.date;
+            toggleComplete(type, id, dateStr, element);
+        }
+
+        // Delete an item from its element.
+        function deleteFromElement(element) {
+            const type = element.dataset.type;
+            const id = element.dataset.id;
+            deleteItem(type, id);
+        }
+
+        // Get items for a day with control over recurrence and weekly view rules.
+        function getItemsForDay(list, dateStr, includeRecurring, includeTasksForDay) {
+            const date = new Date(dateStr + 'T00:00:00');
+            const day = date.getDay();
+
+            return list.filter(item => {
+                const isRecurring = item.recurringDays && item.recurringDays.length > 0;
+                if (isRecurring) {
+                    if (!includeRecurring) return false;
+                    if (!item.recurringDays.includes(day)) return false;
+                    if (item.repeatCycle === 'biweekly') {
+                        const start = item.startDate || item.date || dateStr;
+                        const diff = Math.floor((date - new Date(start + 'T00:00:00')) / (7 * 24 * 60 * 60 * 1000));
+                        if (diff % 2 !== 0) return false;
+                    }
+                    return true;
+                }
+                if (!item.date) return false;
+                return item.date === dateStr;
+            });
+        }
+
+        // Determine if an item is completed (with recurring support).
+        function isCompleted(item, dateStr) {
+            if (item.recurringDays && item.recurringDays.length > 0) {
+                return item.completedDates && item.completedDates.includes(dateStr);
+            }
+            return item.completed || false;
+        }
+
+        // Toggle completion for events, tasks, and reminders.
+        function toggleComplete(type, id, dateStr, element) {
+            let item;
+            if (type === 'event') item = events.find(ev => ev.id === id);
+            if (type === 'task') item = tasks.find(tsk => tsk.id === id);
+            if (type === 'reminder') item = reminders.find(rm => rm.id === id);
+            if (!item) return;
+
+            if (item.recurringDays && item.recurringDays.length > 0) {
+                item.completedDates = item.completedDates || [];
+                if (item.completedDates.includes(dateStr)) {
+                    item.completedDates = item.completedDates.filter(d => d !== dateStr);
+                } else {
+                    item.completedDates.push(dateStr);
+                }
+            } else {
+                item.completed = !item.completed;
+            }
+
+            saveData();
+            if (element) {
+                element.classList.add('just-completed');
+                if (navigator.vibrate) navigator.vibrate(20);
+                setTimeout(() => element.classList.remove('just-completed'), 350);
+            }
+            renderView();
+        }
+
+        // Open the add modal with defaults.
+        function openAddModal() {
+            editingItem = null;
+            document.getElementById('modalTitle').textContent = 'Add Item';
+            document.getElementById('saveButton').textContent = 'Add';
+            document.getElementById('deleteButton').style.display = 'none';
+            document.getElementById('addModal').classList.add('active');
+            document.getElementById('itemDate').value = formatDate(currentDate);
+            document.getElementById('itemCategory').value = 'event';
+            document.getElementById('itemKind').value = '';
+            document.getElementById('itemRepeats').value = 'no';
+            clearTimePicker('itemTime');
+            clearTimePicker('itemDueTime');
+            clearTimePicker('itemReminderTime');
+            updateFormFields();
+        }
+
+        // Open the edit modal and load item data.
+        function openEditModal(type, id, dateStr) {
+            let item = null;
+            if (type === 'event') item = events.find(ev => ev.id === id);
+            if (type === 'task') item = tasks.find(tsk => tsk.id === id);
+            if (type === 'reminder') item = reminders.find(rm => rm.id === id);
+            if (!item) return;
+
+            editingItem = { type, id, dateStr };
+            document.getElementById('modalTitle').textContent = 'Edit Item';
+            document.getElementById('saveButton').textContent = 'Save';
+            document.getElementById('deleteButton').style.display = 'inline-block';
+
+            document.getElementById('itemCategory').value = type;
+            document.getElementById('itemKind').value = item.type || '';
+            document.getElementById('itemTitle').value = item.title || '';
+            document.getElementById('itemDate').value = item.date || (dateStr || formatDate(currentDate));
+            document.getElementById('itemDescription').value = item.description || '';
+            setTimePickerValue('itemTime', item.time || '');
+            setTimePickerValue('itemDueTime', item.dueTime || '');
+            setTimePickerValue('itemReminderTime', item.reminderTime || '');
+
+            const repeats = item.recurringDays && item.recurringDays.length > 0 ? (item.repeatCycle || 'weekly') : 'no';
+            document.getElementById('itemRepeats').value = repeats;
+
+            document.querySelectorAll('.day-checkbox').forEach(cb => cb.checked = false);
+            if (item.recurringDays) {
+                document.querySelectorAll('.day-checkbox').forEach(cb => {
+                    cb.checked = item.recurringDays.includes(parseInt(cb.value));
+                });
+            }
+
+            document.querySelectorAll('.color-option').forEach((opt, index) => {
+                opt.classList.toggle('selected', item.color === colors[index]);
+            });
+
+            updateFormFields();
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        // Close the add/edit modal and reset fields.
+        function closeAddModal() {
+            document.getElementById('addModal').classList.remove('active');
+            resetForm();
+        }
+
+        // Toggle repeat options based on repeat choice.
+        function updateRepeatVisibility() {
+            const repeats = document.getElementById('itemRepeats').value !== 'no';
+            document.getElementById('recurringGroup').style.display = repeats ? 'block' : 'none';
+            document.getElementById('dateGroup').style.display = repeats ? 'none' : 'block';
+        }
+
+        // Update form field visibility based on category.
+        function updateFormFields() {
+            const category = document.getElementById('itemCategory').value;
+            document.getElementById('itemKind').setAttribute('list', category === 'event' ? 'eventTypes' : category === 'task' ? 'taskTypes' : 'reminderTypes');
+
+            document.getElementById('timeGroup').style.display = category === 'event' ? 'block' : 'none';
+            document.getElementById('dueTimeGroup').style.display = category === 'task' ? 'block' : 'none';
+            document.getElementById('repeatToggleGroup').style.display = category === 'event' ? 'block' : 'none';
+            document.getElementById('recurringGroup').style.display = 'none';
+            document.getElementById('dateGroup').style.display = 'block';
+
+            updateRepeatVisibility();
+        }
+
+        // Populate the color picker UI.
+        function initializeColorPicker() {
+            const picker = document.getElementById('colorPicker');
+            picker.innerHTML = '';
+            colors.forEach((color, index) => {
+                const option = document.createElement('div');
+                option.className = 'color-option';
+                option.style.backgroundColor = color;
+                option.onclick = () => selectColor(index);
+                picker.appendChild(option);
+            });
+        }
+
+        // Select a color for the current item.
+        function selectColor(index) {
+            document.querySelectorAll('.color-option').forEach((opt, i) => {
+                opt.classList.toggle('selected', i === index);
+            });
+        }
+
+        // Refresh suggestion lists for item types.
+        function refreshTypeSuggestions() {
+            const eventSet = new Set(defaultEventTypes);
+            const taskSet = new Set(defaultTaskTypes);
+            const reminderSet = new Set(defaultReminderTypes);
+
+            events.forEach(ev => { if (ev.type) eventSet.add(ev.type); });
+            tasks.forEach(tsk => { if (tsk.type) taskSet.add(tsk.type); });
+            reminders.forEach(rm => { if (rm.type) reminderSet.add(rm.type); });
+
+            const eventList = document.getElementById('eventTypes');
+            const taskList = document.getElementById('taskTypes');
+            const reminderList = document.getElementById('reminderTypes');
+            eventList.innerHTML = '';
+            taskList.innerHTML = '';
+            reminderList.innerHTML = '';
+
+            Array.from(eventSet).sort().forEach(type => {
+                const opt = document.createElement('option');
+                opt.value = type;
+                eventList.appendChild(opt);
+            });
+
+            Array.from(taskSet).sort().forEach(type => {
+                const opt = document.createElement('option');
+                opt.value = type;
+                taskList.appendChild(opt);
+            });
+
+            Array.from(reminderSet).sort().forEach(type => {
+                const opt = document.createElement('option');
+                opt.value = type;
+                reminderList.appendChild(opt);
+            });
+        }
+
+        // Initialize all time picker dropdowns.
+        function initializeTimePickers() {
+            document.querySelectorAll('.time-picker').forEach(picker => {
+                const hour = picker.querySelector('.time-hour');
+                const minute = picker.querySelector('.time-minute');
+                const ampm = picker.querySelector('.time-ampm');
+                hour.innerHTML = '<option value=""></option>';
+                minute.innerHTML = '<option value=""></option>';
+                ampm.innerHTML = '<option value=""></option>';
+
+                for (let h = 1; h <= 12; h++) {
+                    const opt = document.createElement('option');
+                    opt.value = String(h);
+                    opt.textContent = String(h);
+                    hour.appendChild(opt);
+                }
+
+                for (let m = 0; m < 60; m++) {
+                    const opt = document.createElement('option');
+                    opt.value = String(m).padStart(2, '0');
+                    opt.textContent = String(m).padStart(2, '0');
+                    minute.appendChild(opt);
+                }
+
+                ['AM', 'PM'].forEach(period => {
+                    const opt = document.createElement('option');
+                    opt.value = period;
+                    opt.textContent = period;
+                    ampm.appendChild(opt);
+                });
+            });
+        }
+
+        // Clear a time picker selection.
+        function clearTimePicker(fieldId) {
+            const picker = document.querySelector(`[data-field="${fieldId}"]`);
+            if (!picker) return;
+            picker.querySelector('.time-hour').value = '';
+            picker.querySelector('.time-minute').value = '';
+            picker.querySelector('.time-ampm').value = '';
+        }
+
+        // Read a time picker value in 24h format.
+        function getTimePickerValue(fieldId) {
+            const picker = document.querySelector(`[data-field="${fieldId}"]`);
+            if (!picker) return '';
+            const hour = picker.querySelector('.time-hour').value;
+            const minute = picker.querySelector('.time-minute').value;
+            const ampm = picker.querySelector('.time-ampm').value;
+            if (!hour || !minute || !ampm) return '';
+            let h = parseInt(hour, 10);
+            if (ampm === 'PM' && h !== 12) h += 12;
+            if (ampm === 'AM' && h === 12) h = 0;
+            return `${String(h).padStart(2, '0')}:${minute}`;
+        }
+
+        // Populate a time picker using a 24h value.
+        function setTimePickerValue(fieldId, value) {
+            const picker = document.querySelector(`[data-field="${fieldId}"]`);
+            if (!picker) return;
+            if (!value) {
+                clearTimePicker(fieldId);
+                return;
+            }
+            const [hours, minutes] = value.split(':');
+            let h = parseInt(hours, 10);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            picker.querySelector('.time-hour').value = String(h);
+            picker.querySelector('.time-minute').value = minutes;
+            picker.querySelector('.time-ampm').value = ampm;
+        }
+
+        // Add or update an item in the appropriate list.
+        function addOrUpdateItem() {
+            const category = document.getElementById('itemCategory').value;
+            const type = document.getElementById('itemKind').value.trim();
+            const title = document.getElementById('itemTitle').value.trim();
+
+            if (!title) {
+                alert('Please enter a title');
+                return;
+            }
+
+            const id = editingItem ? editingItem.id : Date.now().toString();
+            const repeatValue = document.getElementById('itemRepeats').value;
+            const repeats = repeatValue !== 'no';
+
+            const recurringDays = [];
+            document.querySelectorAll('.day-checkbox:checked').forEach(cb => {
+                recurringDays.push(parseInt(cb.value));
+            });
+
+            const selectedColor = document.querySelector('.color-option.selected');
+            const colorIndex = Array.from(document.querySelectorAll('.color-option')).indexOf(selectedColor);
+            const color = colors[colorIndex >= 0 ? colorIndex : 0];
+
+            const common = {
+                id,
+                category,
+                type: type || '',
+                title,
+                color,
+                description: document.getElementById('itemDescription').value.trim(),
+                reminderTime: getTimePickerValue('itemReminderTime')
+            };
+
+            if (category === 'event') {
+                const item = {
+                    ...common,
+                    time: getTimePickerValue('itemTime'),
+                    date: repeats ? '' : document.getElementById('itemDate').value,
+                    startDate: repeats ? document.getElementById('itemDate').value : '',
+                    recurringDays: repeats ? recurringDays : [],
+                    repeatCycle: repeats ? repeatValue : ''
+                };
+                upsertItem(events, item, id);
+            } else if (category === 'task') {
+                const item = {
+                    ...common,
+                    dueTime: getTimePickerValue('itemDueTime'),
+                    date: repeats ? '' : document.getElementById('itemDate').value,
+                    startDate: repeats ? document.getElementById('itemDate').value : '',
+                    recurringDays: repeats ? recurringDays : [],
+                    repeatCycle: repeats ? repeatValue : '',
+                    completed: getExistingCompleted('task', id)
+                };
+                upsertItem(tasks, item, id);
+            } else {
+                const item = {
+                    ...common,
+                    date: document.getElementById('itemDate').value,
+                    time: getTimePickerValue('itemTime'),
+                    completed: getExistingCompleted('reminder', id)
+                };
+                upsertItem(reminders, item, id);
+            }
+
+            saveData();
+            refreshTypeSuggestions();
+            closeAddModal();
+            renderView();
+            scheduleReminders();
+        }
+
+        // Read the previous completion state for existing items.
+        function getExistingCompleted(category, id) {
+            if (category === 'task') {
+                const existing = tasks.find(tsk => tsk.id === id);
+                return existing ? existing.completed : false;
+            }
+            if (category === 'event') {
+                const existing = events.find(ev => ev.id === id);
+                return existing ? existing.completed : false;
+            }
+            if (category === 'reminder') {
+                const existing = reminders.find(rm => rm.id === id);
+                return existing ? existing.completed : false;
+            }
+            return false;
+        }
+
+        // Add a new item or update an existing one.
+        function upsertItem(list, item, id) {
+            const index = list.findIndex(i => i.id === id);
+            if (index >= 0) {
+                list[index] = { ...list[index], ...item };
+            } else {
+                list.push(item);
+            }
+        }
+
+        // Delete the currently edited item.
+        function deleteCurrentItem() {
+            if (!editingItem) return;
+            deleteItem(editingItem.type, editingItem.id);
+            closeAddModal();
+        }
+
+        // Delete an item from its list.
+        function deleteItem(type, id) {
+            if (type === 'event') {
+                events = events.filter(ev => ev.id !== id);
+            } else if (type === 'task') {
+                tasks = tasks.filter(tsk => tsk.id !== id);
+            } else {
+                reminders = reminders.filter(rm => rm.id !== id);
+            }
+            saveData();
+            refreshTypeSuggestions();
+            renderView();
+            scheduleReminders();
+        }
+
+        // Reset modal inputs.
+        function resetForm() {
+            document.getElementById('itemTitle').value = '';
+            document.getElementById('itemKind').value = '';
+            document.getElementById('itemDescription').value = '';
+            document.getElementById('itemRepeats').value = 'no';
+            document.querySelectorAll('.day-checkbox').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+            clearTimePicker('itemTime');
+            clearTimePicker('itemDueTime');
+            clearTimePicker('itemReminderTime');
+        }
+
+        // Format a Date object as YYYY-MM-DD.
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        // Format a 24h time to 12h display.
+        function formatTime(time) {
+            if (!time) return '';
+            const [hours, minutes] = time.split(':');
+            const h = parseInt(hours, 10);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const h12 = h % 12 || 12;
+            return `${h12}:${minutes} ${ampm}`;
+        }
+
+        // Format a slot label like 1 PM.
+        function formatHourLabel(hour) {
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const h12 = hour % 12 || 12;
+            return `${h12} ${ampm}`;
+        }
+
+        // Extract hour from a 24h time string.
+        function getHourFromTime(time) {
+            if (!time) return -1;
+            const [hours] = time.split(':');
+            return parseInt(hours, 10);
+        }
+
+        // Update the reminder toggle button state.
+        function updateNotificationButton() {
+            const btn = document.getElementById('notifyButton');
+            if (!btn) return;
+            btn.textContent = notificationsEnabled ? 'Reminders On' : 'Reminders Off';
+            btn.classList.toggle('active', notificationsEnabled);
+        }
+
+        // Ask for notification permission or toggle it.
+        function toggleNotifications() {
+            if (!('Notification' in window)) {
+                alert('Notifications are not supported in this browser.');
+                return;
+            }
+
+            if (Notification.permission === 'granted') {
+                notificationsEnabled = !notificationsEnabled;
+                localStorage.setItem('plannerNotifications', notificationsEnabled ? 'on' : 'off');
+                updateNotificationButton();
+                scheduleReminders();
+                return;
+            }
+
+            if (Notification.permission === 'denied') {
+                alert('Notifications are blocked in your browser settings.');
+                return;
+            }
+
+            Notification.requestPermission().then(permission => {
+                notificationsEnabled = permission === 'granted';
+                localStorage.setItem('plannerNotifications', notificationsEnabled ? 'on' : 'off');
+                updateNotificationButton();
+                scheduleReminders();
+            });
+        }
+
+        // Clear any scheduled reminder timers.
+        function clearReminderTimers() {
+            reminderTimers.forEach(timer => clearTimeout(timer));
+            reminderTimers = [];
+        }
+
+        // Schedule upcoming reminders while the app is open.
+        function scheduleReminders() {
+            clearReminderTimers();
+            if (!notificationsEnabled || !('Notification' in window) || Notification.permission !== 'granted') return;
+
+            const now = new Date();
+            const maxWindowMs = 7 * 24 * 60 * 60 * 1000;
+
+            const schedule = (title, body, when) => {
+                const delta = when - now;
+                if (delta <= 0 || delta > maxWindowMs) return;
+                const timer = setTimeout(() => {
+                    new Notification(title, { body });
+                }, delta);
+                reminderTimers.push(timer);
+            };
+
+            const scheduleItem = (item, label) => {
+                const dateStr = item.date || getNextRecurringDate(item);
+                if (!dateStr) return;
+                const time = item.reminderTime || '08:00';
+                const when = new Date(`${dateStr}T${time}`);
+                schedule(`${label}: ${item.title}`, item.description || item.type || 'Reminder', when);
+            };
+
+            tasks.forEach(task => scheduleItem(task, 'Task'));
+            events.forEach(event => scheduleItem(event, 'Event'));
+            reminders.forEach(rem => scheduleItem(rem, 'Reminder'));
+        }
+
+        // Find the next date for a recurring item.
+        function getNextRecurringDate(item) {
+            if (!item.recurringDays || item.recurringDays.length === 0) return '';
+            const now = new Date();
+            for (let i = 0; i < 14; i++) {
+                const date = new Date(now);
+                date.setDate(date.getDate() + i);
+                if (item.recurringDays.includes(date.getDay())) {
+                    if (item.repeatCycle === 'biweekly' && item.startDate) {
+                        const diff = Math.floor((date - new Date(item.startDate + 'T00:00:00')) / (7 * 24 * 60 * 60 * 1000));
+                        if (diff % 2 !== 0) continue;
+                    }
+                    return formatDate(date);
+                }
+            }
+            return '';
+        }
+    </script>
+</body>
+</html>
