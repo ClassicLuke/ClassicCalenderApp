@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#ffffff">
     <meta name="color-scheme" content="light">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -164,6 +164,7 @@
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
+            overflow-y: hidden;
         }
 
         body.modal-open {
@@ -179,6 +180,9 @@
             box-shadow: 0 0 60px var(--shadow);
             padding-bottom: calc(80px + env(safe-area-inset-bottom));
             padding-top: env(safe-area-inset-top);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Header */
@@ -187,7 +191,7 @@
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border);
             position: sticky;
-            top: env(safe-area-inset-top);
+            top: 0;
             z-index: 100;
             transition: box-shadow 0.2s ease;
         }
@@ -321,13 +325,16 @@
         /* Daily View */
         .daily-view {
             padding: 0 24px 24px;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
         }
 
         .day-layout {
             display: flex;
             flex-direction: column;
             gap: 16px;
-            height: calc(100vh - 260px);
+            height: 100%;
         }
 
         .day-empty {
@@ -344,6 +351,8 @@
             overflow-y: auto;
             padding-right: 4px;
             -webkit-overflow-scrolling: touch;
+            min-height: 0;
+            overscroll-behavior: contain;
         }
 
         .time-grid {
@@ -469,6 +478,7 @@
             border-radius: 16px;
             background: var(--bg-secondary);
             overflow-y: auto;
+            overscroll-behavior: contain;
         }
 
         .panel-title {
@@ -512,6 +522,10 @@
         .all-view {
             padding: 0 24px 24px;
             display: none;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .week-view.active,
@@ -1278,6 +1292,8 @@
         let passcodeEntry = '';
         let scrollShadowTarget = null;
         let scrollShadowHandler = null;
+        let daySwipeTarget = null;
+        let daySwipeHandlers = null;
 
         // Load saved data and migrate legacy formats.
         function loadData() {
@@ -1597,6 +1613,7 @@
                 renderAllView();
             }
             setupScrollShadows();
+            setupDaySwipe();
         }
 
         // Render the daily view with hourly slots and a tasks panel.
@@ -2239,6 +2256,63 @@
             };
             scrollShadowHandler();
             scrollShadowTarget.addEventListener('scroll', scrollShadowHandler, { passive: true });
+        }
+
+        // Swipe left/right on the day view to change dates.
+        function setupDaySwipe() {
+            if (daySwipeTarget && daySwipeHandlers) {
+                daySwipeTarget.removeEventListener('pointerdown', daySwipeHandlers.onDown);
+                daySwipeTarget.removeEventListener('pointermove', daySwipeHandlers.onMove);
+                daySwipeTarget.removeEventListener('pointerup', daySwipeHandlers.onUp);
+                daySwipeTarget.removeEventListener('pointercancel', daySwipeHandlers.onCancel);
+            }
+            daySwipeTarget = null;
+            daySwipeHandlers = null;
+
+            if (currentView !== 'day') return;
+            const target = document.querySelector('.time-scroll');
+            if (!target) return;
+
+            const state = { active: false, startX: 0, startY: 0 };
+
+            const onDown = (event) => {
+                if (event.pointerType === 'mouse' && event.button !== 0) return;
+                if (event.target && event.target.closest('.swipe-card')) return;
+                state.active = true;
+                state.startX = event.clientX;
+                state.startY = event.clientY;
+            };
+
+            const onMove = (event) => {
+                if (!state.active) return;
+                const dx = event.clientX - state.startX;
+                const dy = event.clientY - state.startY;
+                if (Math.abs(dy) > Math.abs(dx)) {
+                    state.active = false;
+                }
+            };
+
+            const onUp = (event) => {
+                if (!state.active) return;
+                const dx = event.clientX - state.startX;
+                const dy = event.clientY - state.startY;
+                state.active = false;
+                if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+                    changeDate(dx < 0 ? 1 : -1);
+                }
+            };
+
+            const onCancel = () => {
+                state.active = false;
+            };
+
+            target.addEventListener('pointerdown', onDown);
+            target.addEventListener('pointermove', onMove);
+            target.addEventListener('pointerup', onUp);
+            target.addEventListener('pointercancel', onCancel);
+
+            daySwipeTarget = target;
+            daySwipeHandlers = { onDown, onMove, onUp, onCancel };
         }
 
         // Refresh suggestion lists for item types.
