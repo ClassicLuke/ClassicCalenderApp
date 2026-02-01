@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="color-scheme" content="light">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <title>Daily Planner</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
@@ -10,6 +18,10 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         :root {
@@ -151,6 +163,12 @@
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+            touch-action: none;
         }
 
         .app-container {
@@ -160,6 +178,7 @@
             background: var(--bg-secondary);
             box-shadow: 0 0 60px var(--shadow);
             padding-bottom: calc(80px + env(safe-area-inset-bottom));
+            padding-top: env(safe-area-inset-top);
         }
 
         /* Header */
@@ -168,8 +187,13 @@
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border);
             position: sticky;
-            top: 0;
+            top: env(safe-area-inset-top);
             z-index: 100;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .header.scrolled {
+            box-shadow: 0 12px 24px var(--shadow);
         }
 
         .header h1 {
@@ -203,6 +227,8 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
+            min-height: 36px;
+            touch-action: manipulation;
         }
 
         .view-toggle button.active {
@@ -229,6 +255,8 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
+            min-height: 32px;
+            touch-action: manipulation;
         }
 
         .chip-button.active {
@@ -245,6 +273,11 @@
             align-items: center;
             padding: 12px 24px 16px;
             background: var(--bg-secondary);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .date-nav.scrolled {
+            box-shadow: 0 10px 20px var(--shadow);
         }
 
         .date-nav .nav-buttons {
@@ -264,6 +297,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
+            touch-action: manipulation;
         }
 
         .date-nav button:hover {
@@ -296,10 +330,20 @@
             height: calc(100vh - 260px);
         }
 
+        .day-empty {
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px dashed var(--border);
+            background: var(--bg-primary);
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
         .time-scroll {
             flex: 1;
             overflow-y: auto;
             padding-right: 4px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .time-grid {
@@ -578,6 +622,8 @@
             font-size: 12px;
             border-left: 3px solid;
             background: var(--bg-primary);
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
         /* Add Button */
@@ -595,6 +641,7 @@
             cursor: pointer;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
             transition: all 0.2s ease;
+            touch-action: manipulation;
         }
 
         .add-button:hover {
@@ -677,6 +724,7 @@
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
+            touch-action: manipulation;
         }
 
         .keypad .keypad-action {
@@ -695,6 +743,8 @@
             overflow-y: auto;
             transform: scale(0.9);
             transition: transform 0.2s ease;
+            will-change: transform;
+            -webkit-overflow-scrolling: touch;
         }
 
         .modal.active .modal-content {
@@ -730,7 +780,7 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             font-family: 'DM Sans', sans-serif;
-            font-size: 15px;
+            font-size: 16px;
             background: var(--bg-primary);
             transition: all 0.2s ease;
         }
@@ -761,6 +811,7 @@
             border: 2px solid transparent;
             cursor: pointer;
             transition: all 0.2s ease;
+            touch-action: manipulation;
         }
 
         .color-option:hover {
@@ -842,6 +893,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
+            touch-action: manipulation;
         }
 
         .btn-primary {
@@ -890,6 +942,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             background: var(--bg-primary);
+            touch-action: manipulation;
         }
 
         .day-checkbox:checked + .day-label {
@@ -929,7 +982,7 @@
             border-radius: 10px;
             border: 1px solid var(--border);
             background: var(--bg-primary);
-            font-size: 14px;
+            font-size: 16px;
         }
 
         .time-picker .time-clear {
@@ -940,10 +993,38 @@
             cursor: pointer;
         }
 
+        .view-toggle button:focus-visible,
+        .chip-button:focus-visible,
+        .date-nav button:focus-visible,
+        .add-button:focus-visible,
+        .btn:focus-visible,
+        .theme-card:focus-visible,
+        .color-option:focus-visible,
+        .day-label:focus-visible,
+        .keypad button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        @supports (-webkit-touch-callout: none) {
+            body {
+                -webkit-tap-highlight-color: transparent;
+                overscroll-behavior-y: contain;
+            }
+        }
+
         @keyframes completion-pop {
             0% { transform: scale(0.98); }
             50% { transform: scale(1.02); }
             100% { transform: scale(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         @media (max-width: 420px) {
@@ -1195,6 +1276,8 @@
         let nowLineTimer = null;
         let lastAutoScrollHour = null;
         let passcodeEntry = '';
+        let scrollShadowTarget = null;
+        let scrollShadowHandler = null;
 
         // Load saved data and migrate legacy formats.
         function loadData() {
@@ -1292,6 +1375,8 @@
         renderThemeCards();
         updateNotificationButton();
         scheduleReminders();
+        setupModalDismissal();
+        setupGlobalShortcuts();
 
         // Switch between day, week, and all views.
         function switchView(view, button) {
@@ -1315,12 +1400,12 @@
             document.getElementById('passcodeToggle').value = passcodeEnabled ? 'on' : 'off';
             document.getElementById('passcodeInput').value = '';
             document.getElementById('passcodeGroup').style.display = passcodeEnabled ? 'block' : 'none';
-            document.getElementById('settingsModal').classList.add('active');
+            setModalState('settingsModal', true);
         }
 
         // Close the settings modal.
         function closeSettingsModal() {
-            document.getElementById('settingsModal').classList.remove('active');
+            setModalState('settingsModal', false);
         }
 
         // Save user name and theme preferences.
@@ -1434,12 +1519,12 @@
         function openLockModal() {
             passcodeEntry = '';
             updatePasscodeDots();
-            document.getElementById('lockModal').classList.add('active');
+            setModalState('lockModal', true);
         }
 
         // Close the lock modal.
         function closeLockModal() {
-            document.getElementById('lockModal').classList.remove('active');
+            setModalState('lockModal', false);
         }
 
         // Unlock the app if the passcode matches.
@@ -1511,6 +1596,7 @@
             } else {
                 renderAllView();
             }
+            setupScrollShadows();
         }
 
         // Render the daily view with hourly slots and a tasks panel.
@@ -1525,6 +1611,13 @@
 
             const layout = document.createElement('div');
             layout.className = 'day-layout';
+
+            if (dayEvents.length === 0 && dayReminders.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'day-empty';
+                empty.textContent = 'No events or reminders for this day.';
+                layout.appendChild(empty);
+            }
 
             const timeScroll = document.createElement('div');
             timeScroll.className = 'time-scroll';
@@ -1561,7 +1654,9 @@
 
             const tasksPanel = document.createElement('div');
             tasksPanel.className = 'day-tasks-panel';
-            tasksPanel.innerHTML = '<div class="panel-title">Today\'s Tasks</div>';
+            const panelDate = currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const panelTitle = isToday(currentDate) ? "Today's Tasks" : `Tasks · ${panelDate}`;
+            tasksPanel.innerHTML = `<div class="panel-title">${panelTitle}</div>`;
 
             const taskList = document.createElement('div');
             taskList.className = 'task-list';
@@ -1583,7 +1678,12 @@
                         <input class="task-checkbox" type="checkbox" ${completed ? 'checked' : ''}>
                         <div>${task.title}${task.dueTime ? ' · ' + formatTime(task.dueTime) : ''}</div>
                     `;
-                    row.addEventListener('click', () => toggleComplete('task', task.id, dateStr, row));
+                    const checkbox = row.querySelector('.task-checkbox');
+                    checkbox.addEventListener('change', () => toggleComplete('task', task.id, dateStr, row));
+                    row.addEventListener('click', (event) => {
+                        if (event.target && event.target.matches('input')) return;
+                        toggleComplete('task', task.id, dateStr, row);
+                    });
                     taskList.appendChild(row);
                 });
                 tasksPanel.appendChild(taskList);
@@ -1781,7 +1881,11 @@
                     const timeLabel = item.time || item.dueTime || '';
                     pill.className = 'all-pill';
                     pill.style.borderLeftColor = item.color || colors[11];
+                    pill.dataset.type = item.category;
+                    pill.dataset.id = item.id;
+                    pill.dataset.date = dateStr;
                     pill.textContent = `${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}`;
+                    attachSwipeAndTap(pill);
                     itemList.appendChild(pill);
                 });
 
@@ -1832,6 +1936,10 @@
                 if (!startX && !startY) return;
                 const dx = e.clientX - startX;
                 const dy = e.clientY - startY;
+                if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) {
+                    moved = true;
+                    return;
+                }
                 if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) {
                     moved = true;
                     element.style.transform = `translateX(${dx}px)`;
@@ -1846,6 +1954,11 @@
                 element.style.transform = '';
                 element.style.opacity = '';
 
+                if (moved && Math.abs(dy) > Math.abs(dx)) {
+                    startX = 0;
+                    startY = 0;
+                    return;
+                }
                 if (!moved || Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy)) {
                     openEditFromElement(element);
                 } else if (dx > 60) {
@@ -1854,6 +1967,13 @@
                     deleteFromElement(element);
                 }
 
+                startX = 0;
+                startY = 0;
+            });
+
+            element.addEventListener('pointercancel', () => {
+                element.style.transform = '';
+                element.style.opacity = '';
                 startX = 0;
                 startY = 0;
             });
@@ -1936,6 +2056,8 @@
                 element.classList.add('just-completed');
                 if (navigator.vibrate) navigator.vibrate(20);
                 setTimeout(() => element.classList.remove('just-completed'), 350);
+                setTimeout(() => renderView(), 220);
+                return;
             }
             renderView();
         }
@@ -1946,7 +2068,7 @@
             document.getElementById('modalTitle').textContent = 'Add Item';
             document.getElementById('saveButton').textContent = 'Add';
             document.getElementById('deleteButton').style.display = 'none';
-            document.getElementById('addModal').classList.add('active');
+            setModalState('addModal', true);
             document.getElementById('itemDate').value = formatDate(currentDate);
             document.getElementById('itemCategory').value = 'event';
             document.getElementById('itemKind').value = '';
@@ -1954,7 +2076,9 @@
             clearTimePicker('itemTime');
             clearTimePicker('itemDueTime');
             clearTimePicker('itemReminderTime');
+            selectColor(0);
             updateFormFields();
+            setTimeout(() => document.getElementById('itemTitle').focus(), 0);
         }
 
         // Open the edit modal and load item data.
@@ -1994,12 +2118,13 @@
             });
 
             updateFormFields();
-            document.getElementById('addModal').classList.add('active');
+            setModalState('addModal', true);
+            setTimeout(() => document.getElementById('itemTitle').focus(), 0);
         }
 
         // Close the add/edit modal and reset fields.
         function closeAddModal() {
-            document.getElementById('addModal').classList.remove('active');
+            setModalState('addModal', false);
             resetForm();
         }
 
@@ -2015,7 +2140,7 @@
             const category = document.getElementById('itemCategory').value;
             document.getElementById('itemKind').setAttribute('list', category === 'event' ? 'eventTypes' : category === 'task' ? 'taskTypes' : 'reminderTypes');
 
-            document.getElementById('timeGroup').style.display = category === 'event' ? 'block' : 'none';
+            document.getElementById('timeGroup').style.display = (category === 'event' || category === 'reminder') ? 'block' : 'none';
             document.getElementById('dueTimeGroup').style.display = category === 'task' ? 'block' : 'none';
             document.getElementById('repeatToggleGroup').style.display = category === 'event' ? 'block' : 'none';
             document.getElementById('recurringGroup').style.display = 'none';
@@ -2042,6 +2167,78 @@
             document.querySelectorAll('.color-option').forEach((opt, i) => {
                 opt.classList.toggle('selected', i === index);
             });
+        }
+
+        // Keep modal state and body scroll in sync.
+        function setModalState(modalId, isOpen) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            modal.classList.toggle('active', isOpen);
+            const anyOpen = ['addModal', 'settingsModal', 'lockModal'].some(id => {
+                const el = document.getElementById(id);
+                return el && el.classList.contains('active');
+            });
+            document.body.classList.toggle('modal-open', anyOpen);
+        }
+
+        // Close modals when clicking the backdrop.
+        function setupModalDismissal() {
+            const addModal = document.getElementById('addModal');
+            const settingsModal = document.getElementById('settingsModal');
+            if (addModal) {
+                addModal.addEventListener('click', (event) => {
+                    if (event.target === addModal) closeAddModal();
+                });
+            }
+            if (settingsModal) {
+                settingsModal.addEventListener('click', (event) => {
+                    if (event.target === settingsModal) closeSettingsModal();
+                });
+            }
+        }
+
+        // Keyboard shortcuts for closing modals.
+        function setupGlobalShortcuts() {
+            document.addEventListener('keydown', (event) => {
+                if (event.key !== 'Escape') return;
+                const addModal = document.getElementById('addModal');
+                const settingsModal = document.getElementById('settingsModal');
+                if (addModal && addModal.classList.contains('active')) {
+                    closeAddModal();
+                } else if (settingsModal && settingsModal.classList.contains('active')) {
+                    closeSettingsModal();
+                }
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter') return;
+                const lockModal = document.getElementById('lockModal');
+                if (lockModal && lockModal.classList.contains('active')) return;
+                const addModal = document.getElementById('addModal');
+                if (!addModal || !addModal.classList.contains('active')) return;
+                if (event.shiftKey) return;
+                const tag = event.target ? event.target.tagName : '';
+                if (tag === 'TEXTAREA' || tag === 'SELECT') return;
+                event.preventDefault();
+                addOrUpdateItem();
+            });
+        }
+
+        // Add/remove header shadow based on scroll position.
+        function setupScrollShadows() {
+            const header = document.querySelector('.header');
+            const dateNav = document.querySelector('.date-nav');
+            if (scrollShadowTarget && scrollShadowHandler) {
+                scrollShadowTarget.removeEventListener('scroll', scrollShadowHandler);
+            }
+            scrollShadowTarget = document.querySelector('.time-scroll');
+            if (!scrollShadowTarget || !header || !dateNav) return;
+            scrollShadowHandler = () => {
+                const isScrolled = scrollShadowTarget.scrollTop > 4;
+                header.classList.toggle('scrolled', isScrolled);
+                dateNav.classList.toggle('scrolled', isScrolled);
+            };
+            scrollShadowHandler();
+            scrollShadowTarget.addEventListener('scroll', scrollShadowHandler, { passive: true });
         }
 
         // Refresh suggestion lists for item types.
