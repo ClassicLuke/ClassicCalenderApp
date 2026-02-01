@@ -696,6 +696,7 @@
             justify-content: center;
             opacity: 0;
             transition: opacity 0.2s ease;
+            overscroll-behavior: contain;
         }
 
         .modal.active {
@@ -771,11 +772,13 @@
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
+            overflow-x: hidden;
             transform: scale(0.9);
             transition: transform 0.2s ease;
             will-change: transform;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
+            touch-action: pan-y;
         }
 
         .modal-content::-webkit-scrollbar {
