@@ -72,6 +72,18 @@
             --danger: #f87171;
         }
 
+        body[data-theme=\"dark\"] {
+            --bg-primary: #0b0b0c;
+            --bg-secondary: #16181b;
+            --text-primary: #f4f4f5;
+            --text-secondary: #9ca3af;
+            --border: #262626;
+            --accent: #22c55e;
+            --shadow: rgba(34, 197, 94, 0.2);
+            --success: #22c55e;
+            --danger: #f87171;
+        }
+
         body[data-theme=\"library\"] {
             --bg-primary: #f4efe7;
             --bg-secondary: #fffaf3;
@@ -198,6 +210,13 @@
 
         .header.scrolled {
             box-shadow: 0 12px 24px var(--shadow);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
         }
 
         .header h1 {
@@ -658,12 +677,55 @@
             touch-action: manipulation;
         }
 
+        .today-button-fab {
+            left: 24px;
+            right: auto;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            width: auto;
+            padding: 0 16px;
+            border-radius: 999px;
+        }
+
+        .today-button-fab:hover {
+            background: var(--bg-primary);
+        }
+
         .add-button:hover {
             transform: scale(1.05);
         }
 
         .add-button:active {
             transform: scale(0.95);
+        }
+
+        .settings-icon-button {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+        }
+
+        .settings-icon-button:hover {
+            background: var(--bg-primary);
+        }
+
+        .settings-icon {
+            width: 18px;
+            height: 18px;
+            stroke: var(--text-primary);
         }
 
         /* Modal */
@@ -1051,23 +1113,25 @@
 <body>
     <div class="app-container">
         <div class="header">
-            <h1><span id="userNameDisplay">Your</span> Planner</h1>
+            <div class="header-top">
+                <h1><span id="userNameDisplay">Your</span> Planner</h1>
+                <button class="settings-icon-button" onclick="openSettingsModal()" aria-label="Settings">
+                    <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path>
+                    </svg>
+                </button>
+            </div>
             <div class="view-toggle">
                 <button class="active" onclick="switchView('day', this)">Day</button>
                 <button onclick="switchView('week', this)">Week</button>
                 <button onclick="switchView('all', this)">All</button>
-            </div>
-            <div class="header-actions">
-                <button class="chip-button" id="notifyButton" onclick="toggleNotifications()">Reminders Off</button>
-                <button class="chip-button" onclick="goToday()">Today</button>
-                <button class="chip-button" onclick="openSettingsModal()">Settings</button>
             </div>
         </div>
 
         <div class="date-nav">
             <div class="nav-buttons">
                 <button onclick="changeDate(-1)">‹</button>
-                <button class="today-button" onclick="goToday()">Today</button>
             </div>
             <div class="current-date" id="currentDate"></div>
             <div class="nav-buttons" style="justify-self: end;">
@@ -1079,6 +1143,7 @@
         <div class="week-view" id="weekView"></div>
         <div class="all-view" id="allView"></div>
 
+        <button class="add-button today-button-fab" onclick="goToday()">Today</button>
         <button class="add-button" onclick="openAddModal()">+</button>
     </div>
 
@@ -1204,6 +1269,11 @@
                 <div class="theme-grid" id="themeGrid"></div>
             </div>
             <div class="form-group">
+                <label>Reminders</label>
+                <button class="chip-button" id="notifyButton" onclick="toggleNotifications()">Reminders Off</button>
+                <div class="helper-text">Enable browser notifications for reminders.</div>
+            </div>
+            <div class="form-group">
                 <label>Passcode lock</label>
                 <select id="passcodeToggle" onchange="updatePasscodeVisibility()">
                     <option value="off">Off</option>
@@ -1268,6 +1338,7 @@
             { id: 'minimal', label: 'Minimal', palette: { bg: '#f7f7f6', surface: '#ffffff', accent: '#111111', border: '#e5e5e5', text: '#1a1a1a' } },
             { id: 'joyful', label: 'Joyful', palette: { bg: '#fff7ed', surface: '#ffffff', accent: '#f97316', border: '#f5d0b5', text: '#3b1f14' } },
             { id: 'midnight', label: 'Midnight', palette: { bg: '#0f172a', surface: '#111827', accent: '#38bdf8', border: '#1f2937', text: '#f8fafc' } },
+            { id: 'dark', label: 'Dark', palette: { bg: '#0b0b0c', surface: '#16181b', accent: '#22c55e', border: '#262626', text: '#f4f4f5' } },
             { id: 'library', label: 'Library', palette: { bg: '#f4efe7', surface: '#fffaf3', accent: '#1f3a5f', border: '#e6d8c7', text: '#2b1d16' } },
             { id: 'mint', label: 'Mint Study', palette: { bg: '#e7f5f2', surface: '#ffffff', accent: '#10b981', border: '#cfe7df', text: '#113b2f' } },
             { id: 'sunset', label: 'Sunset', palette: { bg: '#fff1e6', surface: '#ffffff', accent: '#fb7185', border: '#f7d3c0', text: '#3b1d12' } },
@@ -1294,6 +1365,7 @@
         let scrollShadowHandler = null;
         let daySwipeTarget = null;
         let daySwipeHandlers = null;
+        let settingsThemeSnapshot = null;
 
         // Load saved data and migrate legacy formats.
         function loadData() {
@@ -1411,6 +1483,7 @@
         // Open the settings modal and preload values.
         function openSettingsModal() {
             document.getElementById('userNameInput').value = userName === 'Your' ? '' : userName;
+            settingsThemeSnapshot = theme;
             pendingTheme = theme;
             updateThemeCardSelection();
             document.getElementById('passcodeToggle').value = passcodeEnabled ? 'on' : 'off';
@@ -1421,6 +1494,11 @@
 
         // Close the settings modal.
         function closeSettingsModal() {
+            if (settingsThemeSnapshot) {
+                pendingTheme = settingsThemeSnapshot;
+                document.body.setAttribute('data-theme', settingsThemeSnapshot);
+                updateThemeCardSelection();
+            }
             setModalState('settingsModal', false);
         }
 
@@ -1440,6 +1518,7 @@
             localStorage.setItem('plannerUserName', userName);
             localStorage.setItem('plannerTheme', theme);
             applyUserSettings();
+            settingsThemeSnapshot = null;
             closeSettingsModal();
             handleInitialLock();
         }
@@ -1498,6 +1577,7 @@
 
                 card.addEventListener('click', () => {
                     pendingTheme = option.id;
+                    document.body.setAttribute('data-theme', pendingTheme);
                     updateThemeCardSelection();
                 });
 
@@ -2274,6 +2354,8 @@
             if (!target) return;
 
             const state = { active: false, startX: 0, startY: 0 };
+            const swipeThreshold = 36;
+            const angleBias = 1.15;
 
             const onDown = (event) => {
                 if (event.pointerType === 'mouse' && event.button !== 0) return;
@@ -2287,7 +2369,7 @@
                 if (!state.active) return;
                 const dx = event.clientX - state.startX;
                 const dy = event.clientY - state.startY;
-                if (Math.abs(dy) > Math.abs(dx)) {
+                if (Math.abs(dy) > Math.abs(dx) * angleBias) {
                     state.active = false;
                 }
             };
@@ -2297,7 +2379,7 @@
                 const dx = event.clientX - state.startX;
                 const dy = event.clientY - state.startY;
                 state.active = false;
-                if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+                if (Math.abs(dx) > swipeThreshold && Math.abs(dx) > Math.abs(dy) * angleBias) {
                     changeDate(dx < 0 ? 1 : -1);
                 }
             };
