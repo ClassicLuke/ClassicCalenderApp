@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="color-scheme" content="light">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
@@ -25,148 +25,43 @@
         }
 
         :root {
-            --bg-primary: #fafaf9;
+            --bg-primary: #f8f8f7;
             --bg-secondary: #ffffff;
-            --text-primary: #1c1917;
-            --text-secondary: #78716c;
-            --border: #e7e5e4;
-            --accent: #0a0a0a;
-            --shadow: rgba(0, 0, 0, 0.04);
-            --success: #16a34a;
-            --danger: #dc2626;
-        }
-
-        body[data-theme=\"minimal\"] {
-            --bg-primary: #f7f7f6;
-            --bg-secondary: #ffffff;
-            --text-primary: #1a1a1a;
+            --text-primary: #0f0f0f;
             --text-secondary: #6b6b6b;
-            --border: #e5e5e5;
-            --accent: #111111;
-            --shadow: rgba(0, 0, 0, 0.04);
+            --border: #e6e6e6;
+            --accent: #f97316;
+            --shadow: rgba(15, 15, 15, 0.06);
+            --press: rgba(0, 0, 0, 0.04);
             --success: #16a34a;
             --danger: #dc2626;
         }
 
-        body[data-theme=\"joyful\"] {
-            --bg-primary: #fff7ed;
-            --bg-secondary: #ffffff;
-            --text-primary: #3b1f14;
-            --text-secondary: #8a5a44;
-            --border: #f5d0b5;
-            --accent: #f97316;
-            --shadow: rgba(249, 115, 22, 0.15);
-            --success: #22c55e;
-            --danger: #ef4444;
-        }
-
-        body[data-theme=\"midnight\"] {
-            --bg-primary: #0f172a;
-            --bg-secondary: #111827;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --border: #1f2937;
-            --accent: #38bdf8;
-            --shadow: rgba(56, 189, 248, 0.2);
-            --success: #34d399;
-            --danger: #f87171;
-        }
-
-        body[data-theme=\"dark\"] {
-            --bg-primary: #0b0b0c;
-            --bg-secondary: #16181b;
+        body[data-mode="dark"] {
+            --bg-primary: #0f0f10;
+            --bg-secondary: #151517;
             --text-primary: #f4f4f5;
             --text-secondary: #9ca3af;
-            --border: #262626;
-            --accent: #22c55e;
-            --shadow: rgba(34, 197, 94, 0.2);
+            --border: #242426;
+            --accent: #f97316;
+            --shadow: rgba(0, 0, 0, 0.4);
+            --press: rgba(255, 255, 255, 0.06);
             --success: #22c55e;
             --danger: #f87171;
         }
 
-        body[data-theme=\"library\"] {
-            --bg-primary: #f4efe7;
-            --bg-secondary: #fffaf3;
-            --text-primary: #2b1d16;
-            --text-secondary: #6e5b4f;
-            --border: #e6d8c7;
-            --accent: #1f3a5f;
-            --shadow: rgba(31, 58, 95, 0.12);
-            --success: #16a34a;
-            --danger: #dc2626;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: env(safe-area-inset-top);
+            background: var(--bg-secondary);
+            z-index: 3000;
+            pointer-events: none;
         }
 
-        body[data-theme=\"mint\"] {
-            --bg-primary: #e7f5f2;
-            --bg-secondary: #ffffff;
-            --text-primary: #113b2f;
-            --text-secondary: #4b6f63;
-            --border: #cfe7df;
-            --accent: #10b981;
-            --shadow: rgba(16, 185, 129, 0.14);
-            --success: #22c55e;
-            --danger: #ef4444;
-        }
-
-        body[data-theme=\"sunset\"] {
-            --bg-primary: #fff1e6;
-            --bg-secondary: #ffffff;
-            --text-primary: #3b1d12;
-            --text-secondary: #87503a;
-            --border: #f7d3c0;
-            --accent: #fb7185;
-            --shadow: rgba(251, 113, 133, 0.18);
-            --success: #22c55e;
-            --danger: #ef4444;
-        }
-
-        body[data-theme=\"focus\"] {
-            --bg-primary: #f6f6f6;
-            --bg-secondary: #ffffff;
-            --text-primary: #151515;
-            --text-secondary: #707070;
-            --border: #e0e0e0;
-            --accent: #111827;
-            --shadow: rgba(0, 0, 0, 0.08);
-            --success: #22c55e;
-            --danger: #ef4444;
-        }
-
-        body[data-theme=\"campus\"] {
-            --bg-primary: #f3f6f1;
-            --bg-secondary: #ffffff;
-            --text-primary: #1f2a1f;
-            --text-secondary: #5a6a57;
-            --border: #d6e0d0;
-            --accent: #2f6f4e;
-            --shadow: rgba(47, 111, 78, 0.16);
-            --success: #22c55e;
-            --danger: #ef4444;
-        }
-
-        body[data-theme=\"notebook\"] {
-            --bg-primary: #f9f3e8;
-            --bg-secondary: #fffdf8;
-            --text-primary: #2d2a26;
-            --text-secondary: #6b5f52;
-            --border: #e9dccb;
-            --accent: #2563eb;
-            --shadow: rgba(37, 99, 235, 0.16);
-            --success: #16a34a;
-            --danger: #dc2626;
-        }
-
-        body[data-theme=\"rainy\"] {
-            --bg-primary: #e9eef4;
-            --bg-secondary: #ffffff;
-            --text-primary: #1f2a37;
-            --text-secondary: #5b6b7a;
-            --border: #d6dde6;
-            --accent: #0ea5e9;
-            --shadow: rgba(14, 165, 233, 0.18);
-            --success: #22c55e;
-            --danger: #ef4444;
-        }
 
         body {
             font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -227,7 +122,7 @@
         }
 
         .header h1 span {
-            color: var(--accent);
+            color: var(--text-primary);
         }
 
         .view-toggle {
@@ -316,6 +211,7 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 18px;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -372,6 +268,12 @@
             -webkit-overflow-scrolling: touch;
             min-height: 0;
             overscroll-behavior: contain;
+            scrollbar-width: none;
+        }
+
+        .time-scroll::-webkit-scrollbar {
+            width: 0;
+            height: 0;
         }
 
         .time-grid {
@@ -394,7 +296,7 @@
         }
 
         .slot-interactive:active {
-            background: rgba(0, 0, 0, 0.03);
+            background: var(--press);
         }
 
         .time-label {
@@ -452,7 +354,7 @@
 
         .event-card.completed {
             opacity: 0.55;
-            background: #f1f5f9;
+            background: var(--bg-primary);
         }
 
         .event-card.completed .event-title {
@@ -488,7 +390,7 @@
             justify-content: center;
             font-size: 12px;
             color: var(--success);
-            background: #fff;
+            background: var(--bg-secondary);
             opacity: 0;
             transform: scale(0.7);
             transition: all 0.2s ease;
@@ -507,6 +409,12 @@
             overflow-y: auto;
             overscroll-behavior: contain;
             margin-right: 92px;
+            scrollbar-width: none;
+        }
+
+        .day-tasks-panel::-webkit-scrollbar {
+            width: 0;
+            height: 0;
         }
 
         .panel-title {
@@ -554,6 +462,13 @@
             min-height: 0;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .week-view::-webkit-scrollbar,
+        .month-view::-webkit-scrollbar {
+            width: 0;
+            height: 0;
         }
 
         .week-view.active,
@@ -860,6 +775,12 @@
             transition: transform 0.2s ease;
             will-change: transform;
             -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 0;
+            height: 0;
         }
 
         .modal.active .modal-content {
@@ -897,7 +818,13 @@
             font-family: 'DM Sans', sans-serif;
             font-size: 16px;
             background: var(--bg-primary);
+            color: var(--text-primary);
             transition: all 0.2s ease;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--text-secondary);
         }
 
         .form-group input:focus,
@@ -906,6 +833,70 @@
             outline: none;
             border-color: var(--accent);
             background: var(--bg-secondary);
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-primary);
+        }
+
+        .toggle-row-labels {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .toggle-row-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .toggle-row-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .form-group .toggle-input {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            appearance: none;
+            background: var(--border);
+            border-radius: 999px;
+            outline: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            flex-shrink: 0;
+            display: inline-block;
+        }
+
+        .form-group .toggle-input::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #fff;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            transform: translateY(-50%);
+        }
+
+        .form-group .toggle-input:checked {
+            background: var(--accent);
+        }
+
+        .form-group .toggle-input:checked::after {
+            transform: translate(16px, -50%);
         }
 
         .form-group textarea {
@@ -944,59 +935,6 @@
             margin-top: 24px;
         }
 
-        .theme-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-        }
-
-        .theme-card {
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 10px;
-            cursor: pointer;
-            background: var(--bg-primary);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        }
-
-        .theme-card.active {
-            border-color: var(--accent);
-            box-shadow: 0 8px 18px var(--shadow);
-            transform: translateY(-2px);
-        }
-
-        .theme-preview {
-            height: 64px;
-            border-radius: 10px;
-            padding: 8px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 6px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-        }
-
-        .theme-line {
-            height: 10px;
-            border-radius: 6px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-        }
-
-        .theme-pill {
-            height: 14px;
-            border-radius: 999px;
-            background: var(--accent);
-        }
-
-        .theme-label {
-            margin-top: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
 
         .btn {
             flex: 1;
@@ -1133,7 +1071,6 @@
         .date-nav button:focus-visible,
         .add-button:focus-visible,
         .btn:focus-visible,
-        .theme-card:focus-visible,
         .color-option:focus-visible,
         .day-label:focus-visible,
         .keypad button:focus-visible {
@@ -1336,8 +1273,13 @@
                 <input type="text" id="userNameInput" placeholder="e.g., Alex">
             </div>
             <div class="form-group">
-                <label>Theme</label>
-                <div class="theme-grid" id="themeGrid"></div>
+                <div class="toggle-row">
+                    <div class="toggle-row-labels">
+                        <div class="toggle-row-title">Dark mode</div>
+                        <div class="toggle-row-subtitle">Use a darker appearance.</div>
+                    </div>
+                    <input type="checkbox" class="toggle-input" id="darkModeToggle" role="switch">
+                </div>
             </div>
             <div class="form-group">
                 <label>Reminders</label>
@@ -1405,19 +1347,6 @@
         const defaultEventTypes = ['Class', 'Work', 'Lab', 'Meeting', 'Practice'];
         const defaultTaskTypes = ['Homework', 'Study', 'Pay Bills', 'Take Pills', 'Errand'];
         const defaultReminderTypes = ['Reminder', 'Call', 'Email', 'Check-in'];
-        const themeOptions = [
-            { id: 'minimal', label: 'Minimal', palette: { bg: '#f7f7f6', surface: '#ffffff', accent: '#111111', border: '#e5e5e5', text: '#1a1a1a' } },
-            { id: 'joyful', label: 'Joyful', palette: { bg: '#fff7ed', surface: '#ffffff', accent: '#f97316', border: '#f5d0b5', text: '#3b1f14' } },
-            { id: 'midnight', label: 'Midnight', palette: { bg: '#0f172a', surface: '#111827', accent: '#38bdf8', border: '#1f2937', text: '#f8fafc' } },
-            { id: 'dark', label: 'Dark', palette: { bg: '#0b0b0c', surface: '#16181b', accent: '#22c55e', border: '#262626', text: '#f4f4f5' } },
-            { id: 'library', label: 'Library', palette: { bg: '#f4efe7', surface: '#fffaf3', accent: '#1f3a5f', border: '#e6d8c7', text: '#2b1d16' } },
-            { id: 'mint', label: 'Mint Study', palette: { bg: '#e7f5f2', surface: '#ffffff', accent: '#10b981', border: '#cfe7df', text: '#113b2f' } },
-            { id: 'sunset', label: 'Sunset', palette: { bg: '#fff1e6', surface: '#ffffff', accent: '#fb7185', border: '#f7d3c0', text: '#3b1d12' } },
-            { id: 'focus', label: 'Focus Mode', palette: { bg: '#f6f6f6', surface: '#ffffff', accent: '#111827', border: '#e0e0e0', text: '#151515' } },
-            { id: 'campus', label: 'Campus', palette: { bg: '#f3f6f1', surface: '#ffffff', accent: '#2f6f4e', border: '#d6e0d0', text: '#1f2a1f' } },
-            { id: 'notebook', label: 'Notebook', palette: { bg: '#f9f3e8', surface: '#fffdf8', accent: '#2563eb', border: '#e9dccb', text: '#2d2a26' } },
-            { id: 'rainy', label: 'Rainy Day', palette: { bg: '#e9eef4', surface: '#ffffff', accent: '#0ea5e9', border: '#d6dde6', text: '#1f2a37' } }
-        ];
 
         let events = [];
         let tasks = [];
@@ -1425,10 +1354,9 @@
         let reminderTimers = [];
         let notificationsEnabled = false;
         let userName = 'Your';
-        let theme = 'minimal';
         let passcodeEnabled = false;
         let passcodeValue = '';
-        let pendingTheme = 'minimal';
+        let darkModeEnabled = false;
         let nowLineTimer = null;
         let lastAutoScrollHour = null;
         let passcodeEntry = '';
@@ -1436,7 +1364,6 @@
         let scrollShadowHandler = null;
         let daySwipeTarget = null;
         let daySwipeHandlers = null;
-        let settingsThemeSnapshot = null;
 
         // Load saved data and migrate legacy formats.
         function loadData() {
@@ -1508,10 +1435,10 @@
             }
             notificationsEnabled = localStorage.getItem('plannerNotifications') === 'on';
             userName = localStorage.getItem('plannerUserName') || 'Your';
-            theme = localStorage.getItem('plannerTheme') || 'minimal';
-            pendingTheme = theme;
+            
             passcodeEnabled = localStorage.getItem('plannerPasscodeEnabled') === 'on';
             passcodeValue = localStorage.getItem('plannerPasscode') || '';
+            darkModeEnabled = localStorage.getItem('plannerDarkMode') === 'on';
         }
 
         // Save data to localStorage.
@@ -1531,7 +1458,6 @@
         initializeColorPicker();
         initializeTimePickers();
         refreshTypeSuggestions();
-        renderThemeCards();
         updateNotificationButton();
         scheduleReminders();
         setupModalDismissal();
@@ -1554,9 +1480,7 @@
         // Open the settings modal and preload values.
         function openSettingsModal() {
             document.getElementById('userNameInput').value = userName === 'Your' ? '' : userName;
-            settingsThemeSnapshot = theme;
-            pendingTheme = theme;
-            updateThemeCardSelection();
+            document.getElementById('darkModeToggle').checked = darkModeEnabled;
             document.getElementById('passcodeToggle').value = passcodeEnabled ? 'on' : 'off';
             document.getElementById('passcodeInput').value = '';
             document.getElementById('passcodeGroup').style.display = passcodeEnabled ? 'block' : 'none';
@@ -1565,20 +1489,14 @@
 
         // Close the settings modal.
         function closeSettingsModal() {
-            if (settingsThemeSnapshot) {
-                pendingTheme = settingsThemeSnapshot;
-                document.body.setAttribute('data-theme', settingsThemeSnapshot);
-                updateThemeCardSelection();
-            }
             setModalState('settingsModal', false);
         }
 
-        // Save user name and theme preferences.
+        // Save user name and preferences.
         function saveSettings() {
             const nameInput = document.getElementById('userNameInput').value.trim();
             userName = nameInput || 'Your';
-            const selectedTheme = getSelectedThemeFromGrid();
-            if (selectedTheme) theme = selectedTheme;
+            darkModeEnabled = document.getElementById('darkModeToggle').checked;
             passcodeEnabled = document.getElementById('passcodeToggle').value === 'on';
             const passcodeInput = document.getElementById('passcodeInput').value.trim();
             if (passcodeInput) {
@@ -1587,18 +1505,16 @@
             }
             localStorage.setItem('plannerPasscodeEnabled', passcodeEnabled ? 'on' : 'off');
             localStorage.setItem('plannerUserName', userName);
-            localStorage.setItem('plannerTheme', theme);
+            localStorage.setItem('plannerDarkMode', darkModeEnabled ? 'on' : 'off');
             applyUserSettings();
-            settingsThemeSnapshot = null;
             closeSettingsModal();
             handleInitialLock();
         }
 
-        // Apply user name and theme to the UI.
+        // Apply user name to the UI.
         function applyUserSettings() {
             document.getElementById('userNameDisplay').textContent = formatPlannerName(userName);
-            document.body.setAttribute('data-theme', theme);
-            updateThemeCardSelection();
+            document.body.setAttribute('data-mode', darkModeEnabled ? 'dark' : 'light');
         }
 
         // Format the header name with a possessive.
@@ -1609,65 +1525,6 @@
             const lastChar = trimmed.charAt(trimmed.length - 1).toLowerCase();
             if (lastChar === 's') return `${trimmed}'`;
             return `${trimmed}'s`;
-        }
-
-        // Render theme preview cards in settings.
-        function renderThemeCards() {
-            const grid = document.getElementById('themeGrid');
-            if (!grid) return;
-            grid.innerHTML = '';
-            themeOptions.forEach(option => {
-                const card = document.createElement('div');
-                card.className = 'theme-card';
-                card.dataset.theme = option.id;
-
-                const preview = document.createElement('div');
-                preview.className = 'theme-preview';
-                preview.style.background = option.palette.surface;
-                preview.style.borderColor = option.palette.border;
-
-                const line = document.createElement('div');
-                line.className = 'theme-line';
-                line.style.background = option.palette.bg;
-                line.style.borderColor = option.palette.border;
-
-                const pill = document.createElement('div');
-                pill.className = 'theme-pill';
-                pill.style.background = option.palette.accent;
-
-                preview.appendChild(line);
-                preview.appendChild(pill);
-
-                const label = document.createElement('div');
-                label.className = 'theme-label';
-                label.textContent = option.label;
-                label.style.color = option.palette.text;
-
-                card.appendChild(preview);
-                card.appendChild(label);
-
-                card.addEventListener('click', () => {
-                    pendingTheme = option.id;
-                    document.body.setAttribute('data-theme', pendingTheme);
-                    updateThemeCardSelection();
-                });
-
-                grid.appendChild(card);
-            });
-            updateThemeCardSelection();
-        }
-
-        // Update which theme card is selected.
-        function updateThemeCardSelection() {
-            document.querySelectorAll('.theme-card').forEach(card => {
-                card.classList.toggle('active', card.dataset.theme === pendingTheme);
-            });
-        }
-
-        // Read the selected theme from the preview grid.
-        function getSelectedThemeFromGrid() {
-            const active = document.querySelector('.theme-card.active');
-            return active ? active.dataset.theme : '';
         }
 
         // Show or hide passcode setup field when toggled.
@@ -1765,6 +1622,7 @@
             }
             setupScrollShadows();
             setupDaySwipe();
+            setupRangeSwipe();
         }
 
         // Render the daily view with hourly slots and a tasks panel.
@@ -2474,16 +2332,17 @@
             daySwipeHandlers = null;
 
             if (currentView !== 'day') return;
-            const target = document.querySelector('.time-scroll');
+            const target = document.querySelector('.daily-view');
             if (!target) return;
 
             const state = { active: false, startX: 0, startY: 0 };
             const swipeThreshold = 36;
             const angleBias = 1.15;
+            const ignoreSelector = 'input, select, textarea, button, .swipe-card, .day-tasks-panel';
 
             const onDown = (event) => {
                 if (event.pointerType === 'mouse' && event.button !== 0) return;
-                if (event.target && event.target.closest('.swipe-card')) return;
+                if (event.target && event.target.closest(ignoreSelector)) return;
                 state.active = true;
                 state.startX = event.clientX;
                 state.startY = event.clientY;
@@ -2519,6 +2378,54 @@
 
             daySwipeTarget = target;
             daySwipeHandlers = { onDown, onMove, onUp, onCancel };
+        }
+
+        // Swipe left/right on week/month views to change date range.
+        function setupRangeSwipe() {
+            const targets = [document.querySelector('.week-view'), document.querySelector('.month-view')];
+            targets.forEach(target => {
+                if (!target) return;
+                let startX = 0;
+                let startY = 0;
+                let active = false;
+                const threshold = 42;
+                const angleBias = 1.15;
+
+                const onDown = (event) => {
+                    if (event.pointerType === 'mouse' && event.button !== 0) return;
+                    if (event.target && event.target.closest('input, select, textarea, button, .swipe-card')) return;
+                    active = true;
+                    startX = event.clientX;
+                    startY = event.clientY;
+                };
+
+                const onUp = (event) => {
+                    if (!active) return;
+                    const dx = event.clientX - startX;
+                    const dy = event.clientY - startY;
+                    active = false;
+                    if (Math.abs(dx) > threshold && Math.abs(dx) > Math.abs(dy) * angleBias) {
+                        const delta = dx < 0 ? 1 : -1;
+                        if (target.classList.contains('week-view')) {
+                            changeDate(delta * 7);
+                        } else {
+                            const next = new Date(currentDate);
+                            next.setMonth(currentDate.getMonth() + delta);
+                            currentDate = next;
+                            updateCurrentDate();
+                            renderView();
+                        }
+                    }
+                };
+
+                const onCancel = () => {
+                    active = false;
+                };
+
+                target.addEventListener('pointerdown', onDown);
+                target.addEventListener('pointerup', onUp);
+                target.addEventListener('pointercancel', onCancel);
+            });
         }
 
         // Refresh suggestion lists for item types.
