@@ -823,6 +823,8 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             transition: all 0.2s ease;
+            max-width: 100%;
+            min-width: 0;
         }
 
         .form-group input::placeholder,
@@ -836,6 +838,11 @@
             outline: none;
             border-color: var(--accent);
             background: var(--bg-secondary);
+        }
+
+        .form-group input[type="date"] {
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .toggle-row {
@@ -1183,7 +1190,7 @@
             </div>
 
             <div class="form-group" id="dateGroup">
-                <label>Date</label>
+                <label id="dateLabel">Date</label>
                 <input type="date" id="itemDate">
             </div>
 
@@ -1637,6 +1644,7 @@
             const dayEvents = getItemsForDay(events, dateStr, true, true);
             const dayTasks = getItemsForDay(tasks, dateStr, true, true);
             const dayReminders = getItemsForDay(reminders, dateStr, true, true);
+            const slotHeight = 56;
 
             const layout = document.createElement('div');
             layout.className = 'day-layout';
@@ -1667,8 +1675,18 @@
 
                 const eventsForHour = dayEvents.filter(ev => getHourFromTime(ev.time) === hour);
                 const remindersForHour = dayReminders.filter(rm => getHourFromTime(rm.time) === hour);
+                const itemsForHour = [...eventsForHour, ...remindersForHour].sort((a, b) => {
+                    return getMinuteFromTime(a.time) - getMinuteFromTime(b.time);
+                });
 
-                [...eventsForHour, ...remindersForHour].forEach(item => {
+                if (itemsForHour.length > 0) {
+                    const minuteOffset = getMinuteFromTime(itemsForHour[0].time);
+                    slotEvents.style.paddingTop = `${Math.round((minuteOffset / 60) * slotHeight)}px`;
+                } else {
+                    slotEvents.style.paddingTop = '0px';
+                }
+
+                itemsForHour.forEach(item => {
                     const card = buildCard(item, 'event-card', dateStr);
                     slotEvents.appendChild(card);
                 });
@@ -2213,7 +2231,8 @@
         function updateRepeatVisibility() {
             const repeats = document.getElementById('itemRepeats').value !== 'no';
             document.getElementById('recurringGroup').style.display = repeats ? 'block' : 'none';
-            document.getElementById('dateGroup').style.display = repeats ? 'none' : 'block';
+            document.getElementById('dateGroup').style.display = 'block';
+            document.getElementById('dateLabel').textContent = repeats ? 'Start date' : 'Date';
         }
 
         // Update form field visibility based on category.
@@ -2787,6 +2806,12 @@
             if (!time) return -1;
             const [hours] = time.split(':');
             return parseInt(hours, 10);
+        }
+
+        function getMinuteFromTime(time) {
+            if (!time) return 0;
+            const [, minutes] = time.split(':');
+            return parseInt(minutes, 10) || 0;
         }
 
         // Update the reminder toggle button state.
