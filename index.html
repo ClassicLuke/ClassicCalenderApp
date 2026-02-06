@@ -7,6 +7,9 @@
     <meta name="color-scheme" content="light">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; connect-src 'self'; form-action 'self'">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), interest-cohort=()">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
@@ -1692,6 +1695,11 @@
                 <div class="helper-text">Get a 10-minute heads-up for scheduled items.</div>
             </div>
             <div class="form-group">
+                <label>Local data</label>
+                <button class="btn btn-secondary" type="button" onclick="resetLocalData()">Reset local data</button>
+                <div class="helper-text">Clears items, settings, and review notes on this device.</div>
+            </div>
+            <div class="form-group">
                 <label>Passcode lock</label>
                 <select id="passcodeToggle" onchange="updatePasscodeVisibility()">
                     <option value="off">Off</option>
@@ -1757,6 +1765,7 @@
         let currentDate = new Date();
         let currentView = 'day';
         let editingItem = null;
+        const schemaVersion = 2;
 
         const colors = [
             '#ef4444', '#f97316', '#f59e0b', '#84cc16',
@@ -1818,6 +1827,11 @@
             const saved = localStorage.getItem('plannerData');
             if (saved) {
                 const data = JSON.parse(saved);
+                if (data.schemaVersion && data.schemaVersion > schemaVersion) {
+                    console.warn('Stored data uses a newer schema version.');
+                }
+                if (Array.isArray(data.items)) {
+                    items = data.items;
                 if (data.items) {
                     items = data.items || [];
                 } else if (data.events || data.tasks || data.reminders) {
@@ -1915,8 +1929,35 @@
         // Save data to localStorage.
         function saveData() {
             localStorage.setItem('plannerData', JSON.stringify({
+                schemaVersion,
                 items
             }));
+        }
+
+        function resetLocalData() {
+            if (!confirm('Reset all local planner data on this device?')) return;
+            localStorage.removeItem('plannerData');
+            localStorage.removeItem('plannerNotifications');
+            localStorage.removeItem('plannerUserName');
+            localStorage.removeItem('plannerPasscodeEnabled');
+            localStorage.removeItem('plannerPasscode');
+            localStorage.removeItem('plannerDarkMode');
+            localStorage.removeItem('plannerFilter');
+            localStorage.removeItem('plannerHideCompleted');
+            localStorage.removeItem('plannerPriorityFilter');
+            localStorage.removeItem('plannerReviewNotes');
+            items = [];
+            notificationsEnabled = false;
+            userName = 'Your';
+            passcodeEnabled = false;
+            passcodeValue = '';
+            darkModeEnabled = false;
+            currentFilter = 'all';
+            hideCompleted = false;
+            priorityFilter = 'all';
+            applyUserSettings();
+            updateNotificationButton();
+            renderView();
         }
 
         loadData();
@@ -2106,6 +2147,20 @@
             const startOfWeek = new Date(currentDate);
             startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
             const weeklyStats = getReviewStats(formatDate(startOfWeek), 7);
+            panel.innerHTML = '';
+            const dailyCard = createElement('div', 'review-card');
+            dailyCard.appendChild(createElement('h3', null, 'Daily review'));
+            dailyCard.appendChild(createElement('div', null, `Completed: ${dailyStats.completed}`));
+            dailyCard.appendChild(createElement('div', null, `Missed: ${dailyStats.missed}`));
+            dailyCard.appendChild(createElement('div', null, `Planned vs done: ${dailyStats.plannedMinutes}m / ${dailyStats.completedMinutes}m`));
+            panel.appendChild(dailyCard);
+
+            const weeklyCard = createElement('div', 'review-card');
+            weeklyCard.appendChild(createElement('h3', null, 'Weekly review'));
+            weeklyCard.appendChild(createElement('div', null, `Completed: ${weeklyStats.completed}`));
+            weeklyCard.appendChild(createElement('div', null, `Missed: ${weeklyStats.missed}`));
+            weeklyCard.appendChild(createElement('div', null, `Planned vs done: ${weeklyStats.plannedMinutes}m / ${weeklyStats.completedMinutes}m`));
+            panel.appendChild(weeklyCard);
             panel.innerHTML = `
                 <div class="review-card">
                     <h3>Daily review</h3>
@@ -2345,6 +2400,9 @@
             nextCard.className = 'insight-card';
             const nextItem = getNextItemForDay(filteredScheduled, dateStr);
             const nextLabel = nextItem ? `${nextItem.title}${nextItem.startTime ? ' · ' + formatTime(nextItem.startTime) : ''}` : 'You are clear.';
+            nextCard.appendChild(createElement('div', 'insight-label', 'Next up'));
+            nextCard.appendChild(createElement('div', 'insight-value', nextLabel));
+            nextCard.appendChild(createElement('div', 'insight-subtle', nextItem ? (nextItem.label || nextItem.type) : 'No upcoming items found.'));
             nextCard.innerHTML = `
                 <div class="insight-label">Next up</div>
                 <div class="insight-value">${nextLabel}</div>
@@ -2356,17 +2414,18 @@
             taskCard.className = 'insight-card';
             const dayTasks = dayItems.filter(item => item.type === 'task');
             const completedTasks = dayTasks.filter(task => isCompleted(task, dateStr)).length;
-            taskCard.innerHTML = `
-                <div class="insight-label">Task progress</div>
-                <div class="insight-value">${completedTasks} of ${dayTasks.length || 0}</div>
-                <div class="insight-subtle">${dayTasks.length ? `${dayTasks.length - completedTasks} remaining today` : 'Add a task to get started.'}</div>
-            `;
+            taskCard.appendChild(createElement('div', 'insight-label', 'Task progress'));
+            taskCard.appendChild(createElement('div', 'insight-value', `${completedTasks} of ${dayTasks.length || 0}`));
+            taskCard.appendChild(createElement('div', 'insight-subtle', dayTasks.length ? `${dayTasks.length - completedTasks} remaining today` : 'Add a task to get started.'));
             insightRow.appendChild(taskCard);
 
             const focusCard = document.createElement('div');
             focusCard.className = 'insight-card';
             const focusMinutes = dayTasks.reduce((sum, task) => sum + (parseInt(task.duration, 10) || 0), 0);
             const focusLabel = formatDuration(focusMinutes);
+            focusCard.appendChild(createElement('div', 'insight-label', 'Focus load'));
+            focusCard.appendChild(createElement('div', 'insight-value', focusLabel || '0m'));
+            focusCard.appendChild(createElement('div', 'insight-subtle', focusMinutes ? 'Planned minutes today' : 'Add duration to tasks to track workload.'));
             focusCard.innerHTML = `
                 <div class="insight-label">Focus load</div>
                 <div class="insight-value">${focusLabel || '0m'}</div>
@@ -2438,6 +2497,7 @@
             tasksPanel.className = 'day-tasks-panel';
             const panelDate = currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
             const panelTitle = isToday(currentDate) ? "Today's Scheduled Tasks" : `Tasks · ${panelDate}`;
+            tasksPanel.appendChild(createElement('div', 'panel-title', panelTitle));
             tasksPanel.innerHTML = `<div class="panel-title">${panelTitle}</div>`;
 
             const taskList = document.createElement('div');
@@ -2464,6 +2524,18 @@
                     if (task.startTime) metaParts.push(formatTime(task.startTime));
                     if (task.tag) metaParts.push(`#${task.tag}`);
                     if (durationLabel) metaParts.push(durationLabel);
+                    const checkbox = document.createElement('input');
+                    checkbox.className = 'task-checkbox';
+                    checkbox.type = 'checkbox';
+                    checkbox.checked = completed;
+                    row.appendChild(checkbox);
+                    row.appendChild(createElement('div', `priority-dot ${priority === 'should' ? '' : priority}`));
+                    const content = createElement('div', 'task-content');
+                    content.appendChild(createElement('div', 'task-title', task.title));
+                    if (metaParts.length) {
+                        content.appendChild(createElement('div', 'task-meta', metaParts.join(' · ')));
+                    }
+                    row.appendChild(content);
                     row.innerHTML = `
                         <input class="task-checkbox" type="checkbox" ${completed ? 'checked' : ''}>
                         <div class="priority-dot ${priority === 'should' ? '' : priority}"></div>
@@ -2496,6 +2568,12 @@
 
             const inboxPanel = document.createElement('div');
             inboxPanel.className = 'inbox-panel';
+            const inboxTitle = createElement('div', 'panel-title', 'Inbox Tasks');
+            const autoButton = createElement('button', 'btn btn-secondary', 'Auto-schedule');
+            autoButton.type = 'button';
+            autoButton.addEventListener('click', () => autoScheduleInbox(dateStr));
+            inboxPanel.appendChild(inboxTitle);
+            inboxPanel.appendChild(autoButton);
             inboxPanel.innerHTML = `
                 <div class="panel-title">Inbox Tasks</div>
                 <button class="btn btn-secondary" type="button" onclick="autoScheduleInbox('${dateStr}')">Auto-schedule</button>
@@ -2523,6 +2601,10 @@
                     row.addEventListener('dragstart', (event) => {
                         event.dataTransfer.setData('text/plain', task.id);
                     });
+                    row.appendChild(createElement('span', null, task.title));
+                    if (task.priority) {
+                        row.appendChild(createElement('span', `meta-chip ${getPriorityClass(task.priority)}`, getPriorityLabel(task.priority)));
+                    }
                     row.innerHTML = `
                         <span>${task.title}</span>
                         ${task.priority ? `<span class="meta-chip ${getPriorityClass(task.priority)}">${getPriorityLabel(task.priority)}</span>` : ''}
@@ -2626,8 +2708,10 @@
         // Render the week view with scheduled items.
         function renderWeekView() {
             const container = document.getElementById('weekView');
-            container.innerHTML = '<div class="week-grid"></div>';
-            const grid = container.querySelector('.week-grid');
+            container.innerHTML = '';
+            const grid = document.createElement('div');
+            grid.className = 'week-grid';
+            container.appendChild(grid);
 
             const startOfWeek = new Date(currentDate);
             startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
@@ -2647,13 +2731,12 @@
                 const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
                 const dayDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-                dayCol.innerHTML = `
-                    <div class="day-header">
-                        <div class="day-name">${dayName}</div>
-                        <div class="day-date">${dayDate}</div>
-                    </div>
-                    <div class="day-items"></div>
-                `;
+                const header = createElement('div', 'day-header');
+                header.appendChild(createElement('div', 'day-name', dayName));
+                header.appendChild(createElement('div', 'day-date', dayDate));
+                dayCol.appendChild(header);
+                const itemsContainer = createElement('div', 'day-items');
+                dayCol.appendChild(itemsContainer);
 
                 const itemsContainer = dayCol.querySelector('.day-items');
 
@@ -2670,6 +2753,11 @@
                     if (item.priority && item.priority !== 'should') metaParts.push(getPriorityLabel(item.priority));
                     if (item.tag) metaParts.push(`#${item.tag}`);
                     if (item.location) metaParts.push(item.location);
+                    pill.appendChild(createElement('div', 'homework-class', item.label || item.type));
+                    pill.appendChild(createElement('div', null, `${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}`));
+                    if (metaParts.length) {
+                        pill.appendChild(createElement('div', 'event-meta', metaParts.join(' · ')));
+                    }
                     pill.innerHTML = `
                         <div class="homework-class">${item.label || item.type}</div>
                         <div>${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}</div>
@@ -2680,7 +2768,11 @@
                 });
 
                 if (itemsContainer.children.length === 0) {
-                    itemsContainer.innerHTML = '<div style="color: var(--text-secondary); font-size: 13px; padding: 8px 0;">No items</div>';
+                    const empty = createElement('div', null, 'No items');
+                    empty.style.color = 'var(--text-secondary)';
+                    empty.style.fontSize = '13px';
+                    empty.style.padding = '8px 0';
+                    itemsContainer.appendChild(empty);
                 }
 
                 grid.appendChild(dayCol);
@@ -2696,10 +2788,8 @@
             header.className = 'month-header';
             const monthLabel = currentDate.toLocaleDateString('en-US', { month: 'long' });
             const yearLabel = currentDate.getFullYear();
-            header.innerHTML = `
-                <div class="month-title">${monthLabel}</div>
-                <div class="month-subtitle">${yearLabel}</div>
-            `;
+            header.appendChild(createElement('div', 'month-title', monthLabel));
+            header.appendChild(createElement('div', 'month-subtitle', String(yearLabel)));
 
             const grid = document.createElement('div');
             grid.className = 'month-grid';
@@ -2713,7 +2803,7 @@
                 const spacer = document.createElement('div');
                 spacer.className = 'month-cell';
                 spacer.style.opacity = '0.4';
-                spacer.innerHTML = '<div class="month-day">&nbsp;</div>';
+                spacer.appendChild(createElement('div', 'month-day', ' '));
                 grid.appendChild(spacer);
             }
 
@@ -2781,6 +2871,28 @@
             if (item.location) parts.push(item.location);
             if (durationLabel) parts.push(durationLabel);
             if (item.checklist && item.checklist.length) parts.push(`${item.checklist.length} checklist`);
+            const priority = item.priority || 'should';
+            if (!parts.length && priority === 'should') return null;
+            const metaRow = createElement('div', 'event-meta meta-row');
+            if (priority !== 'should') {
+                metaRow.appendChild(createElement('span', `meta-chip ${getPriorityClass(priority)}`, getPriorityLabel(priority)));
+            }
+            parts.forEach(part => {
+                metaRow.appendChild(createElement('span', 'meta-chip', part));
+            });
+            if (item.links && item.links.length) {
+                item.links.slice(0, 2).forEach(link => {
+                    const safeUrl = getSafeUrl(link);
+                    if (!safeUrl) return;
+                    const hostname = new URL(safeUrl).hostname;
+                    const anchor = createElement('a', 'meta-chip', hostname);
+                    anchor.href = safeUrl;
+                    anchor.target = '_blank';
+                    anchor.rel = 'noopener noreferrer';
+                    metaRow.appendChild(anchor);
+                });
+            }
+            return metaRow;
             if (item.links && item.links.length) parts.push(`${item.links.length} link${item.links.length > 1 ? 's' : ''}`);
             const priority = item.priority || 'should';
             const priorityChip = priority !== 'should'
@@ -2805,6 +2917,12 @@
             block.dataset.type = item.type;
             block.draggable = true;
             const showResize = item.type !== 'event';
+            block.appendChild(createElement('div', 'block-title', item.title));
+            const metaText = `${formatTime(item.startTime)} · ${formatDuration(duration)}${item.location ? ` · ${item.location}` : ''}`;
+            block.appendChild(createElement('div', 'block-meta', metaText));
+            if (showResize) {
+                block.appendChild(createElement('div', 'resize-handle'));
+            }
             block.innerHTML = `
                 <div class="block-title">${item.title}</div>
                 <div class="block-meta">${formatTime(item.startTime)} · ${formatDuration(duration)}${item.location ? ` · ${item.location}` : ''}</div>
@@ -2954,6 +3072,13 @@
             card.dataset.type = item.type || 'task';
             card.dataset.id = item.id;
             card.dataset.date = dateStr;
+            card.appendChild(createElement('div', 'event-title', item.title));
+            const meta = buildItemMeta(item);
+            if (meta) card.appendChild(meta);
+            if (item.description) {
+                card.appendChild(createElement('div', 'event-meta', item.description));
+            }
+            card.appendChild(createElement('div', 'card-check', '✓'));
             card.innerHTML = `
                 <div class="event-title">${item.title}</div>
                 ${buildItemMeta(item)}
@@ -3709,6 +3834,16 @@
                 return;
             }
 
+
+            let finalStatus = status;
+            if (category === 'task' && status === 'scheduled' && !startTime) {
+                finalStatus = 'inbox';
+            }
+            if (category !== 'task' && !startTime) {
+                alert('Please set a start time for events and focus blocks.');
+                return;
+            }
+
             const computedEndTime = startTime ? minutesToTime(timeToMinutes(startTime) + duration) : '';
             const common = {
                 id,
@@ -3849,6 +3984,28 @@
             if (hours && remaining) return `${hours}h ${remaining}m`;
             if (hours) return `${hours}h`;
             return `${remaining}m`;
+        }
+
+        function createElement(tag, className, text) {
+            const el = document.createElement(tag);
+            if (className) el.className = className;
+            if (text !== undefined) el.textContent = text;
+            return el;
+        }
+
+        function getSafeUrl(value) {
+            if (!value) return null;
+            const trimmed = value.trim();
+            if (!trimmed) return null;
+            try {
+                const url = new URL(trimmed, window.location.origin);
+                if (url.protocol === 'https:' || url.protocol === 'http:') {
+                    return url.href;
+                }
+            } catch (error) {
+                return null;
+            }
+            return null;
         }
 
         function getPriorityLabel(priority) {
