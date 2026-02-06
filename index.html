@@ -163,6 +163,39 @@
             flex-wrap: wrap;
         }
 
+        .header-actions .search-field {
+            position: relative;
+            flex: 1 1 160px;
+            min-width: 160px;
+        }
+
+        .header-actions .search-field input {
+            width: 100%;
+            padding: 8px 12px 8px 34px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .header-actions .search-field svg {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-secondary);
+        }
+
+        .chip-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
         .chip-button {
             border: 1px solid var(--border);
             background: var(--bg-primary);
@@ -248,8 +281,42 @@
         .day-layout {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
             height: 100%;
+        }
+
+        .day-insights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .insight-card {
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .insight-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .insight-value {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .insight-subtle {
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
         .day-empty {
@@ -489,6 +556,11 @@
             padding: 16px;
         }
 
+        .day-column.today {
+            border-color: var(--accent);
+            box-shadow: 0 12px 24px rgba(249, 115, 22, 0.15);
+        }
+
         .day-header {
             display: flex;
             justify-content: space-between;
@@ -578,6 +650,16 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+        }
+
+        .month-cell.today {
+            border-color: var(--accent);
+            box-shadow: 0 10px 20px rgba(249, 115, 22, 0.12);
+        }
+
+        .month-cell.selected {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
         }
 
         .month-day {
@@ -1133,6 +1215,22 @@
                 <button onclick="switchView('week', this)">Week</button>
                 <button onclick="switchView('month', this)">Month</button>
             </div>
+            <div class="header-actions">
+                <div class="search-field">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <path d="M20 20l-3.5-3.5"></path>
+                    </svg>
+                    <input type="search" id="searchInput" placeholder="Search items" oninput="updateSearch(this.value)" aria-label="Search items">
+                </div>
+                <div class="chip-group">
+                    <button class="chip-button active" data-filter="all" onclick="setFilter('all', this)">All</button>
+                    <button class="chip-button" data-filter="event" onclick="setFilter('event', this)">Events</button>
+                    <button class="chip-button" data-filter="task" onclick="setFilter('task', this)">Tasks</button>
+                    <button class="chip-button" data-filter="reminder" onclick="setFilter('reminder', this)">Reminders</button>
+                    <button class="chip-button" id="hideCompletedToggle" onclick="toggleHideCompleted(this)">Hide Done</button>
+                </div>
+            </div>
         </div>
 
         <div class="date-nav">
@@ -1374,6 +1472,9 @@
         let scrollShadowHandler = null;
         let daySwipeTarget = null;
         let daySwipeHandlers = null;
+        let currentFilter = 'all';
+        let hideCompleted = false;
+        let searchQuery = '';
 
         // Load saved data and migrate legacy formats.
         function loadData() {
@@ -1449,6 +1550,8 @@
             passcodeEnabled = localStorage.getItem('plannerPasscodeEnabled') === 'on';
             passcodeValue = localStorage.getItem('plannerPasscode') || '';
             darkModeEnabled = localStorage.getItem('plannerDarkMode') === 'on';
+            currentFilter = localStorage.getItem('plannerFilter') || 'all';
+            hideCompleted = localStorage.getItem('plannerHideCompleted') === 'on';
         }
 
         // Save data to localStorage.
@@ -1469,6 +1572,7 @@
         initializeTimePickers();
         refreshTypeSuggestions();
         updateNotificationButton();
+        applyFilterUI();
         scheduleReminders();
         setupModalDismissal();
         setupGlobalShortcuts();
@@ -1484,6 +1588,27 @@
             document.getElementById('dailyView').style.display = view === 'day' ? 'block' : 'none';
             document.getElementById('weekView').classList.toggle('active', view === 'week');
             document.getElementById('monthView').classList.toggle('active', view === 'month');
+            renderView();
+        }
+
+        function setFilter(filter, button) {
+            currentFilter = filter;
+            localStorage.setItem('plannerFilter', filter);
+            document.querySelectorAll('.chip-button[data-filter]').forEach(btn => {
+                btn.classList.toggle('active', btn === button);
+            });
+            renderView();
+        }
+
+        function toggleHideCompleted(button) {
+            hideCompleted = !hideCompleted;
+            localStorage.setItem('plannerHideCompleted', hideCompleted ? 'on' : 'off');
+            if (button) button.classList.toggle('active', hideCompleted);
+            renderView();
+        }
+
+        function updateSearch(value) {
+            searchQuery = value;
             renderView();
         }
 
@@ -1525,6 +1650,16 @@
         function applyUserSettings() {
             document.getElementById('userNameDisplay').textContent = formatPlannerName(userName);
             document.body.setAttribute('data-mode', darkModeEnabled ? 'dark' : 'light');
+        }
+
+        function applyFilterUI() {
+            document.querySelectorAll('.chip-button[data-filter]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === currentFilter);
+            });
+            const hideBtn = document.getElementById('hideCompletedToggle');
+            if (hideBtn) hideBtn.classList.toggle('active', hideCompleted);
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput && searchQuery) searchInput.value = searchQuery;
         }
 
         // Format the header name with a possessive.
@@ -1635,6 +1770,23 @@
             setupRangeSwipe();
         }
 
+        function itemMatchesSearch(item) {
+            if (!searchQuery) return true;
+            const term = searchQuery.trim().toLowerCase();
+            if (!term) return true;
+            const fields = [item.title, item.type, item.description];
+            return fields.some(field => field && field.toLowerCase().includes(term));
+        }
+
+        function applyFilters(items, dateStr) {
+            return items.filter(item => {
+                if (currentFilter !== 'all' && item.category !== currentFilter) return false;
+                if (hideCompleted && isCompleted(item, dateStr)) return false;
+                if (!itemMatchesSearch(item)) return false;
+                return true;
+            });
+        }
+
         // Render the daily view with hourly slots and a tasks panel.
         function renderDailyView() {
             const container = document.getElementById('dailyView');
@@ -1644,17 +1796,48 @@
             const dayEvents = getItemsForDay(events, dateStr, true, true);
             const dayTasks = getItemsForDay(tasks, dateStr, true, true);
             const dayReminders = getItemsForDay(reminders, dateStr, true, true);
+            const filteredEvents = applyFilters(dayEvents, dateStr);
+            const filteredTasks = applyFilters(dayTasks, dateStr);
+            const filteredReminders = applyFilters(dayReminders, dateStr);
             const slotHeight = 56;
 
             const layout = document.createElement('div');
             layout.className = 'day-layout';
 
-            if (dayEvents.length === 0 && dayReminders.length === 0) {
+            const totalScheduled = dayEvents.length + dayReminders.length;
+            const filteredScheduled = filteredEvents.length + filteredReminders.length;
+            if (filteredScheduled === 0) {
                 const empty = document.createElement('div');
                 empty.className = 'day-empty';
-                empty.textContent = 'No events or reminders for this day.';
+                empty.textContent = totalScheduled === 0 ? 'No events or reminders for this day.' : 'No scheduled items match your filters.';
                 layout.appendChild(empty);
             }
+
+            const insightRow = document.createElement('div');
+            insightRow.className = 'day-insights';
+
+            const nextCard = document.createElement('div');
+            nextCard.className = 'insight-card';
+            const nextItem = getNextItemForDay([...filteredEvents, ...filteredReminders, ...filteredTasks], dateStr);
+            const nextLabel = nextItem ? `${nextItem.title}${nextItem.time || nextItem.dueTime ? ' · ' + formatTime(nextItem.time || nextItem.dueTime) : ''}` : 'You are clear.';
+            nextCard.innerHTML = `
+                <div class="insight-label">Next up</div>
+                <div class="insight-value">${nextLabel}</div>
+                <div class="insight-subtle">${nextItem ? (nextItem.type || nextItem.category) : 'No upcoming items found.'}</div>
+            `;
+            insightRow.appendChild(nextCard);
+
+            const taskCard = document.createElement('div');
+            taskCard.className = 'insight-card';
+            const completedTasks = dayTasks.filter(task => isCompleted(task, dateStr)).length;
+            taskCard.innerHTML = `
+                <div class="insight-label">Task progress</div>
+                <div class="insight-value">${completedTasks} of ${dayTasks.length || 0}</div>
+                <div class="insight-subtle">${dayTasks.length ? `${dayTasks.length - completedTasks} remaining today` : 'Add a task to get started.'}</div>
+            `;
+            insightRow.appendChild(taskCard);
+
+            layout.appendChild(insightRow);
 
             const timeScroll = document.createElement('div');
             timeScroll.className = 'time-scroll';
@@ -1673,8 +1856,8 @@
                 const slotEvents = document.createElement('div');
                 slotEvents.className = 'slot-events slot-interactive';
 
-                const eventsForHour = dayEvents.filter(ev => getHourFromTime(ev.time) === hour);
-                const remindersForHour = dayReminders.filter(rm => getHourFromTime(rm.time) === hour);
+                const eventsForHour = filteredEvents.filter(ev => getHourFromTime(ev.time) === hour);
+                const remindersForHour = filteredReminders.filter(rm => getHourFromTime(rm.time) === hour);
                 const itemsForHour = [...eventsForHour, ...remindersForHour].sort((a, b) => {
                     return getMinuteFromTime(a.time) - getMinuteFromTime(b.time);
                 });
@@ -1717,13 +1900,13 @@
             const taskList = document.createElement('div');
             taskList.className = 'task-list';
 
-            if (dayTasks.length === 0) {
+            if (filteredTasks.length === 0) {
                 const empty = document.createElement('div');
                 empty.className = 'helper-text';
-                empty.textContent = 'No tasks for today.';
+                empty.textContent = dayTasks.length === 0 ? 'No tasks for today.' : 'No tasks match your filters.';
                 tasksPanel.appendChild(empty);
             } else {
-                dayTasks.forEach(task => {
+                filteredTasks.forEach(task => {
                     const row = document.createElement('div');
                     const completed = isCompleted(task, dateStr);
                     row.className = `task-row ${completed ? 'completed' : ''}`;
@@ -1745,7 +1928,7 @@
                 tasksPanel.appendChild(taskList);
             }
 
-            const rowCount = Math.max(dayTasks.length, 1);
+            const rowCount = Math.max(filteredTasks.length, 1);
             const baseHeight = 72;
             const rowHeight = 44;
             const desiredHeight = baseHeight + (rowCount * rowHeight);
@@ -1860,12 +2043,12 @@
                 date.setDate(startOfWeek.getDate() + i);
                 const dateStr = formatDate(date);
 
-                const dayEvents = getItemsForDay(events, dateStr, false, false);
-                const dayTasks = getItemsForDay(tasks, dateStr, false, false);
-                const dayReminders = getItemsForDay(reminders, dateStr, false, false);
+                const dayEvents = applyFilters(getItemsForDay(events, dateStr, false, false), dateStr);
+                const dayTasks = applyFilters(getItemsForDay(tasks, dateStr, false, false), dateStr);
+                const dayReminders = applyFilters(getItemsForDay(reminders, dateStr, false, false), dateStr);
 
                 const dayCol = document.createElement('div');
-                dayCol.className = 'day-column';
+                dayCol.className = `day-column ${isToday(date) ? 'today' : ''}`;
 
                 const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
                 const dayDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -1938,14 +2121,16 @@
             for (let day = 1; day <= totalDays; day++) {
                 const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
                 const dateStr = formatDate(date);
-                const items = [
+                const rawItems = [
                     ...getItemsForDay(events, dateStr, true, true),
                     ...getItemsForDay(tasks, dateStr, true, true),
                     ...getItemsForDay(reminders, dateStr, true, true)
                 ];
+                const items = applyFilters(rawItems, dateStr);
 
                 const cell = document.createElement('div');
-                cell.className = 'month-cell';
+                const isSelected = dateStr === formatDate(currentDate);
+                cell.className = `month-cell ${isToday(date) ? 'today' : ''} ${isSelected ? 'selected' : ''}`.trim();
 
                 const dayLabel = document.createElement('div');
                 dayLabel.className = 'month-day';
@@ -1978,7 +2163,7 @@
                 if (items.length === 0) {
                     const empty = document.createElement('div');
                     empty.className = 'month-empty';
-                    empty.textContent = 'No items';
+                    empty.textContent = rawItems.length === 0 ? 'No items' : 'Filtered out';
                     itemList.appendChild(empty);
                 }
 
@@ -2321,6 +2506,15 @@
                 if (tag === 'TEXTAREA' || tag === 'SELECT') return;
                 event.preventDefault();
                 addOrUpdateItem();
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key !== '/') return;
+                const tag = event.target ? event.target.tagName : '';
+                if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+                const searchInput = document.getElementById('searchInput');
+                if (!searchInput) return;
+                event.preventDefault();
+                searchInput.focus();
             });
         }
 
@@ -2812,6 +3006,23 @@
             if (!time) return 0;
             const [, minutes] = time.split(':');
             return parseInt(minutes, 10) || 0;
+        }
+
+        function getItemSortValue(item) {
+            const time = item.time || item.dueTime || item.reminderTime || '';
+            if (!time) return 24 * 60 + 1;
+            const [hours, minutes] = time.split(':').map(Number);
+            return (hours || 0) * 60 + (minutes || 0);
+        }
+
+        function getNextItemForDay(items, dateStr) {
+            if (!items.length) return null;
+            const sorted = [...items].sort((a, b) => getItemSortValue(a) - getItemSortValue(b));
+            const isTodayView = isToday(new Date(dateStr));
+            if (!isTodayView) return sorted[0];
+            const now = new Date();
+            const nowValue = now.getHours() * 60 + now.getMinutes();
+            return sorted.find(item => getItemSortValue(item) >= nowValue) || sorted[0];
         }
 
         // Update the reminder toggle button state.
