@@ -444,6 +444,44 @@
             color: var(--text-secondary);
         }
 
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .meta-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .priority-high {
+            background: rgba(220, 38, 38, 0.15);
+            color: var(--danger);
+            border-color: rgba(220, 38, 38, 0.3);
+        }
+
+        .priority-medium {
+            background: rgba(249, 115, 22, 0.18);
+            color: var(--accent);
+            border-color: rgba(249, 115, 22, 0.3);
+        }
+
+        .priority-low {
+            background: rgba(34, 197, 94, 0.18);
+            color: var(--success);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
         .card-check {
             position: absolute;
             top: 10px;
@@ -508,6 +546,44 @@
             background: var(--bg-primary);
             border: 1px solid transparent;
             cursor: pointer;
+        }
+
+        .task-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .task-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .task-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .priority-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+        }
+
+        .priority-dot.high {
+            background: var(--danger);
+        }
+
+        .priority-dot.medium {
+            background: var(--accent);
+        }
+
+        .priority-dot.low {
+            background: var(--success);
         }
 
         .task-row.completed {
@@ -692,6 +768,109 @@
         .month-empty {
             font-size: 12px;
             color: var(--text-secondary);
+        }
+
+        .focus-panel {
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 16px;
+            background: var(--bg-primary);
+            display: grid;
+            gap: 12px;
+        }
+
+        .focus-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .focus-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+
+        .focus-timer {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .focus-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .focus-controls button {
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .focus-controls button.primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .focus-progress {
+            height: 6px;
+            border-radius: 999px;
+            background: var(--bg-secondary);
+            overflow: hidden;
+        }
+
+        .focus-progress span {
+            display: block;
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            transition: width 0.2s ease;
+        }
+
+        .focus-select {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .focus-select select {
+            padding: 8px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .focus-priorities {
+            display: grid;
+            gap: 6px;
+            font-size: 13px;
+        }
+
+        .focus-priority-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .focus-priority-item span {
+            font-weight: 600;
         }
 
         /* Add Button */
@@ -1229,6 +1408,7 @@
                     <button class="chip-button" data-filter="task" onclick="setFilter('task', this)">Tasks</button>
                     <button class="chip-button" data-filter="reminder" onclick="setFilter('reminder', this)">Reminders</button>
                     <button class="chip-button" id="hideCompletedToggle" onclick="toggleHideCompleted(this)">Hide Done</button>
+                    <button class="chip-button" id="priorityToggle" onclick="togglePriorityFilter(this)">High Priority</button>
                 </div>
             </div>
         </div>
@@ -1276,6 +1456,32 @@
             <div class="form-group" id="titleGroup">
                 <label>Title</label>
                 <input type="text" id="itemTitle" placeholder="e.g., Read Chapter 3">
+            </div>
+
+            <div class="form-group" id="priorityGroup">
+                <label>Priority</label>
+                <select id="itemPriority">
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="tagGroup">
+                <label>Project / Tag</label>
+                <input type="text" id="itemTag" placeholder="e.g., School, Work, Personal">
+                <div class="helper-text">Use a single tag to group items across views.</div>
+            </div>
+
+            <div class="form-group" id="durationGroup">
+                <label>Duration (minutes)</label>
+                <input type="number" id="itemDuration" min="0" placeholder="e.g., 45">
+            </div>
+
+            <div class="form-group" id="locationGroup">
+                <label>Location</label>
+                <input type="text" id="itemLocation" placeholder="e.g., Campus library">
             </div>
 
             <div class="form-group" id="repeatToggleGroup">
@@ -1475,6 +1681,24 @@
         let currentFilter = 'all';
         let hideCompleted = false;
         let searchQuery = '';
+        let priorityFilter = 'all';
+        let focusTimer = null;
+        let focusDuration = 1500;
+        let focusRemaining = 1500;
+        let focusRunning = false;
+        let focusTaskId = '';
+
+        function normalizeItem(item, category) {
+            const durationValue = parseInt(item.duration, 10);
+            return {
+                ...item,
+                category: item.category || category,
+                priority: item.priority || 'normal',
+                tag: item.tag || '',
+                duration: Number.isFinite(durationValue) && durationValue > 0 ? durationValue : '',
+                location: item.location || ''
+            };
+        }
 
         // Load saved data and migrate legacy formats.
         function loadData() {
@@ -1544,6 +1768,9 @@
                     }));
                 }
             }
+            events = events.map(ev => normalizeItem(ev, 'event'));
+            tasks = tasks.map(tsk => normalizeItem(tsk, 'task'));
+            reminders = reminders.map(rm => normalizeItem(rm, 'reminder'));
             notificationsEnabled = localStorage.getItem('plannerNotifications') === 'on';
             userName = localStorage.getItem('plannerUserName') || 'Your';
             
@@ -1552,6 +1779,8 @@
             darkModeEnabled = localStorage.getItem('plannerDarkMode') === 'on';
             currentFilter = localStorage.getItem('plannerFilter') || 'all';
             hideCompleted = localStorage.getItem('plannerHideCompleted') === 'on';
+            priorityFilter = localStorage.getItem('plannerPriorityFilter') || 'all';
+            loadFocusState();
         }
 
         // Save data to localStorage.
@@ -1560,6 +1789,29 @@
                 events,
                 tasks,
                 reminders
+            }));
+        }
+
+        function loadFocusState() {
+            const saved = localStorage.getItem('plannerFocusState');
+            if (!saved) return;
+            try {
+                const state = JSON.parse(saved);
+                focusDuration = state.duration || focusDuration;
+                focusRemaining = state.remaining || focusDuration;
+                focusRunning = state.running || false;
+                focusTaskId = state.taskId || '';
+            } catch (error) {
+                console.error('Failed to parse focus state', error);
+            }
+        }
+
+        function saveFocusState() {
+            localStorage.setItem('plannerFocusState', JSON.stringify({
+                duration: focusDuration,
+                remaining: focusRemaining,
+                running: focusRunning,
+                taskId: focusTaskId
             }));
         }
 
@@ -1576,6 +1828,7 @@
         scheduleReminders();
         setupModalDismissal();
         setupGlobalShortcuts();
+        initializeFocusTimer();
 
         // Switch between day, week, and all views.
         function switchView(view, button) {
@@ -1604,6 +1857,13 @@
             hideCompleted = !hideCompleted;
             localStorage.setItem('plannerHideCompleted', hideCompleted ? 'on' : 'off');
             if (button) button.classList.toggle('active', hideCompleted);
+            renderView();
+        }
+
+        function togglePriorityFilter(button) {
+            priorityFilter = priorityFilter === 'high' ? 'all' : 'high';
+            localStorage.setItem('plannerPriorityFilter', priorityFilter);
+            if (button) button.classList.toggle('active', priorityFilter === 'high');
             renderView();
         }
 
@@ -1658,8 +1918,97 @@
             });
             const hideBtn = document.getElementById('hideCompletedToggle');
             if (hideBtn) hideBtn.classList.toggle('active', hideCompleted);
+            const priorityBtn = document.getElementById('priorityToggle');
+            if (priorityBtn) priorityBtn.classList.toggle('active', priorityFilter === 'high');
             const searchInput = document.getElementById('searchInput');
             if (searchInput && searchQuery) searchInput.value = searchQuery;
+        }
+
+        function initializeFocusTimer() {
+            if (focusRunning) {
+                focusRunning = false;
+                startFocusTimer();
+            }
+            updateFocusUI();
+        }
+
+        function formatFocusTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function setFocusDuration(minutes) {
+            focusDuration = minutes * 60;
+            focusRemaining = focusDuration;
+            focusRunning = false;
+            clearInterval(focusTimer);
+            focusTimer = null;
+            saveFocusState();
+            updateFocusUI();
+        }
+
+        function startFocusTimer() {
+            if (focusRunning) return;
+            if (focusRemaining <= 0) focusRemaining = focusDuration;
+            focusRunning = true;
+            saveFocusState();
+            focusTimer = setInterval(() => {
+                if (focusRemaining > 0) {
+                    focusRemaining -= 1;
+                    updateFocusUI();
+                } else {
+                    pauseFocusTimer();
+                    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                }
+            }, 1000);
+            updateFocusUI();
+        }
+
+        function toggleFocusTimer() {
+            if (focusRunning) {
+                pauseFocusTimer();
+            } else {
+                startFocusTimer();
+            }
+        }
+
+        function pauseFocusTimer() {
+            focusRunning = false;
+            if (focusTimer) {
+                clearInterval(focusTimer);
+                focusTimer = null;
+            }
+            saveFocusState();
+            updateFocusUI();
+        }
+
+        function resetFocusTimer() {
+            focusRemaining = focusDuration;
+            focusRunning = false;
+            if (focusTimer) {
+                clearInterval(focusTimer);
+                focusTimer = null;
+            }
+            saveFocusState();
+            updateFocusUI();
+        }
+
+        function updateFocusTask(value) {
+            focusTaskId = value;
+            saveFocusState();
+            updateFocusUI();
+        }
+
+        function updateFocusUI() {
+            const timerDisplay = document.getElementById('focusTimerDisplay');
+            const progressBar = document.getElementById('focusProgressBar');
+            if (!timerDisplay || !progressBar) return;
+            timerDisplay.textContent = formatFocusTime(focusRemaining);
+            const percent = focusDuration ? ((focusDuration - focusRemaining) / focusDuration) * 100 : 0;
+            progressBar.style.width = `${Math.min(Math.max(percent, 0), 100)}%`;
+            const startButton = document.getElementById('focusStartButton');
+            if (startButton) startButton.textContent = focusRunning ? 'Pause' : 'Start';
         }
 
         // Format the header name with a possessive.
@@ -1774,7 +2123,7 @@
             if (!searchQuery) return true;
             const term = searchQuery.trim().toLowerCase();
             if (!term) return true;
-            const fields = [item.title, item.type, item.description];
+            const fields = [item.title, item.type, item.description, item.tag, item.location];
             return fields.some(field => field && field.toLowerCase().includes(term));
         }
 
@@ -1782,9 +2131,93 @@
             return items.filter(item => {
                 if (currentFilter !== 'all' && item.category !== currentFilter) return false;
                 if (hideCompleted && isCompleted(item, dateStr)) return false;
+                if (priorityFilter === 'high' && item.priority !== 'high') return false;
                 if (!itemMatchesSearch(item)) return false;
                 return true;
             });
+        }
+
+        function buildFocusPanel(dayTasks, dateStr) {
+            const panel = document.createElement('div');
+            panel.className = 'focus-panel';
+
+            const header = document.createElement('div');
+            header.className = 'focus-header';
+            header.innerHTML = `
+                <div class="focus-title">Focus sprint</div>
+                <div class="focus-timer" id="focusTimerDisplay">00:00</div>
+            `;
+            panel.appendChild(header);
+
+            const selectWrap = document.createElement('div');
+            selectWrap.className = 'focus-select';
+            selectWrap.innerHTML = `
+                <label class="helper-text" for="focusTaskSelect">What are you focusing on?</label>
+                <select id="focusTaskSelect"></select>
+            `;
+            panel.appendChild(selectWrap);
+
+            const selectEl = selectWrap.querySelector('select');
+            const availableTasks = dayTasks.filter(task => !isCompleted(task, dateStr));
+            selectEl.innerHTML = `<option value="">General focus session</option>`;
+            availableTasks.forEach(task => {
+                const option = document.createElement('option');
+                option.value = task.id;
+                option.textContent = task.title;
+                selectEl.appendChild(option);
+            });
+            if (focusTaskId && availableTasks.some(task => task.id === focusTaskId)) {
+                selectEl.value = focusTaskId;
+            } else {
+                focusTaskId = '';
+                saveFocusState();
+            }
+            selectEl.addEventListener('change', () => updateFocusTask(selectEl.value));
+
+            const controls = document.createElement('div');
+            controls.className = 'focus-controls';
+            controls.innerHTML = `
+                <button type="button" onclick="setFocusDuration(25)">25m</button>
+                <button type="button" onclick="setFocusDuration(50)">50m</button>
+                <button type="button" onclick="setFocusDuration(90)">90m</button>
+                <button type="button" class="primary" id="focusStartButton" onclick="toggleFocusTimer()">Start</button>
+                <button type="button" onclick="resetFocusTimer()">Reset</button>
+            `;
+            panel.appendChild(controls);
+
+            const progress = document.createElement('div');
+            progress.className = 'focus-progress';
+            progress.innerHTML = `<span id="focusProgressBar"></span>`;
+            panel.appendChild(progress);
+
+            const priorities = document.createElement('div');
+            priorities.className = 'focus-priorities';
+            const topTasks = [...availableTasks]
+                .sort((a, b) => {
+                    const priorityOrder = { high: 3, medium: 2, normal: 1, low: 0 };
+                    return (priorityOrder[b.priority || 'normal'] || 1) - (priorityOrder[a.priority || 'normal'] || 1);
+                })
+                .slice(0, 3);
+            if (topTasks.length) {
+                priorities.innerHTML = topTasks.map(task => {
+                    const priorityLabel = getPriorityLabel(task.priority || 'normal');
+                    const durationLabel = formatDuration(task.duration);
+                    return `
+                        <div class="focus-priority-item">
+                            <span>${task.title}</span>
+                            <div class="meta-row">
+                                ${task.priority && task.priority !== 'normal' ? `<span class="meta-chip ${getPriorityClass(task.priority)}">${priorityLabel}</span>` : ''}
+                                ${durationLabel ? `<span class="meta-chip">${durationLabel}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                priorities.innerHTML = '<div class="helper-text">No priority tasks for today yet.</div>';
+            }
+            panel.appendChild(priorities);
+
+            return panel;
         }
 
         // Render the daily view with hourly slots and a tasks panel.
@@ -1837,7 +2270,21 @@
             `;
             insightRow.appendChild(taskCard);
 
+            const focusCard = document.createElement('div');
+            focusCard.className = 'insight-card';
+            const focusMinutes = dayTasks.reduce((sum, task) => sum + (parseInt(task.duration, 10) || 0), 0);
+            const focusLabel = formatDuration(focusMinutes);
+            focusCard.innerHTML = `
+                <div class="insight-label">Focus load</div>
+                <div class="insight-value">${focusLabel || '0m'}</div>
+                <div class="insight-subtle">${focusMinutes ? 'Planned minutes today' : 'Add duration to tasks to track workload.'}</div>
+            `;
+            insightRow.appendChild(focusCard);
+
             layout.appendChild(insightRow);
+
+            const focusPanel = buildFocusPanel(dayTasks, dateStr);
+            layout.appendChild(focusPanel);
 
             const timeScroll = document.createElement('div');
             timeScroll.className = 'time-scroll';
@@ -1913,9 +2360,19 @@
                     row.dataset.type = 'task';
                     row.dataset.id = task.id;
                     row.dataset.date = dateStr;
+                    const priority = task.priority || 'normal';
+                    const durationLabel = formatDuration(task.duration);
+                    const metaParts = [];
+                    if (task.dueTime) metaParts.push(formatTime(task.dueTime));
+                    if (task.tag) metaParts.push(`#${task.tag}`);
+                    if (durationLabel) metaParts.push(durationLabel);
                     row.innerHTML = `
                         <input class="task-checkbox" type="checkbox" ${completed ? 'checked' : ''}>
-                        <div>${task.title}${task.dueTime ? ' · ' + formatTime(task.dueTime) : ''}</div>
+                        <div class="priority-dot ${priority === 'normal' ? '' : priority}"></div>
+                        <div class="task-content">
+                            <div class="task-title">${task.title}</div>
+                            ${metaParts.length ? `<div class="task-meta">${metaParts.join(' · ')}</div>` : ''}
+                        </div>
                     `;
                     const checkbox = row.querySelector('.task-checkbox');
                     checkbox.addEventListener('change', () => toggleComplete('task', task.id, dateStr, row));
@@ -1940,6 +2397,7 @@
             layout.appendChild(tasksPanel);
             container.appendChild(layout);
 
+            updateFocusUI();
             startNowLineTimer();
             updateNowLine();
             requestAnimationFrame(() => {
@@ -2072,9 +2530,14 @@
                     pill.dataset.id = item.id;
                     pill.dataset.date = dateStr;
                     const timeLabel = item.time || item.dueTime || '';
+                    const metaParts = [];
+                    if (item.priority && item.priority !== 'normal') metaParts.push(getPriorityLabel(item.priority));
+                    if (item.tag) metaParts.push(`#${item.tag}`);
+                    if (item.location) metaParts.push(item.location);
                     pill.innerHTML = `
                         <div class="homework-class">${item.type || item.category}</div>
                         <div>${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}</div>
+                        ${metaParts.length ? `<div class="event-meta">${metaParts.join(' · ')}</div>` : ''}
                     `;
                     attachSwipeAndTap(pill);
                     itemsContainer.appendChild(pill);
@@ -2148,7 +2611,8 @@
                     pill.dataset.type = item.category;
                     pill.dataset.id = item.id;
                     pill.dataset.date = dateStr;
-                    pill.textContent = `${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}`;
+                    const priorityMark = item.priority === 'high' ? '★ ' : item.priority === 'medium' ? '• ' : '';
+                    pill.textContent = `${priorityMark}${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}`;
                     attachSwipeAndTap(pill);
                     itemList.appendChild(pill);
                 });
@@ -2175,6 +2639,24 @@
             container.appendChild(grid);
         }
 
+        function buildItemMeta(item) {
+            const timeLabel = item.time || item.dueTime || item.reminderTime || '';
+            const durationLabel = formatDuration(item.duration);
+            const parts = [];
+            if (timeLabel) parts.push(formatTime(timeLabel));
+            if (item.type) parts.push(item.type);
+            if (item.tag) parts.push(`#${item.tag}`);
+            if (item.location) parts.push(item.location);
+            if (durationLabel) parts.push(durationLabel);
+            const priority = item.priority || 'normal';
+            const priorityChip = priority !== 'normal'
+                ? `<span class="meta-chip ${getPriorityClass(priority)}">${getPriorityLabel(priority)}</span>`
+                : '';
+            const partChips = parts.map(part => `<span class="meta-chip">${part}</span>`).join('');
+            if (!priorityChip && !partChips) return '';
+            return `<div class="event-meta meta-row">${priorityChip}${partChips}</div>`;
+        }
+
         // Build a swipeable card element for events/reminders.
         function buildCard(item, className, dateStr) {
             const card = document.createElement('div');
@@ -2186,6 +2668,7 @@
             card.dataset.date = dateStr;
             card.innerHTML = `
                 <div class="event-title">${item.title}</div>
+                ${buildItemMeta(item)}
                 ${item.description ? `<div class="event-meta">${item.description}</div>` : ''}
                 <div class="card-check">✓</div>
             `;
@@ -2347,6 +2830,10 @@
             document.getElementById('itemCategory').value = 'event';
             document.getElementById('itemKind').value = '';
             document.getElementById('itemRepeats').value = 'no';
+            document.getElementById('itemPriority').value = 'normal';
+            document.getElementById('itemTag').value = '';
+            document.getElementById('itemDuration').value = '';
+            document.getElementById('itemLocation').value = '';
             clearTimePicker('itemTime');
             clearTimePicker('itemDueTime');
             clearTimePicker('itemReminderTime');
@@ -2382,6 +2869,10 @@
             document.getElementById('itemTitle').value = item.title || '';
             document.getElementById('itemDate').value = item.date || (dateStr || formatDate(currentDate));
             document.getElementById('itemDescription').value = item.description || '';
+            document.getElementById('itemPriority').value = item.priority || 'normal';
+            document.getElementById('itemTag').value = item.tag || '';
+            document.getElementById('itemDuration').value = item.duration || '';
+            document.getElementById('itemLocation').value = item.location || '';
             setTimePickerValue('itemTime', item.time || '');
             setTimePickerValue('itemDueTime', item.dueTime || '');
             setReminderPreset(item.reminderPreset || '');
@@ -2428,6 +2919,8 @@
             document.getElementById('timeGroup').style.display = (category === 'event' || category === 'reminder') ? 'block' : 'none';
             document.getElementById('dueTimeGroup').style.display = category === 'task' ? 'block' : 'none';
             document.getElementById('repeatToggleGroup').style.display = category === 'event' ? 'block' : 'none';
+            document.getElementById('durationGroup').style.display = (category === 'event' || category === 'task') ? 'block' : 'none';
+            document.getElementById('locationGroup').style.display = (category === 'event' || category === 'task') ? 'block' : 'none';
             document.getElementById('recurringGroup').style.display = 'none';
             document.getElementById('dateGroup').style.display = 'block';
 
@@ -2860,6 +3353,15 @@
             const selectedColor = document.querySelector('.color-option.selected');
             const colorIndex = Array.from(document.querySelectorAll('.color-option')).indexOf(selectedColor);
             const color = colors[colorIndex >= 0 ? colorIndex : 0];
+            const priority = document.getElementById('itemPriority').value || 'normal';
+            const tag = document.getElementById('itemTag').value.trim();
+            const durationValue = parseInt(document.getElementById('itemDuration').value, 10);
+            let duration = Number.isFinite(durationValue) && durationValue > 0 ? durationValue : '';
+            let location = document.getElementById('itemLocation').value.trim();
+            if (category === 'reminder') {
+                duration = '';
+                location = '';
+            }
 
             const common = {
                 id,
@@ -2868,6 +3370,10 @@
                 title,
                 color,
                 description: document.getElementById('itemDescription').value.trim(),
+                priority,
+                tag,
+                duration,
+                location,
                 reminderTime: getTimePickerValue('itemReminderTime'),
                 reminderPreset: getSelectedReminderPreset()
             };
@@ -2965,6 +3471,10 @@
             document.getElementById('itemKind').value = '';
             document.getElementById('itemDescription').value = '';
             document.getElementById('itemRepeats').value = 'no';
+            document.getElementById('itemPriority').value = 'normal';
+            document.getElementById('itemTag').value = '';
+            document.getElementById('itemDuration').value = '';
+            document.getElementById('itemLocation').value = '';
             document.querySelectorAll('.day-checkbox').forEach(cb => cb.checked = false);
             document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
             clearTimePicker('itemTime');
@@ -2986,6 +3496,31 @@
             const ampm = h >= 12 ? 'PM' : 'AM';
             const h12 = h % 12 || 12;
             return `${h12}:${minutes} ${ampm}`;
+        }
+
+        function formatDuration(minutes) {
+            if (!minutes) return '';
+            const mins = parseInt(minutes, 10);
+            if (!Number.isFinite(mins) || mins <= 0) return '';
+            const hours = Math.floor(mins / 60);
+            const remaining = mins % 60;
+            if (hours && remaining) return `${hours}h ${remaining}m`;
+            if (hours) return `${hours}h`;
+            return `${remaining}m`;
+        }
+
+        function getPriorityLabel(priority) {
+            if (priority === 'high') return 'High';
+            if (priority === 'medium') return 'Medium';
+            if (priority === 'low') return 'Low';
+            return 'Normal';
+        }
+
+        function getPriorityClass(priority) {
+            if (priority === 'high') return 'priority-high';
+            if (priority === 'medium') return 'priority-medium';
+            if (priority === 'low') return 'priority-low';
+            return '';
         }
 
         // Format a slot label like 1 PM.
