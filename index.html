@@ -1832,6 +1832,8 @@
                 }
                 if (Array.isArray(data.items)) {
                     items = data.items;
+                if (data.items) {
+                    items = data.items || [];
                 } else if (data.events || data.tasks || data.reminders) {
                     const migratedEvents = (data.events || []).map(ev => ({
                         id: ev.id,
@@ -2159,6 +2161,20 @@
             weeklyCard.appendChild(createElement('div', null, `Missed: ${weeklyStats.missed}`));
             weeklyCard.appendChild(createElement('div', null, `Planned vs done: ${weeklyStats.plannedMinutes}m / ${weeklyStats.completedMinutes}m`));
             panel.appendChild(weeklyCard);
+            panel.innerHTML = `
+                <div class="review-card">
+                    <h3>Daily review</h3>
+                    <div>Completed: ${dailyStats.completed}</div>
+                    <div>Missed: ${dailyStats.missed}</div>
+                    <div>Planned vs done: ${dailyStats.plannedMinutes}m / ${dailyStats.completedMinutes}m</div>
+                </div>
+                <div class="review-card">
+                    <h3>Weekly review</h3>
+                    <div>Completed: ${weeklyStats.completed}</div>
+                    <div>Missed: ${weeklyStats.missed}</div>
+                    <div>Planned vs done: ${weeklyStats.plannedMinutes}m / ${weeklyStats.completedMinutes}m</div>
+                </div>
+            `;
         }
 
         function getReviewStats(startDateStr, days) {
@@ -2387,6 +2403,11 @@
             nextCard.appendChild(createElement('div', 'insight-label', 'Next up'));
             nextCard.appendChild(createElement('div', 'insight-value', nextLabel));
             nextCard.appendChild(createElement('div', 'insight-subtle', nextItem ? (nextItem.label || nextItem.type) : 'No upcoming items found.'));
+            nextCard.innerHTML = `
+                <div class="insight-label">Next up</div>
+                <div class="insight-value">${nextLabel}</div>
+                <div class="insight-subtle">${nextItem ? (nextItem.label || nextItem.type) : 'No upcoming items found.'}</div>
+            `;
             insightRow.appendChild(nextCard);
 
             const taskCard = document.createElement('div');
@@ -2405,6 +2426,11 @@
             focusCard.appendChild(createElement('div', 'insight-label', 'Focus load'));
             focusCard.appendChild(createElement('div', 'insight-value', focusLabel || '0m'));
             focusCard.appendChild(createElement('div', 'insight-subtle', focusMinutes ? 'Planned minutes today' : 'Add duration to tasks to track workload.'));
+            focusCard.innerHTML = `
+                <div class="insight-label">Focus load</div>
+                <div class="insight-value">${focusLabel || '0m'}</div>
+                <div class="insight-subtle">${focusMinutes ? 'Planned minutes today' : 'Add duration to tasks to track workload.'}</div>
+            `;
             insightRow.appendChild(focusCard);
 
             layout.appendChild(insightRow);
@@ -2472,6 +2498,7 @@
             const panelDate = currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
             const panelTitle = isToday(currentDate) ? "Today's Scheduled Tasks" : `Tasks · ${panelDate}`;
             tasksPanel.appendChild(createElement('div', 'panel-title', panelTitle));
+            tasksPanel.innerHTML = `<div class="panel-title">${panelTitle}</div>`;
 
             const taskList = document.createElement('div');
             taskList.className = 'task-list';
@@ -2509,6 +2536,15 @@
                         content.appendChild(createElement('div', 'task-meta', metaParts.join(' · ')));
                     }
                     row.appendChild(content);
+                    row.innerHTML = `
+                        <input class="task-checkbox" type="checkbox" ${completed ? 'checked' : ''}>
+                        <div class="priority-dot ${priority === 'should' ? '' : priority}"></div>
+                        <div class="task-content">
+                            <div class="task-title">${task.title}</div>
+                            ${metaParts.length ? `<div class="task-meta">${metaParts.join(' · ')}</div>` : ''}
+                        </div>
+                    `;
+                    const checkbox = row.querySelector('.task-checkbox');
                     checkbox.addEventListener('change', () => toggleComplete('task', task.id, dateStr, row));
                     row.addEventListener('click', (event) => {
                         if (event.target && event.target.matches('input')) return;
@@ -2538,6 +2574,10 @@
             autoButton.addEventListener('click', () => autoScheduleInbox(dateStr));
             inboxPanel.appendChild(inboxTitle);
             inboxPanel.appendChild(autoButton);
+            inboxPanel.innerHTML = `
+                <div class="panel-title">Inbox Tasks</div>
+                <button class="btn btn-secondary" type="button" onclick="autoScheduleInbox('${dateStr}')">Auto-schedule</button>
+            `;
             inboxPanel.addEventListener('dragover', (event) => event.preventDefault());
             inboxPanel.addEventListener('drop', (event) => {
                 event.preventDefault();
@@ -2565,6 +2605,10 @@
                     if (task.priority) {
                         row.appendChild(createElement('span', `meta-chip ${getPriorityClass(task.priority)}`, getPriorityLabel(task.priority)));
                     }
+                    row.innerHTML = `
+                        <span>${task.title}</span>
+                        ${task.priority ? `<span class="meta-chip ${getPriorityClass(task.priority)}">${getPriorityLabel(task.priority)}</span>` : ''}
+                    `;
                     row.addEventListener('click', () => openEditModal(task.type, task.id, dateStr));
                     inboxPanel.appendChild(row);
                 });
@@ -2694,6 +2738,8 @@
                 const itemsContainer = createElement('div', 'day-items');
                 dayCol.appendChild(itemsContainer);
 
+                const itemsContainer = dayCol.querySelector('.day-items');
+
                 filteredItems.forEach(item => {
                     const pill = document.createElement('div');
                     const completed = isCompleted(item, dateStr);
@@ -2712,6 +2758,11 @@
                     if (metaParts.length) {
                         pill.appendChild(createElement('div', 'event-meta', metaParts.join(' · ')));
                     }
+                    pill.innerHTML = `
+                        <div class="homework-class">${item.label || item.type}</div>
+                        <div>${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}</div>
+                        ${metaParts.length ? `<div class="event-meta">${metaParts.join(' · ')}</div>` : ''}
+                    `;
                     attachSwipeAndTap(pill);
                     itemsContainer.appendChild(pill);
                 });
@@ -2842,6 +2893,14 @@
                 });
             }
             return metaRow;
+            if (item.links && item.links.length) parts.push(`${item.links.length} link${item.links.length > 1 ? 's' : ''}`);
+            const priority = item.priority || 'should';
+            const priorityChip = priority !== 'should'
+                ? `<span class="meta-chip ${getPriorityClass(priority)}">${getPriorityLabel(priority)}</span>`
+                : '';
+            const partChips = parts.map(part => `<span class="meta-chip">${part}</span>`).join('');
+            if (!priorityChip && !partChips) return '';
+            return `<div class="event-meta meta-row">${priorityChip}${partChips}</div>`;
         }
 
         function buildTimeBlock(item, dateStr, slotHeight) {
@@ -2864,6 +2923,11 @@
             if (showResize) {
                 block.appendChild(createElement('div', 'resize-handle'));
             }
+            block.innerHTML = `
+                <div class="block-title">${item.title}</div>
+                <div class="block-meta">${formatTime(item.startTime)} · ${formatDuration(duration)}${item.location ? ` · ${item.location}` : ''}</div>
+                ${showResize ? '<div class="resize-handle"></div>' : ''}
+            `;
             block.addEventListener('click', () => openEditModal(item.type, item.id, dateStr));
             block.addEventListener('dragstart', (event) => {
                 event.dataTransfer.setData('text/plain', item.id);
@@ -3015,6 +3079,12 @@
                 card.appendChild(createElement('div', 'event-meta', item.description));
             }
             card.appendChild(createElement('div', 'card-check', '✓'));
+            card.innerHTML = `
+                <div class="event-title">${item.title}</div>
+                ${buildItemMeta(item)}
+                ${item.description ? `<div class="event-meta">${item.description}</div>` : ''}
+                <div class="card-check">✓</div>
+            `;
             attachSwipeAndTap(card);
             return card;
         }
@@ -3754,6 +3824,16 @@
                 const computed = getDurationFromTimes(startTime, endTime);
                 if (computed) duration = computed;
             }
+
+            let finalStatus = status;
+            if (category === 'task' && status === 'scheduled' && !startTime) {
+                finalStatus = 'inbox';
+            }
+            if (category !== 'task' && !startTime) {
+                alert('Please set a start time for events and focus blocks.');
+                return;
+            }
+
 
             let finalStatus = status;
             if (category === 'task' && status === 'scheduled' && !startTime) {
