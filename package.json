@@ -1,0 +1,13 @@
+{
+  "name": "classic-calendar-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static planner app for GitHub Pages.",
+  "scripts": {
+    "dev": "python -m http.server 8000",
+    "build": "node scripts/build.js",
+    "lint": "node scripts/lint.js",
+    "test": "node scripts/security-tests.js",
+    "audit": "npm audit --audit-level=high"
+  }
+}
