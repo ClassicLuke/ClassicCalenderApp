@@ -163,6 +163,36 @@
             flex-wrap: wrap;
         }
 
+        .quick-capture {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .quick-capture input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .quick-capture button {
+            border: none;
+            background: var(--accent);
+            color: #fff;
+            padding: 0 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            min-height: 40px;
+        }
+
         .header-actions .search-field {
             position: relative;
             flex: 1 1 160px;
@@ -379,6 +409,80 @@
             gap: 8px;
         }
 
+        .slot-drop {
+            min-height: 48px;
+            border-radius: 12px;
+            border: 1px dashed transparent;
+            padding: 4px;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .slot-drop.drag-over {
+            border-color: var(--accent);
+            background: rgba(249, 115, 22, 0.08);
+        }
+
+        .time-block {
+            position: absolute;
+            left: 64px;
+            right: 0;
+            border-radius: 12px;
+            padding: 10px 12px 12px;
+            border-left: 4px solid;
+            background: var(--bg-primary);
+            box-shadow: 0 6px 16px var(--shadow);
+            cursor: grab;
+        }
+
+        .time-block.completed {
+            opacity: 0.6;
+        }
+
+        .time-block:active {
+            cursor: grabbing;
+        }
+
+        .time-block .block-title {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .time-block .block-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .time-block .resize-handle {
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--border);
+            cursor: ns-resize;
+        }
+
+        .time-block.focus-block {
+            background: rgba(15, 23, 42, 0.85);
+            color: #fff;
+            border-left-color: #0ea5e9;
+        }
+
+        .time-block.focus-block .block-meta {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .time-block.type-event {
+            background: rgba(59, 130, 246, 0.12);
+        }
+
+        .time-block.type-task {
+            background: rgba(16, 185, 129, 0.12);
+        }
+
         .now-line {
             position: absolute;
             left: 64px;
@@ -442,6 +546,44 @@
         .event-meta {
             font-size: 13px;
             color: var(--text-secondary);
+        }
+
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .meta-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .priority-high {
+            background: rgba(220, 38, 38, 0.15);
+            color: var(--danger);
+            border-color: rgba(220, 38, 38, 0.3);
+        }
+
+        .priority-medium {
+            background: rgba(249, 115, 22, 0.18);
+            color: var(--accent);
+            border-color: rgba(249, 115, 22, 0.3);
+        }
+
+        .priority-low {
+            background: rgba(34, 197, 94, 0.18);
+            color: var(--success);
+            border-color: rgba(34, 197, 94, 0.3);
         }
 
         .card-check {
@@ -510,9 +652,95 @@
             cursor: pointer;
         }
 
+        .task-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .task-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .task-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .priority-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+        }
+
+        .priority-dot.must {
+            background: var(--danger);
+        }
+
+        .priority-dot.should {
+            background: var(--accent);
+        }
+
+        .priority-dot.optional {
+            background: var(--success);
+        }
+
         .task-row.completed {
             opacity: 0.55;
             text-decoration: line-through;
+        }
+
+        .inbox-panel {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px;
+            background: var(--bg-primary);
+            display: grid;
+            gap: 8px;
+        }
+
+        .inbox-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            cursor: grab;
+        }
+
+        .inbox-item:active {
+            cursor: grabbing;
+        }
+
+        .inbox-item .meta-chip {
+            font-size: 10px;
+        }
+
+        .review-panel {
+            display: grid;
+            gap: 12px;
+        }
+
+        .review-card {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 14px;
+            background: var(--bg-primary);
+        }
+
+        .review-card h3 {
+            font-size: 14px;
+            margin-bottom: 6px;
         }
 
         .task-checkbox {
@@ -1082,19 +1310,6 @@
             margin-bottom: 10px;
         }
 
-        .reminder-presets {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-
-        .reminder-preset.active {
-            background: var(--accent);
-            color: #fff;
-            border-color: var(--accent);
-        }
-
         .day-checkbox {
             display: none;
         }
@@ -1142,7 +1357,22 @@
             align-items: center;
         }
 
+        .interval-picker {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 8px;
+            align-items: center;
+        }
+
         .time-picker select {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            font-size: 16px;
+        }
+
+        .interval-picker select {
             padding: 10px 12px;
             border-radius: 10px;
             border: 1px solid var(--border);
@@ -1215,6 +1445,10 @@
                 <button onclick="switchView('week', this)">Week</button>
                 <button onclick="switchView('month', this)">Month</button>
             </div>
+            <div class="quick-capture">
+                <input type="text" id="quickCaptureInput" placeholder="Quick add: “Study physics tomorrow 3-5”" aria-label="Quick capture">
+                <button onclick="handleQuickCapture()">Add</button>
+            </div>
             <div class="header-actions">
                 <div class="search-field">
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1227,8 +1461,11 @@
                     <button class="chip-button active" data-filter="all" onclick="setFilter('all', this)">All</button>
                     <button class="chip-button" data-filter="event" onclick="setFilter('event', this)">Events</button>
                     <button class="chip-button" data-filter="task" onclick="setFilter('task', this)">Tasks</button>
-                    <button class="chip-button" data-filter="reminder" onclick="setFilter('reminder', this)">Reminders</button>
+                    <button class="chip-button" data-filter="inbox" onclick="setFilter('inbox', this)">Inbox</button>
+                    <button class="chip-button" data-filter="block" onclick="setFilter('block', this)">Focus Blocks</button>
                     <button class="chip-button" id="hideCompletedToggle" onclick="toggleHideCompleted(this)">Hide Done</button>
+                    <button class="chip-button" id="priorityToggle" onclick="togglePriorityFilter(this)">Must Priority</button>
+                    <button class="chip-button" onclick="openReviewModal()">Review</button>
                 </div>
             </div>
         </div>
@@ -1256,20 +1493,20 @@
             <h2 id="modalTitle">Add Item</h2>
 
             <div class="form-group">
-                <label>Category</label>
+                <label>Type</label>
                 <select id="itemCategory" onchange="updateFormFields()">
-                    <option value="event">Event</option>
                     <option value="task">Task</option>
-                    <option value="reminder">Reminder</option>
+                    <option value="event">Event</option>
+                    <option value="block">Focus Block</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Type</label>
+                <label>Label</label>
                 <input type="text" id="itemKind" list="eventTypes" placeholder="Optional">
                 <datalist id="eventTypes"></datalist>
                 <datalist id="taskTypes"></datalist>
-                <datalist id="reminderTypes"></datalist>
+                <datalist id="blockTypes"></datalist>
                 <div class="helper-text">Create your own type or pick a suggestion.</div>
             </div>
 
@@ -1278,13 +1515,68 @@
                 <input type="text" id="itemTitle" placeholder="e.g., Read Chapter 3">
             </div>
 
-            <div class="form-group" id="repeatToggleGroup">
-                <label>Repeats weekly</label>
-                <select id="itemRepeats" onchange="updateRepeatVisibility()">
-                    <option value="no">No</option>
-                    <option value="weekly">Every week</option>
-                    <option value="biweekly">Every other week</option>
+            <div class="form-group" id="priorityGroup">
+                <label>Priority</label>
+                <select id="itemPriority">
+                    <option value="must">Must</option>
+                    <option value="should" selected>Should</option>
+                    <option value="optional">Optional</option>
                 </select>
+            </div>
+
+            <div class="form-group" id="tagGroup">
+                <label>Project / Tag</label>
+                <input type="text" id="itemTag" placeholder="e.g., School, Work, Personal">
+                <div class="helper-text">Use a single tag to group items across views.</div>
+            </div>
+
+            <div class="form-group" id="durationGroup">
+                <label>Duration (minutes)</label>
+                <input type="number" id="itemDuration" min="0" placeholder="e.g., 45">
+            </div>
+
+            <div class="form-group" id="statusGroup">
+                <label>Status</label>
+                <select id="itemStatus" onchange="updateStatusFields()">
+                    <option value="inbox">Inbox</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <div class="helper-text">Scheduled items show on the calendar.</div>
+            </div>
+
+            <div class="form-group" id="locationGroup">
+                <label>Location</label>
+                <input type="text" id="itemLocation" placeholder="e.g., Campus library">
+            </div>
+
+            <div class="form-group" id="repeatToggleGroup">
+                <label>Repeats</label>
+                <select id="itemRepeats" onchange="updateRepeatVisibility()">
+                    <option value="none">Does not repeat</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="custom">Custom interval</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="repeatIntervalGroup" style="display: none;">
+                <label>Every</label>
+                <div class="interval-picker">
+                    <select id="repeatInterval">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                    <select id="repeatUnit">
+                        <option value="day">day(s)</option>
+                        <option value="week">week(s)</option>
+                        <option value="month">month(s)</option>
+                    </select>
+                    <div></div>
+                </div>
             </div>
 
             <div class="form-group" id="dateGroup">
@@ -1293,22 +1585,22 @@
             </div>
 
             <div class="form-group" id="timeGroup">
-                <label>Time</label>
-                <div class="time-picker" data-field="itemTime">
+                <label>Start time</label>
+                <div class="time-picker" data-field="itemStartTime">
                     <select class="time-hour"></select>
                     <select class="time-minute"></select>
                     <select class="time-ampm"></select>
-                    <button class="time-clear" type="button" onclick="clearTimePicker('itemTime')">Clear</button>
+                    <button class="time-clear" type="button" onclick="clearTimePicker('itemStartTime')">Clear</button>
                 </div>
             </div>
 
-            <div class="form-group" id="dueTimeGroup">
-                <label>Due time</label>
-                <div class="time-picker" data-field="itemDueTime">
+            <div class="form-group" id="endTimeGroup">
+                <label>End time</label>
+                <div class="time-picker" data-field="itemEndTime">
                     <select class="time-hour"></select>
                     <select class="time-minute"></select>
                     <select class="time-ampm"></select>
-                    <button class="time-clear" type="button" onclick="clearTimePicker('itemDueTime')">Clear</button>
+                    <button class="time-clear" type="button" onclick="clearTimePicker('itemEndTime')">Clear</button>
                 </div>
             </div>
 
@@ -1348,21 +1640,26 @@
                 </div>
             </div>
 
-            <div class="form-group" id="reminderGroup">
-                <label>Reminder time</label>
-                <div class="time-picker" data-field="itemReminderTime">
-                    <select class="time-hour"></select>
-                    <select class="time-minute"></select>
-                    <select class="time-ampm"></select>
-                    <button class="time-clear" type="button" onclick="clearTimePicker('itemReminderTime')">Clear</button>
+            <div class="form-group" id="checklistGroup">
+                <label>Checklist (one per line)</label>
+                <textarea id="itemChecklist" placeholder="- Outline, - Draft, - Review"></textarea>
+            </div>
+
+            <div class="form-group" id="linksGroup">
+                <label>Links</label>
+                <input type="text" id="itemLinks" placeholder="Paste important URLs separated by commas">
+            </div>
+
+            <div class="form-group" id="seriesGroup" style="display: none;">
+                <label>Series edits</label>
+                <div class="toggle-row">
+                    <div class="toggle-row-labels">
+                        <div class="toggle-row-title">Apply changes to entire series</div>
+                        <div class="toggle-row-subtitle">Turn off to edit only this occurrence.</div>
+                    </div>
+                    <input type="checkbox" class="toggle-input" id="applySeriesToggle" role="switch" checked>
                 </div>
-                <div class="reminder-presets">
-                    <button class="chip-button reminder-preset" type="button" data-preset="at" onclick="setReminderPreset('at')">At time</button>
-                    <button class="chip-button reminder-preset" type="button" data-preset="10" onclick="setReminderPreset('10')">10 min before</button>
-                    <button class="chip-button reminder-preset" type="button" data-preset="60" onclick="setReminderPreset('60')">1 hour before</button>
-                    <button class="chip-button reminder-preset" type="button" data-preset="morning" onclick="setReminderPreset('morning')">Morning of</button>
-                </div>
-                <div class="helper-text">Morning reminders fire at 8:00 AM if no time is set.</div>
+                <button class="btn btn-secondary" type="button" onclick="skipOccurrence()">Skip this occurrence</button>
             </div>
 
             <div class="form-actions">
@@ -1390,9 +1687,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>Reminders</label>
-                <button class="chip-button" id="notifyButton" onclick="toggleNotifications()">Reminders Off</button>
-                <div class="helper-text">Enable browser notifications for reminders.</div>
+                <label>Notifications</label>
+                <button class="chip-button" id="notifyButton" onclick="toggleNotifications()">Notifications Off</button>
+                <div class="helper-text">Get a 10-minute heads-up for scheduled items.</div>
             </div>
             <div class="form-group">
                 <label>Passcode lock</label>
@@ -1410,6 +1707,21 @@
             <div class="form-actions">
                 <button class="btn btn-secondary" onclick="closeSettingsModal()">Close</button>
                 <button class="btn btn-primary" onclick="saveSettings()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="reviewModal">
+        <div class="modal-content">
+            <h2>Review & Reflection</h2>
+            <div class="review-panel" id="reviewPanel"></div>
+            <div class="form-group">
+                <label>Reflection notes</label>
+                <textarea id="reviewNotes" placeholder="What went well? What needs adjustment?"></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeReviewModal()">Close</button>
+                <button class="btn btn-primary" onclick="saveReviewNotes()">Save</button>
             </div>
         </div>
     </div>
@@ -1452,13 +1764,11 @@
             '#8b5cf6', '#ec4899', '#64748b', '#000000'
         ];
 
-        const defaultEventTypes = ['Class', 'Work', 'Lab', 'Meeting', 'Practice'];
-        const defaultTaskTypes = ['Homework', 'Study', 'Pay Bills', 'Take Pills', 'Errand'];
-        const defaultReminderTypes = ['Reminder', 'Call', 'Email', 'Check-in'];
+        const defaultEventTypes = ['Meeting', 'Class', 'Appointment', 'Workshop'];
+        const defaultTaskTypes = ['Homework', 'Study', 'Email', 'Errand'];
+        const defaultBlockTypes = ['Deep Work', 'Focus', 'No Meetings'];
 
-        let events = [];
-        let tasks = [];
-        let reminders = [];
+        let items = [];
         let reminderTimers = [];
         let notificationsEnabled = false;
         let userName = 'Your';
@@ -1475,75 +1785,120 @@
         let currentFilter = 'all';
         let hideCompleted = false;
         let searchQuery = '';
+        let priorityFilter = 'all';
+
+        function normalizeItem(item, fallbackType) {
+            const durationValue = parseInt(item.duration, 10);
+            const priorityMap = { high: 'must', medium: 'should', normal: 'should', low: 'optional' };
+            const normalizedDuration = Number.isFinite(durationValue) && durationValue > 0 ? durationValue : 30;
+            const startTime = item.startTime || '';
+            const endTime = item.endTime || (startTime ? minutesToTime(timeToMinutes(startTime) + normalizedDuration) : '');
+            return {
+                ...item,
+                type: item.type || fallbackType || 'task',
+                status: item.status || (item.startTime ? 'scheduled' : 'inbox'),
+                priority: priorityMap[item.priority] || item.priority || 'should',
+                tag: item.tag || '',
+                duration: normalizedDuration,
+                location: item.location || '',
+                color: item.color || colors[11],
+                checklist: item.checklist || [],
+                links: item.links || [],
+                recurrence: item.recurrence || { freq: 'none', interval: 1, days: [], unit: 'day' },
+                exceptions: item.exceptions || [],
+                overrides: item.overrides || {},
+                completedDates: item.completedDates || [],
+                startTime,
+                endTime
+            };
+        }
 
         // Load saved data and migrate legacy formats.
         function loadData() {
             const saved = localStorage.getItem('plannerData');
             if (saved) {
                 const data = JSON.parse(saved);
-                if (data.events || data.tasks || data.reminders) {
-                    events = data.events || [];
-                    tasks = data.tasks || [];
-                    reminders = data.reminders || [];
+                if (data.items) {
+                    items = data.items || [];
+                } else if (data.events || data.tasks || data.reminders) {
+                    const migratedEvents = (data.events || []).map(ev => ({
+                        id: ev.id,
+                        type: 'event',
+                        title: ev.title,
+                        label: ev.type || 'Event',
+                        date: ev.date || '',
+                        startTime: ev.time || '',
+                        duration: ev.duration || 60,
+                        description: ev.description || '',
+                        priority: 'should',
+                        status: ev.date || ev.time ? 'scheduled' : 'inbox'
+                    }));
+                    const migratedTasks = (data.tasks || []).map(tsk => ({
+                        id: tsk.id,
+                        type: 'task',
+                        title: tsk.title,
+                        label: tsk.type || 'Task',
+                        date: tsk.date || '',
+                        startTime: tsk.dueTime || '',
+                        duration: tsk.duration || 30,
+                        description: tsk.description || '',
+                        priority: tsk.priority || 'should',
+                        status: tsk.date || tsk.dueTime ? 'scheduled' : 'inbox',
+                        completed: tsk.completed || false
+                    }));
+                    items = [...migratedEvents, ...migratedTasks];
                 } else {
                     const classes = data.classes || [];
                     const homework = data.homework || [];
                     const appointments = data.appointments || [];
                     const routines = data.routines || [];
 
-                    events = [
+                    items = [
                         ...classes.map(cls => ({
                             id: cls.id,
-                            category: 'event',
+                            type: 'event',
                             title: cls.title,
-                            type: 'Class',
-                            time: cls.time || '',
-                            color: cls.color || colors[11],
-                            recurringDays: cls.recurringDays || [],
-                            repeatCycle: 'weekly',
-                            description: '',
-                            reminderTime: ''
+                            label: 'Class',
+                            startTime: cls.time || '',
+                            duration: 60,
+                            recurrence: { freq: 'weekly', interval: 1, days: cls.recurringDays || [] },
+                            description: ''
                         })),
                         ...appointments.map(apt => ({
                             id: apt.id,
-                            category: 'event',
+                            type: 'event',
                             title: apt.title,
-                            type: 'Appointment',
+                            label: 'Appointment',
                             date: apt.date,
-                            time: apt.time || '',
-                            color: colors[11],
-                            description: apt.description || '',
-                            reminderTime: apt.reminderTime || '',
-                            completed: apt.completed || false
+                            startTime: apt.time || '',
+                            duration: 60,
+                            description: apt.description || ''
                         })),
                         ...routines.map(rt => ({
                             id: rt.id,
-                            category: 'event',
+                            type: 'block',
                             title: rt.title,
-                            type: 'Routine',
-                            time: rt.time || '',
-                            color: rt.color || colors[11],
-                            recurringDays: rt.recurringDays || [],
-                            repeatCycle: 'weekly',
-                            description: rt.description || '',
-                            reminderTime: rt.reminderTime || '',
-                            completedDates: rt.completedDates || []
+                            label: 'Routine',
+                            startTime: rt.time || '',
+                            duration: 60,
+                            recurrence: { freq: 'weekly', interval: 1, days: rt.recurringDays || [] },
+                            description: ''
+                        })),
+                        ...homework.map(hw => ({
+                            id: hw.id,
+                            type: 'task',
+                            title: hw.title,
+                            label: 'Homework',
+                            date: hw.date,
+                            startTime: hw.dueTime || '',
+                            duration: 30,
+                            description: hw.description || '',
+                            completed: hw.completed || false
                         }))
                     ];
-
-                    tasks = homework.map(hw => ({
-                        id: hw.id,
-                        category: 'task',
-                        title: hw.title,
-                        type: 'Homework',
-                        date: hw.date,
-                        dueTime: hw.dueTime || '',
-                        description: hw.description || '',
-                        reminderTime: hw.reminderTime || '',
-                        completed: hw.completed || false
-                    }));
                 }
             }
+            items = items.map(item => normalizeItem(item, item.type));
             notificationsEnabled = localStorage.getItem('plannerNotifications') === 'on';
             userName = localStorage.getItem('plannerUserName') || 'Your';
             
@@ -1551,15 +1906,16 @@
             passcodeValue = localStorage.getItem('plannerPasscode') || '';
             darkModeEnabled = localStorage.getItem('plannerDarkMode') === 'on';
             currentFilter = localStorage.getItem('plannerFilter') || 'all';
+            if (currentFilter === 'reminder') currentFilter = 'all';
             hideCompleted = localStorage.getItem('plannerHideCompleted') === 'on';
+            priorityFilter = localStorage.getItem('plannerPriorityFilter') || 'all';
+            if (priorityFilter === 'high') priorityFilter = 'must';
         }
 
         // Save data to localStorage.
         function saveData() {
             localStorage.setItem('plannerData', JSON.stringify({
-                events,
-                tasks,
-                reminders
+                items
             }));
         }
 
@@ -1607,9 +1963,107 @@
             renderView();
         }
 
+        function togglePriorityFilter(button) {
+            priorityFilter = priorityFilter === 'must' ? 'all' : 'must';
+            localStorage.setItem('plannerPriorityFilter', priorityFilter);
+            if (button) button.classList.toggle('active', priorityFilter === 'must');
+            renderView();
+        }
+
         function updateSearch(value) {
             searchQuery = value;
             renderView();
+        }
+
+        function handleQuickCapture() {
+            const input = document.getElementById('quickCaptureInput');
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) return;
+            const parsed = parseQuickCapture(text);
+            items.push(normalizeItem({
+                id: Date.now().toString(),
+                type: parsed.type,
+                title: parsed.title,
+                label: parsed.label,
+                date: parsed.date,
+                startTime: parsed.startTime,
+                endTime: parsed.endTime,
+                duration: parsed.duration,
+                status: parsed.status,
+                priority: parsed.priority
+            }, parsed.type));
+            saveData();
+            refreshTypeSuggestions();
+            input.value = '';
+            renderView();
+            scheduleReminders();
+        }
+
+        function parseQuickCapture(text) {
+            const lower = text.toLowerCase();
+            let type = lower.includes('meet') || lower.includes('meeting') || lower.includes('appointment') ? 'event' : 'task';
+            if (lower.startsWith('event:')) type = 'event';
+            if (lower.startsWith('task:')) type = 'task';
+            const label = type === 'event' ? 'Meeting' : 'Task';
+            let priority = 'should';
+            if (lower.includes('must')) priority = 'must';
+            if (lower.includes('optional')) priority = 'optional';
+            let date = formatDate(currentDate);
+            if (lower.includes('tomorrow')) {
+                const tomorrow = new Date(currentDate);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                date = formatDate(tomorrow);
+            }
+            const dateMatch = lower.match(/(\d{4}-\d{2}-\d{2})/);
+            if (dateMatch) date = dateMatch[1];
+
+            const timeRange = lower.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*(?:-|–|to)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
+            let startTime = '';
+            let endTime = '';
+            let duration = 30;
+            if (timeRange) {
+                const start = buildTimeFromMatch(timeRange[1], timeRange[2], timeRange[3]);
+                const end = buildTimeFromMatch(timeRange[4], timeRange[5], timeRange[6] || timeRange[3]);
+                startTime = start;
+                endTime = end;
+                duration = getDurationFromTimes(startTime, endTime) || 60;
+            } else {
+                const singleTime = lower.match(/(?:at|@)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
+                if (singleTime) {
+                    startTime = buildTimeFromMatch(singleTime[1], singleTime[2], singleTime[3]);
+                    duration = 60;
+                    endTime = minutesToTime(timeToMinutes(startTime) + duration);
+                }
+            }
+
+            const status = startTime ? 'scheduled' : 'inbox';
+            const title = text.replace(/^(event:|task:)/i, '')
+                .replace(/(?:tomorrow|today|at\s+\d.*|must|optional)/gi, '')
+                .trim() || text;
+
+            return {
+                type,
+                label,
+                title,
+                date: status === 'scheduled' ? date : '',
+                startTime,
+                endTime,
+                duration,
+                status,
+                priority
+            };
+        }
+
+        function buildTimeFromMatch(hours, minutes, ampm) {
+            let h = parseInt(hours, 10);
+            const m = minutes ? parseInt(minutes, 10) : 0;
+            if (ampm) {
+                const period = ampm.toLowerCase();
+                if (period === 'pm' && h !== 12) h += 12;
+                if (period === 'am' && h === 12) h = 0;
+            }
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
         }
 
         // Open the settings modal and preload values.
@@ -1625,6 +2079,72 @@
         // Close the settings modal.
         function closeSettingsModal() {
             setModalState('settingsModal', false);
+        }
+
+        function openReviewModal() {
+            renderReviewPanel();
+            const notes = localStorage.getItem('plannerReviewNotes') || '';
+            document.getElementById('reviewNotes').value = notes;
+            setModalState('reviewModal', true);
+        }
+
+        function closeReviewModal() {
+            setModalState('reviewModal', false);
+        }
+
+        function saveReviewNotes() {
+            const notes = document.getElementById('reviewNotes').value.trim();
+            localStorage.setItem('plannerReviewNotes', notes);
+            closeReviewModal();
+        }
+
+        function renderReviewPanel() {
+            const panel = document.getElementById('reviewPanel');
+            if (!panel) return;
+            const today = formatDate(currentDate);
+            const dailyStats = getReviewStats(today, 1);
+            const startOfWeek = new Date(currentDate);
+            startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+            const weeklyStats = getReviewStats(formatDate(startOfWeek), 7);
+            panel.innerHTML = `
+                <div class="review-card">
+                    <h3>Daily review</h3>
+                    <div>Completed: ${dailyStats.completed}</div>
+                    <div>Missed: ${dailyStats.missed}</div>
+                    <div>Planned vs done: ${dailyStats.plannedMinutes}m / ${dailyStats.completedMinutes}m</div>
+                </div>
+                <div class="review-card">
+                    <h3>Weekly review</h3>
+                    <div>Completed: ${weeklyStats.completed}</div>
+                    <div>Missed: ${weeklyStats.missed}</div>
+                    <div>Planned vs done: ${weeklyStats.plannedMinutes}m / ${weeklyStats.completedMinutes}m</div>
+                </div>
+            `;
+        }
+
+        function getReviewStats(startDateStr, days) {
+            let completed = 0;
+            let missed = 0;
+            let plannedMinutes = 0;
+            let completedMinutes = 0;
+            for (let i = 0; i < days; i++) {
+                const date = new Date(startDateStr + 'T00:00:00');
+                date.setDate(date.getDate() + i);
+                const dateStr = formatDate(date);
+                const dayItems = getItemsForDay(items, dateStr);
+                dayItems.forEach(item => {
+                    if (item.status === 'scheduled') {
+                        plannedMinutes += item.duration || 0;
+                        if (isCompleted(item, dateStr)) {
+                            completed += 1;
+                            completedMinutes += item.duration || 0;
+                        } else if (date < new Date() && item.type === 'task') {
+                            missed += 1;
+                        }
+                    }
+                });
+            }
+            return { completed, missed, plannedMinutes, completedMinutes };
         }
 
         // Save user name and preferences.
@@ -1658,9 +2178,12 @@
             });
             const hideBtn = document.getElementById('hideCompletedToggle');
             if (hideBtn) hideBtn.classList.toggle('active', hideCompleted);
+            const priorityBtn = document.getElementById('priorityToggle');
+            if (priorityBtn) priorityBtn.classList.toggle('active', priorityFilter === 'must');
             const searchInput = document.getElementById('searchInput');
             if (searchInput && searchQuery) searchInput.value = searchQuery;
         }
+
 
         // Format the header name with a possessive.
         function formatPlannerName(name) {
@@ -1774,14 +2297,19 @@
             if (!searchQuery) return true;
             const term = searchQuery.trim().toLowerCase();
             if (!term) return true;
-            const fields = [item.title, item.type, item.description];
+            const fields = [item.title, item.label, item.description, item.tag, item.location];
             return fields.some(field => field && field.toLowerCase().includes(term));
         }
 
         function applyFilters(items, dateStr) {
             return items.filter(item => {
-                if (currentFilter !== 'all' && item.category !== currentFilter) return false;
+                if (currentFilter !== 'all') {
+                    if (currentFilter === 'inbox' && item.status !== 'inbox') return false;
+                    if (currentFilter === 'block' && item.type !== 'block') return false;
+                    if (currentFilter !== 'inbox' && currentFilter !== 'block' && item.type !== currentFilter) return false;
+                }
                 if (hideCompleted && isCompleted(item, dateStr)) return false;
+                if (priorityFilter === 'must' && item.priority !== 'must') return false;
                 if (!itemMatchesSearch(item)) return false;
                 return true;
             });
@@ -1793,23 +2321,20 @@
             container.innerHTML = '';
 
             const dateStr = formatDate(currentDate);
-            const dayEvents = getItemsForDay(events, dateStr, true, true);
-            const dayTasks = getItemsForDay(tasks, dateStr, true, true);
-            const dayReminders = getItemsForDay(reminders, dateStr, true, true);
-            const filteredEvents = applyFilters(dayEvents, dateStr);
-            const filteredTasks = applyFilters(dayTasks, dateStr);
-            const filteredReminders = applyFilters(dayReminders, dateStr);
+            const dayItems = getItemsForDay(items, dateStr);
+            const scheduledItems = dayItems.filter(item => item.status !== 'inbox');
+            const inboxItems = items.filter(item => item.type === 'task' && item.status === 'inbox');
+            const filteredScheduled = applyFilters(scheduledItems, dateStr);
+            const filteredInbox = applyFilters(inboxItems, dateStr);
             const slotHeight = 56;
 
             const layout = document.createElement('div');
             layout.className = 'day-layout';
 
-            const totalScheduled = dayEvents.length + dayReminders.length;
-            const filteredScheduled = filteredEvents.length + filteredReminders.length;
-            if (filteredScheduled === 0) {
+            if (filteredScheduled.length === 0) {
                 const empty = document.createElement('div');
                 empty.className = 'day-empty';
-                empty.textContent = totalScheduled === 0 ? 'No events or reminders for this day.' : 'No scheduled items match your filters.';
+                empty.textContent = 'No scheduled items for this day.';
                 layout.appendChild(empty);
             }
 
@@ -1818,17 +2343,18 @@
 
             const nextCard = document.createElement('div');
             nextCard.className = 'insight-card';
-            const nextItem = getNextItemForDay([...filteredEvents, ...filteredReminders, ...filteredTasks], dateStr);
-            const nextLabel = nextItem ? `${nextItem.title}${nextItem.time || nextItem.dueTime ? ' · ' + formatTime(nextItem.time || nextItem.dueTime) : ''}` : 'You are clear.';
+            const nextItem = getNextItemForDay(filteredScheduled, dateStr);
+            const nextLabel = nextItem ? `${nextItem.title}${nextItem.startTime ? ' · ' + formatTime(nextItem.startTime) : ''}` : 'You are clear.';
             nextCard.innerHTML = `
                 <div class="insight-label">Next up</div>
                 <div class="insight-value">${nextLabel}</div>
-                <div class="insight-subtle">${nextItem ? (nextItem.type || nextItem.category) : 'No upcoming items found.'}</div>
+                <div class="insight-subtle">${nextItem ? (nextItem.label || nextItem.type) : 'No upcoming items found.'}</div>
             `;
             insightRow.appendChild(nextCard);
 
             const taskCard = document.createElement('div');
             taskCard.className = 'insight-card';
+            const dayTasks = dayItems.filter(item => item.type === 'task');
             const completedTasks = dayTasks.filter(task => isCompleted(task, dateStr)).length;
             taskCard.innerHTML = `
                 <div class="insight-label">Task progress</div>
@@ -1837,6 +2363,17 @@
             `;
             insightRow.appendChild(taskCard);
 
+            const focusCard = document.createElement('div');
+            focusCard.className = 'insight-card';
+            const focusMinutes = dayTasks.reduce((sum, task) => sum + (parseInt(task.duration, 10) || 0), 0);
+            const focusLabel = formatDuration(focusMinutes);
+            focusCard.innerHTML = `
+                <div class="insight-label">Focus load</div>
+                <div class="insight-value">${focusLabel || '0m'}</div>
+                <div class="insight-subtle">${focusMinutes ? 'Planned minutes today' : 'Add duration to tasks to track workload.'}</div>
+            `;
+            insightRow.appendChild(focusCard);
+
             layout.appendChild(insightRow);
 
             const timeScroll = document.createElement('div');
@@ -1844,6 +2381,7 @@
 
             const grid = document.createElement('div');
             grid.className = 'time-grid';
+            grid.style.position = 'relative';
 
             for (let hour = 0; hour < 24; hour++) {
                 const slot = document.createElement('div');
@@ -1855,31 +2393,30 @@
 
                 const slotEvents = document.createElement('div');
                 slotEvents.className = 'slot-events slot-interactive';
-
-                const eventsForHour = filteredEvents.filter(ev => getHourFromTime(ev.time) === hour);
-                const remindersForHour = filteredReminders.filter(rm => getHourFromTime(rm.time) === hour);
-                const itemsForHour = [...eventsForHour, ...remindersForHour].sort((a, b) => {
-                    return getMinuteFromTime(a.time) - getMinuteFromTime(b.time);
+                const dropZone = document.createElement('div');
+                dropZone.className = 'slot-drop';
+                dropZone.dataset.hour = String(hour);
+                dropZone.addEventListener('dragover', (event) => {
+                    event.preventDefault();
+                    dropZone.classList.add('drag-over');
                 });
-
-                if (itemsForHour.length > 0) {
-                    const minuteOffset = getMinuteFromTime(itemsForHour[0].time);
-                    slotEvents.style.paddingTop = `${Math.round((minuteOffset / 60) * slotHeight)}px`;
-                } else {
-                    slotEvents.style.paddingTop = '0px';
-                }
-
-                itemsForHour.forEach(item => {
-                    const card = buildCard(item, 'event-card', dateStr);
-                    slotEvents.appendChild(card);
+                dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+                dropZone.addEventListener('drop', (event) => {
+                    event.preventDefault();
+                    dropZone.classList.remove('drag-over');
+                    const itemId = event.dataTransfer.getData('text/plain');
+                    if (!itemId) return;
+                    const startMinutes = hour * 60;
+                    scheduleItemToTime(itemId, dateStr, startMinutes);
                 });
+                slotEvents.appendChild(dropZone);
 
                 slot.appendChild(label);
                 slot.appendChild(slotEvents);
                 grid.appendChild(slot);
 
                 slotEvents.addEventListener('click', (event) => {
-                    if (event.target && event.target.closest('.swipe-card')) return;
+                    if (event.target && event.target.closest('.time-block')) return;
                     const rect = slotEvents.getBoundingClientRect();
                     const offset = event.clientY - rect.top;
                     const ratio = Math.min(Math.max(offset / rect.height, 0), 1);
@@ -1888,34 +2425,52 @@
                 });
             }
 
+            filteredScheduled.forEach(item => {
+                if (!item.startTime) return;
+                const block = buildTimeBlock(item, dateStr, slotHeight);
+                grid.appendChild(block);
+            });
+
             timeScroll.appendChild(grid);
             layout.appendChild(timeScroll);
 
             const tasksPanel = document.createElement('div');
             tasksPanel.className = 'day-tasks-panel';
             const panelDate = currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            const panelTitle = isToday(currentDate) ? "Today's Tasks" : `Tasks · ${panelDate}`;
+            const panelTitle = isToday(currentDate) ? "Today's Scheduled Tasks" : `Tasks · ${panelDate}`;
             tasksPanel.innerHTML = `<div class="panel-title">${panelTitle}</div>`;
 
             const taskList = document.createElement('div');
             taskList.className = 'task-list';
 
-            if (filteredTasks.length === 0) {
+            const visibleTasks = filteredScheduled.filter(item => item.type === 'task')
+                .sort((a, b) => getPriorityRank(a.priority) - getPriorityRank(b.priority));
+            if (visibleTasks.length === 0) {
                 const empty = document.createElement('div');
                 empty.className = 'helper-text';
-                empty.textContent = dayTasks.length === 0 ? 'No tasks for today.' : 'No tasks match your filters.';
+                empty.textContent = dayTasks.length === 0 ? 'No tasks for today.' : 'No scheduled tasks match your filters.';
                 tasksPanel.appendChild(empty);
             } else {
-                filteredTasks.forEach(task => {
+                visibleTasks.forEach(task => {
                     const row = document.createElement('div');
                     const completed = isCompleted(task, dateStr);
                     row.className = `task-row ${completed ? 'completed' : ''}`;
                     row.dataset.type = 'task';
                     row.dataset.id = task.id;
                     row.dataset.date = dateStr;
+                    const priority = task.priority || 'should';
+                    const durationLabel = formatDuration(task.duration);
+                    const metaParts = [];
+                    if (task.startTime) metaParts.push(formatTime(task.startTime));
+                    if (task.tag) metaParts.push(`#${task.tag}`);
+                    if (durationLabel) metaParts.push(durationLabel);
                     row.innerHTML = `
                         <input class="task-checkbox" type="checkbox" ${completed ? 'checked' : ''}>
-                        <div>${task.title}${task.dueTime ? ' · ' + formatTime(task.dueTime) : ''}</div>
+                        <div class="priority-dot ${priority === 'should' ? '' : priority}"></div>
+                        <div class="task-content">
+                            <div class="task-title">${task.title}</div>
+                            ${metaParts.length ? `<div class="task-meta">${metaParts.join(' · ')}</div>` : ''}
+                        </div>
                     `;
                     const checkbox = row.querySelector('.task-checkbox');
                     checkbox.addEventListener('change', () => toggleComplete('task', task.id, dateStr, row));
@@ -1928,7 +2483,7 @@
                 tasksPanel.appendChild(taskList);
             }
 
-            const rowCount = Math.max(filteredTasks.length, 1);
+            const rowCount = Math.max(visibleTasks.length, 1);
             const baseHeight = 72;
             const rowHeight = 44;
             const desiredHeight = baseHeight + (rowCount * rowHeight);
@@ -1938,6 +2493,45 @@
             tasksPanel.style.maxHeight = `${finalHeight}px`;
 
             layout.appendChild(tasksPanel);
+
+            const inboxPanel = document.createElement('div');
+            inboxPanel.className = 'inbox-panel';
+            inboxPanel.innerHTML = `
+                <div class="panel-title">Inbox Tasks</div>
+                <button class="btn btn-secondary" type="button" onclick="autoScheduleInbox('${dateStr}')">Auto-schedule</button>
+            `;
+            inboxPanel.addEventListener('dragover', (event) => event.preventDefault());
+            inboxPanel.addEventListener('drop', (event) => {
+                event.preventDefault();
+                const itemId = event.dataTransfer.getData('text/plain');
+                const dateDrop = event.dataTransfer.getData('text/date');
+                if (itemId) unscheduleItem(itemId, dateDrop || '');
+            });
+            if (filteredInbox.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'helper-text';
+                empty.textContent = 'Inbox is clear.';
+                inboxPanel.appendChild(empty);
+            } else {
+                filteredInbox
+                    .sort((a, b) => getPriorityRank(a.priority) - getPriorityRank(b.priority))
+                    .forEach(task => {
+                    const row = document.createElement('div');
+                    row.className = 'inbox-item';
+                    row.draggable = true;
+                    row.dataset.id = task.id;
+                    row.addEventListener('dragstart', (event) => {
+                        event.dataTransfer.setData('text/plain', task.id);
+                    });
+                    row.innerHTML = `
+                        <span>${task.title}</span>
+                        ${task.priority ? `<span class="meta-chip ${getPriorityClass(task.priority)}">${getPriorityLabel(task.priority)}</span>` : ''}
+                    `;
+                    row.addEventListener('click', () => openEditModal(task.type, task.id, dateStr));
+                    inboxPanel.appendChild(row);
+                });
+            }
+            layout.appendChild(inboxPanel);
             container.appendChild(layout);
 
             startNowLineTimer();
@@ -2029,7 +2623,7 @@
                 date.getDate() === now.getDate();
         }
 
-        // Render the week view with only dated items (no recurring).
+        // Render the week view with scheduled items.
         function renderWeekView() {
             const container = document.getElementById('weekView');
             container.innerHTML = '<div class="week-grid"></div>';
@@ -2043,9 +2637,9 @@
                 date.setDate(startOfWeek.getDate() + i);
                 const dateStr = formatDate(date);
 
-                const dayEvents = applyFilters(getItemsForDay(events, dateStr, false, false), dateStr);
-                const dayTasks = applyFilters(getItemsForDay(tasks, dateStr, false, false), dateStr);
-                const dayReminders = applyFilters(getItemsForDay(reminders, dateStr, false, false), dateStr);
+                const dayItems = getItemsForDay(items, dateStr);
+                const scheduledItems = dayItems.filter(item => item.status !== 'inbox');
+                const filteredItems = applyFilters(scheduledItems, dateStr);
 
                 const dayCol = document.createElement('div');
                 dayCol.className = `day-column ${isToday(date) ? 'today' : ''}`;
@@ -2063,18 +2657,23 @@
 
                 const itemsContainer = dayCol.querySelector('.day-items');
 
-                [...dayEvents, ...dayReminders, ...dayTasks].forEach(item => {
+                filteredItems.forEach(item => {
                     const pill = document.createElement('div');
                     const completed = isCompleted(item, dateStr);
                     pill.className = `homework-item swipe-card ${completed ? 'completed' : ''}`;
                     pill.style.borderLeftColor = item.color || colors[11];
-                    pill.dataset.type = item.category;
+                    pill.dataset.type = item.type;
                     pill.dataset.id = item.id;
                     pill.dataset.date = dateStr;
-                    const timeLabel = item.time || item.dueTime || '';
+                    const timeLabel = item.startTime || '';
+                    const metaParts = [];
+                    if (item.priority && item.priority !== 'should') metaParts.push(getPriorityLabel(item.priority));
+                    if (item.tag) metaParts.push(`#${item.tag}`);
+                    if (item.location) metaParts.push(item.location);
                     pill.innerHTML = `
-                        <div class="homework-class">${item.type || item.category}</div>
+                        <div class="homework-class">${item.label || item.type}</div>
                         <div>${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}</div>
+                        ${metaParts.length ? `<div class="event-meta">${metaParts.join(' · ')}</div>` : ''}
                     `;
                     attachSwipeAndTap(pill);
                     itemsContainer.appendChild(pill);
@@ -2088,7 +2687,7 @@
             }
         }
 
-        // Render the all view as a week calendar grid with everything included.
+        // Render the month view for scheduled items.
         function renderMonthView() {
             const container = document.getElementById('monthView');
             container.innerHTML = '';
@@ -2121,12 +2720,8 @@
             for (let day = 1; day <= totalDays; day++) {
                 const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
                 const dateStr = formatDate(date);
-                const rawItems = [
-                    ...getItemsForDay(events, dateStr, true, true),
-                    ...getItemsForDay(tasks, dateStr, true, true),
-                    ...getItemsForDay(reminders, dateStr, true, true)
-                ];
-                const items = applyFilters(rawItems, dateStr);
+                const rawItems = getItemsForDay(items, dateStr).filter(item => item.status !== 'inbox');
+                const itemsForDay = applyFilters(rawItems, dateStr);
 
                 const cell = document.createElement('div');
                 const isSelected = dateStr === formatDate(currentDate);
@@ -2140,27 +2735,28 @@
                 const itemList = document.createElement('div');
                 itemList.className = 'month-items';
 
-                items.slice(0, 3).forEach(item => {
+                itemsForDay.slice(0, 3).forEach(item => {
                     const pill = document.createElement('div');
-                    const timeLabel = item.time || item.dueTime || '';
+                    const timeLabel = item.startTime || '';
                     pill.className = 'month-pill';
                     pill.style.borderLeftColor = item.color || colors[11];
-                    pill.dataset.type = item.category;
+                    pill.dataset.type = item.type;
                     pill.dataset.id = item.id;
                     pill.dataset.date = dateStr;
-                    pill.textContent = `${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}`;
+                    const priorityMark = item.priority === 'must' ? '★ ' : item.priority === 'should' ? '• ' : '';
+                    pill.textContent = `${priorityMark}${item.title}${timeLabel ? ' · ' + formatTime(timeLabel) : ''}`;
                     attachSwipeAndTap(pill);
                     itemList.appendChild(pill);
                 });
 
-                if (items.length > 3) {
+                if (itemsForDay.length > 3) {
                     const more = document.createElement('div');
                     more.className = 'month-empty';
-                    more.textContent = `+${items.length - 3} more`;
+                    more.textContent = `+${itemsForDay.length - 3} more`;
                     itemList.appendChild(more);
                 }
 
-                if (items.length === 0) {
+                if (itemsForDay.length === 0) {
                     const empty = document.createElement('div');
                     empty.className = 'month-empty';
                     empty.textContent = rawItems.length === 0 ? 'No items' : 'Filtered out';
@@ -2175,17 +2771,192 @@
             container.appendChild(grid);
         }
 
-        // Build a swipeable card element for events/reminders.
+        function buildItemMeta(item) {
+            const timeLabel = item.startTime || '';
+            const durationLabel = formatDuration(item.duration);
+            const parts = [];
+            if (timeLabel) parts.push(formatTime(timeLabel));
+            if (item.label) parts.push(item.label);
+            if (item.tag) parts.push(`#${item.tag}`);
+            if (item.location) parts.push(item.location);
+            if (durationLabel) parts.push(durationLabel);
+            if (item.checklist && item.checklist.length) parts.push(`${item.checklist.length} checklist`);
+            if (item.links && item.links.length) parts.push(`${item.links.length} link${item.links.length > 1 ? 's' : ''}`);
+            const priority = item.priority || 'should';
+            const priorityChip = priority !== 'should'
+                ? `<span class="meta-chip ${getPriorityClass(priority)}">${getPriorityLabel(priority)}</span>`
+                : '';
+            const partChips = parts.map(part => `<span class="meta-chip">${part}</span>`).join('');
+            if (!priorityChip && !partChips) return '';
+            return `<div class="event-meta meta-row">${priorityChip}${partChips}</div>`;
+        }
+
+        function buildTimeBlock(item, dateStr, slotHeight) {
+            const block = document.createElement('div');
+            const startMinutes = timeToMinutes(item.startTime);
+            const duration = item.endTime ? getDurationFromTimes(item.startTime, item.endTime) : (item.duration || 30);
+            const height = Math.max((duration / 60) * slotHeight, 40);
+            const completed = isCompleted(item, dateStr);
+            block.className = `time-block type-${item.type} ${item.type === 'block' ? 'focus-block' : ''} ${completed ? 'completed' : ''}`;
+            block.style.top = `${(startMinutes / 60) * slotHeight}px`;
+            block.style.height = `${height}px`;
+            block.style.borderLeftColor = item.color || colors[11];
+            block.dataset.id = item.id;
+            block.dataset.type = item.type;
+            block.draggable = true;
+            const showResize = item.type !== 'event';
+            block.innerHTML = `
+                <div class="block-title">${item.title}</div>
+                <div class="block-meta">${formatTime(item.startTime)} · ${formatDuration(duration)}${item.location ? ` · ${item.location}` : ''}</div>
+                ${showResize ? '<div class="resize-handle"></div>' : ''}
+            `;
+            block.addEventListener('click', () => openEditModal(item.type, item.id, dateStr));
+            block.addEventListener('dragstart', (event) => {
+                event.dataTransfer.setData('text/plain', item.id);
+                event.dataTransfer.setData('text/date', dateStr);
+            });
+
+            const handle = block.querySelector('.resize-handle');
+            let resizing = false;
+            let startY = 0;
+            let startDuration = duration;
+
+            if (!handle) return block;
+            const onMove = (event) => {
+                if (!resizing) return;
+                const delta = event.clientY - startY;
+                const minutesDelta = Math.round((delta / slotHeight) * 60 / 15) * 15;
+                const newDuration = Math.max(15, startDuration + minutesDelta);
+                if (!canScheduleTime(item.id, dateStr, startMinutes, newDuration)) return;
+                block.style.height = `${Math.max((newDuration / 60) * slotHeight, 40)}px`;
+            };
+
+            const onUp = (event) => {
+                if (!resizing) return;
+                resizing = false;
+                document.removeEventListener('pointermove', onMove);
+                document.removeEventListener('pointerup', onUp);
+                const delta = event.clientY - startY;
+                const minutesDelta = Math.round((delta / slotHeight) * 60 / 15) * 15;
+                const newDuration = Math.max(15, startDuration + minutesDelta);
+                if (canScheduleTime(item.id, dateStr, startMinutes, newDuration)) {
+                    updateItemSchedule(item.id, dateStr, item.startTime, newDuration);
+                }
+            };
+
+            handle.addEventListener('pointerdown', (event) => {
+                event.stopPropagation();
+                resizing = true;
+                startY = event.clientY;
+                startDuration = duration;
+                document.addEventListener('pointermove', onMove);
+                document.addEventListener('pointerup', onUp);
+            });
+            return block;
+        }
+
+        function canScheduleTime(itemId, dateStr, startMinutes, duration) {
+            const endMinutes = startMinutes + duration;
+            const dayItems = getItemsForDay(items, dateStr);
+            return !dayItems.some(entry => {
+                if (entry.id === itemId) return false;
+                if (!entry.startTime) return false;
+                const entryStart = timeToMinutes(entry.startTime);
+                const entryDuration = entry.endTime ? getDurationFromTimes(entry.startTime, entry.endTime) : (entry.duration || 30);
+                const entryEnd = entryStart + entryDuration;
+                const overlaps = startMinutes < entryEnd && endMinutes > entryStart;
+                if (!overlaps) return false;
+                if (entry.type === 'block') return true;
+                return true;
+            });
+        }
+
+        function updateItemSchedule(itemId, dateStr, startTime, duration) {
+            const item = items.find(entry => entry.id === itemId);
+            if (!item) return;
+            item.status = 'scheduled';
+            item.date = dateStr;
+            item.startTime = startTime;
+            item.endTime = minutesToTime(timeToMinutes(startTime) + duration);
+            item.duration = duration;
+            saveData();
+            renderView();
+        }
+
+        function unscheduleItem(itemId, dateStr) {
+            const item = items.find(entry => entry.id === itemId);
+            if (!item || item.type !== 'task') return;
+            if (item.recurrence && item.recurrence.freq !== 'none' && dateStr) {
+                item.exceptions = item.exceptions || [];
+                if (!item.exceptions.includes(dateStr)) {
+                    item.exceptions.push(dateStr);
+                }
+                saveData();
+                renderView();
+                return;
+            }
+            item.status = 'inbox';
+            item.date = '';
+            item.startTime = '';
+            item.endTime = '';
+            saveData();
+            renderView();
+        }
+
+        function scheduleItemToTime(itemId, dateStr, startMinutes) {
+            const item = items.find(entry => entry.id === itemId);
+            if (!item) return;
+            const duration = item.duration || 30;
+            if (!canScheduleTime(itemId, dateStr, startMinutes, duration)) {
+                alert('That time is blocked by another event or focus block.');
+                return;
+            }
+            if (item.recurrence && item.recurrence.freq !== 'none') {
+                item.overrides = item.overrides || {};
+                item.overrides[dateStr] = {
+                    ...item,
+                    date: dateStr,
+                    startTime: minutesToTime(startMinutes),
+                    endTime: minutesToTime(startMinutes + duration),
+                    status: 'scheduled'
+                };
+                saveData();
+                renderView();
+                return;
+            }
+            updateItemSchedule(itemId, dateStr, minutesToTime(startMinutes), duration);
+        }
+
+        function autoScheduleInbox(dateStr) {
+            const inboxTasks = items.filter(item => item.type === 'task' && item.status === 'inbox')
+                .sort((a, b) => getPriorityRank(a.priority) - getPriorityRank(b.priority));
+            let currentMinutes = 8 * 60;
+            const endOfDay = 18 * 60;
+            inboxTasks.forEach(task => {
+                const duration = task.duration || 30;
+                while (currentMinutes + duration <= endOfDay) {
+                    if (canScheduleTime(task.id, dateStr, currentMinutes, duration)) {
+                        updateItemSchedule(task.id, dateStr, minutesToTime(currentMinutes), duration);
+                        currentMinutes += duration;
+                        break;
+                    }
+                    currentMinutes += 15;
+                }
+            });
+        }
+
+        // Build a swipeable card element for items in list views.
         function buildCard(item, className, dateStr) {
             const card = document.createElement('div');
             const completed = isCompleted(item, dateStr);
             card.className = `${className} swipe-card ${completed ? 'completed' : ''}`;
             card.style.borderLeftColor = item.color || colors[11];
-            card.dataset.type = item.category || 'event';
+            card.dataset.type = item.type || 'task';
             card.dataset.id = item.id;
             card.dataset.date = dateStr;
             card.innerHTML = `
                 <div class="event-title">${item.title}</div>
+                ${buildItemMeta(item)}
                 ${item.description ? `<div class="event-meta">${item.description}</div>` : ''}
                 <div class="card-check">✓</div>
             `;
@@ -2271,50 +3042,66 @@
 
         // Delete an item from its element.
         function deleteFromElement(element) {
-            const type = element.dataset.type;
             const id = element.dataset.id;
-            deleteItem(type, id);
+            deleteItem(id);
         }
 
-        // Get items for a day with control over recurrence and weekly view rules.
-        function getItemsForDay(list, dateStr, includeRecurring, includeTasksForDay) {
-            const date = new Date(dateStr + 'T00:00:00');
-            const day = date.getDay();
+        function getItemsForDay(list, dateStr) {
+            return list.map(item => getOccurrence(item, dateStr)).filter(Boolean);
+        }
 
-            return list.filter(item => {
-                const isRecurring = item.recurringDays && item.recurringDays.length > 0;
-                if (isRecurring) {
-                    if (!includeRecurring) return false;
-                    if (!item.recurringDays.includes(day)) return false;
-                    if (item.repeatCycle === 'biweekly') {
-                        const start = item.startDate || item.date || dateStr;
-                        const diff = Math.floor((date - new Date(start + 'T00:00:00')) / (7 * 24 * 60 * 60 * 1000));
-                        if (diff % 2 !== 0) return false;
-                    }
-                    return true;
+        function getOccurrence(item, dateStr) {
+            const recurrence = item.recurrence || { freq: 'none', interval: 1, days: [] };
+            const baseDate = item.date || dateStr;
+            if (recurrence.freq === 'none') {
+                if ((item.status === 'scheduled' || item.status === 'completed') && item.date === dateStr) {
+                    return { ...item, date: dateStr };
                 }
-                if (!item.date) return false;
-                return item.date === dateStr;
-            });
+                return null;
+            }
+
+            if (item.status === 'inbox') return null;
+            if (item.exceptions && item.exceptions.includes(dateStr)) return null;
+
+            if (!matchesRecurrence(item, dateStr, baseDate)) return null;
+
+            const override = item.overrides && item.overrides[dateStr] ? item.overrides[dateStr] : {};
+            return { ...item, ...override, date: dateStr };
         }
 
-        // Determine if an item is completed (with recurring support).
+        function matchesRecurrence(item, dateStr, startDate) {
+            const recurrence = item.recurrence || { freq: 'none', interval: 1, days: [] };
+            const date = new Date(dateStr + 'T00:00:00');
+            const start = new Date((item.date || startDate || dateStr) + 'T00:00:00');
+            const interval = recurrence.interval || 1;
+            if (recurrence.freq === 'daily' || recurrence.freq === 'day') {
+                const diffDays = Math.floor((date - start) / (24 * 60 * 60 * 1000));
+                return diffDays >= 0 && diffDays % interval === 0;
+            }
+            if (recurrence.freq === 'weekly' || recurrence.freq === 'week') {
+                const diffWeeks = Math.floor((date - start) / (7 * 24 * 60 * 60 * 1000));
+                const days = recurrence.days && recurrence.days.length ? recurrence.days : [start.getDay()];
+                return diffWeeks >= 0 && diffWeeks % interval === 0 && days.includes(date.getDay());
+            }
+            if (recurrence.freq === 'monthly' || recurrence.freq === 'month') {
+                const diffMonths = (date.getFullYear() - start.getFullYear()) * 12 + (date.getMonth() - start.getMonth());
+                return diffMonths >= 0 && diffMonths % interval === 0 && date.getDate() === start.getDate();
+            }
+            return false;
+        }
+
         function isCompleted(item, dateStr) {
-            if (item.recurringDays && item.recurringDays.length > 0) {
+            if (item.status === 'completed') return true;
+            if (item.recurrence && item.recurrence.freq !== 'none') {
                 return item.completedDates && item.completedDates.includes(dateStr);
             }
             return item.completed || false;
         }
 
-        // Toggle completion for events, tasks, and reminders.
         function toggleComplete(type, id, dateStr, element) {
-            let item;
-            if (type === 'event') item = events.find(ev => ev.id === id);
-            if (type === 'task') item = tasks.find(tsk => tsk.id === id);
-            if (type === 'reminder') item = reminders.find(rm => rm.id === id);
+            const item = items.find(entry => entry.id === id);
             if (!item) return;
-
-            if (item.recurringDays && item.recurringDays.length > 0) {
+            if (item.recurrence && item.recurrence.freq !== 'none') {
                 item.completedDates = item.completedDates || [];
                 if (item.completedDates.includes(dateStr)) {
                     item.completedDates = item.completedDates.filter(d => d !== dateStr);
@@ -2322,9 +3109,12 @@
                     item.completedDates.push(dateStr);
                 }
             } else {
-                item.completed = !item.completed;
+                if (item.status === 'completed') {
+                    item.status = item.startTime ? 'scheduled' : 'inbox';
+                } else {
+                    item.status = 'completed';
+                }
             }
-
             saveData();
             if (element) {
                 element.classList.add('just-completed');
@@ -2342,15 +3132,23 @@
             document.getElementById('modalTitle').textContent = 'Add Item';
             document.getElementById('saveButton').textContent = 'Add';
             document.getElementById('deleteButton').style.display = 'none';
+            document.getElementById('seriesGroup').style.display = 'none';
             setModalState('addModal', true);
             document.getElementById('itemDate').value = formatDate(currentDate);
-            document.getElementById('itemCategory').value = 'event';
+            document.getElementById('itemCategory').value = 'task';
             document.getElementById('itemKind').value = '';
-            document.getElementById('itemRepeats').value = 'no';
-            clearTimePicker('itemTime');
-            clearTimePicker('itemDueTime');
-            clearTimePicker('itemReminderTime');
-            setReminderPreset('');
+            document.getElementById('itemRepeats').value = 'none';
+            document.getElementById('repeatInterval').value = '1';
+            document.getElementById('repeatUnit').value = 'day';
+            document.getElementById('itemStatus').value = 'inbox';
+            document.getElementById('itemPriority').value = 'should';
+            document.getElementById('itemTag').value = '';
+            document.getElementById('itemDuration').value = '';
+            document.getElementById('itemLocation').value = '';
+            document.getElementById('itemChecklist').value = '';
+            document.getElementById('itemLinks').value = '';
+            clearTimePicker('itemStartTime');
+            clearTimePicker('itemEndTime');
             selectColor(0);
             updateFormFields();
             setTimeout(() => document.getElementById('itemTitle').focus(), 0);
@@ -2360,40 +3158,48 @@
         function openAddModalWithTime(hour, minute) {
             openAddModal();
             const time = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-            setTimePickerValue('itemTime', time);
-            updateReminderPresetPreview();
+            setTimePickerValue('itemStartTime', time);
+            setTimePickerValue('itemEndTime', shiftTime(time, 60));
+            document.getElementById('itemStatus').value = 'scheduled';
         }
 
         // Open the edit modal and load item data.
         function openEditModal(type, id, dateStr) {
-            let item = null;
-            if (type === 'event') item = events.find(ev => ev.id === id);
-            if (type === 'task') item = tasks.find(tsk => tsk.id === id);
-            if (type === 'reminder') item = reminders.find(rm => rm.id === id);
+            const item = items.find(entry => entry.id === id);
             if (!item) return;
+            const occurrence = dateStr && item.overrides && item.overrides[dateStr] ? { ...item, ...item.overrides[dateStr] } : item;
 
             editingItem = { type, id, dateStr };
             document.getElementById('modalTitle').textContent = 'Edit Item';
             document.getElementById('saveButton').textContent = 'Save';
             document.getElementById('deleteButton').style.display = 'inline-block';
 
-            document.getElementById('itemCategory').value = type;
-            document.getElementById('itemKind').value = item.type || '';
-            document.getElementById('itemTitle').value = item.title || '';
-            document.getElementById('itemDate').value = item.date || (dateStr || formatDate(currentDate));
-            document.getElementById('itemDescription').value = item.description || '';
-            setTimePickerValue('itemTime', item.time || '');
-            setTimePickerValue('itemDueTime', item.dueTime || '');
-            setReminderPreset(item.reminderPreset || '');
-            setTimePickerValue('itemReminderTime', getReminderTimeForItem(item));
+            document.getElementById('itemCategory').value = occurrence.type || 'task';
+            document.getElementById('itemKind').value = occurrence.label || '';
+            document.getElementById('itemTitle').value = occurrence.title || '';
+            document.getElementById('itemDate').value = occurrence.date || (dateStr || formatDate(currentDate));
+            document.getElementById('itemDescription').value = occurrence.description || '';
+            document.getElementById('itemPriority').value = occurrence.priority || 'should';
+            document.getElementById('itemTag').value = occurrence.tag || '';
+            document.getElementById('itemDuration').value = occurrence.duration || '';
+            document.getElementById('itemLocation').value = occurrence.location || '';
+            document.getElementById('itemStatus').value = occurrence.status || 'inbox';
+            document.getElementById('itemChecklist').value = (occurrence.checklist || []).join('\n');
+            document.getElementById('itemLinks').value = (occurrence.links || []).join(', ');
+            setTimePickerValue('itemStartTime', occurrence.startTime || '');
+            const computedEnd = occurrence.endTime || (occurrence.startTime ? shiftTime(occurrence.startTime, occurrence.duration || 30) : '');
+            setTimePickerValue('itemEndTime', computedEnd || '');
 
-            const repeats = item.recurringDays && item.recurringDays.length > 0 ? (item.repeatCycle || 'weekly') : 'no';
-            document.getElementById('itemRepeats').value = repeats;
+            const recurrence = item.recurrence || { freq: 'none', interval: 1, days: [] };
+            const repeatValue = recurrence.freq || 'none';
+            document.getElementById('itemRepeats').value = repeatValue;
+            document.getElementById('repeatInterval').value = String(recurrence.interval || 1);
+            document.getElementById('repeatUnit').value = recurrence.unit || 'day';
 
             document.querySelectorAll('.day-checkbox').forEach(cb => cb.checked = false);
-            if (item.recurringDays) {
+            if (recurrence.days) {
                 document.querySelectorAll('.day-checkbox').forEach(cb => {
-                    cb.checked = item.recurringDays.includes(parseInt(cb.value));
+                    cb.checked = recurrence.days.includes(parseInt(cb.value, 10));
                 });
             }
 
@@ -2401,9 +3207,25 @@
                 opt.classList.toggle('selected', item.color === colors[index]);
             });
 
+            document.getElementById('seriesGroup').style.display = recurrence.freq && recurrence.freq !== 'none' ? 'block' : 'none';
+            document.getElementById('applySeriesToggle').checked = true;
+
             updateFormFields();
             setModalState('addModal', true);
             setTimeout(() => document.getElementById('itemTitle').focus(), 0);
+        }
+
+        function skipOccurrence() {
+            if (!editingItem) return;
+            const item = items.find(entry => entry.id === editingItem.id);
+            if (!item || !editingItem.dateStr) return;
+            item.exceptions = item.exceptions || [];
+            if (!item.exceptions.includes(editingItem.dateStr)) {
+                item.exceptions.push(editingItem.dateStr);
+            }
+            saveData();
+            closeAddModal();
+            renderView();
         }
 
         // Close the add/edit modal and reset fields.
@@ -2414,25 +3236,43 @@
 
         // Toggle repeat options based on repeat choice.
         function updateRepeatVisibility() {
-            const repeats = document.getElementById('itemRepeats').value !== 'no';
-            document.getElementById('recurringGroup').style.display = repeats ? 'block' : 'none';
+            const repeats = document.getElementById('itemRepeats').value;
+            const isRecurring = repeats !== 'none';
+            document.getElementById('recurringGroup').style.display = repeats === 'weekly' ? 'block' : 'none';
+            document.getElementById('repeatIntervalGroup').style.display = repeats === 'custom' ? 'block' : 'none';
             document.getElementById('dateGroup').style.display = 'block';
-            document.getElementById('dateLabel').textContent = repeats ? 'Start date' : 'Date';
+            document.getElementById('dateLabel').textContent = isRecurring ? 'Start date' : 'Date';
         }
 
         // Update form field visibility based on category.
         function updateFormFields() {
             const category = document.getElementById('itemCategory').value;
-            document.getElementById('itemKind').setAttribute('list', category === 'event' ? 'eventTypes' : category === 'task' ? 'taskTypes' : 'reminderTypes');
+            document.getElementById('itemKind').setAttribute('list', category === 'event' ? 'eventTypes' : category === 'task' ? 'taskTypes' : 'blockTypes');
 
-            document.getElementById('timeGroup').style.display = (category === 'event' || category === 'reminder') ? 'block' : 'none';
-            document.getElementById('dueTimeGroup').style.display = category === 'task' ? 'block' : 'none';
-            document.getElementById('repeatToggleGroup').style.display = category === 'event' ? 'block' : 'none';
+            document.getElementById('statusGroup').style.display = category === 'task' ? 'block' : 'none';
+            document.getElementById('timeGroup').style.display = category === 'task' || category === 'event' || category === 'block' ? 'block' : 'none';
+            document.getElementById('endTimeGroup').style.display = category === 'task' || category === 'event' || category === 'block' ? 'block' : 'none';
+            document.getElementById('repeatToggleGroup').style.display = category === 'event' || category === 'block' ? 'block' : 'none';
+            document.getElementById('durationGroup').style.display = category === 'task' ? 'block' : 'none';
+            document.getElementById('locationGroup').style.display = category === 'event' || category === 'task' ? 'block' : 'none';
             document.getElementById('recurringGroup').style.display = 'none';
             document.getElementById('dateGroup').style.display = 'block';
+            document.getElementById('repeatIntervalGroup').style.display = 'none';
 
             updateRepeatVisibility();
-            updateReminderPresetPreview();
+            updateStatusFields();
+        }
+
+        function updateStatusFields() {
+            const category = document.getElementById('itemCategory').value;
+            const status = document.getElementById('itemStatus').value;
+            if (category === 'task' && status === 'inbox') {
+                document.getElementById('timeGroup').style.display = 'none';
+                document.getElementById('endTimeGroup').style.display = 'none';
+            } else if (category === 'task') {
+                document.getElementById('timeGroup').style.display = 'block';
+                document.getElementById('endTimeGroup').style.display = 'block';
+            }
         }
 
         // Populate the color picker UI.
@@ -2460,7 +3300,7 @@
             const modal = document.getElementById(modalId);
             if (!modal) return;
             modal.classList.toggle('active', isOpen);
-            const anyOpen = ['addModal', 'settingsModal', 'lockModal'].some(id => {
+            const anyOpen = ['addModal', 'settingsModal', 'reviewModal', 'lockModal'].some(id => {
                 const el = document.getElementById(id);
                 return el && el.classList.contains('active');
             });
@@ -2471,6 +3311,7 @@
         function setupModalDismissal() {
             const addModal = document.getElementById('addModal');
             const settingsModal = document.getElementById('settingsModal');
+            const reviewModal = document.getElementById('reviewModal');
             if (addModal) {
                 addModal.addEventListener('click', (event) => {
                     if (event.target === addModal) closeAddModal();
@@ -2481,6 +3322,11 @@
                     if (event.target === settingsModal) closeSettingsModal();
                 });
             }
+            if (reviewModal) {
+                reviewModal.addEventListener('click', (event) => {
+                    if (event.target === reviewModal) closeReviewModal();
+                });
+            }
         }
 
         // Keyboard shortcuts for closing modals.
@@ -2489,16 +3335,25 @@
                 if (event.key !== 'Escape') return;
                 const addModal = document.getElementById('addModal');
                 const settingsModal = document.getElementById('settingsModal');
+                const reviewModal = document.getElementById('reviewModal');
                 if (addModal && addModal.classList.contains('active')) {
                     closeAddModal();
                 } else if (settingsModal && settingsModal.classList.contains('active')) {
                     closeSettingsModal();
+                } else if (reviewModal && reviewModal.classList.contains('active')) {
+                    closeReviewModal();
                 }
             });
             document.addEventListener('keydown', (event) => {
                 if (event.key !== 'Enter') return;
                 const lockModal = document.getElementById('lockModal');
                 if (lockModal && lockModal.classList.contains('active')) return;
+                const quickInput = document.getElementById('quickCaptureInput');
+                if (quickInput && document.activeElement === quickInput) {
+                    event.preventDefault();
+                    handleQuickCapture();
+                    return;
+                }
                 const addModal = document.getElementById('addModal');
                 if (!addModal || !addModal.classList.contains('active')) return;
                 if (event.shiftKey) return;
@@ -2554,7 +3409,7 @@
             const state = { active: false, startX: 0, startY: 0 };
             const swipeThreshold = 36;
             const angleBias = 1.15;
-            const ignoreSelector = 'input, select, textarea, button, .swipe-card, .day-tasks-panel';
+            const ignoreSelector = 'input, select, textarea, button, .swipe-card, .day-tasks-panel, .inbox-panel, .time-block';
 
             const onDown = (event) => {
                 if (event.pointerType === 'mouse' && event.button !== 0) return;
@@ -2648,18 +3503,20 @@
         function refreshTypeSuggestions() {
             const eventSet = new Set(defaultEventTypes);
             const taskSet = new Set(defaultTaskTypes);
-            const reminderSet = new Set(defaultReminderTypes);
+            const blockSet = new Set(defaultBlockTypes);
 
-            events.forEach(ev => { if (ev.type) eventSet.add(ev.type); });
-            tasks.forEach(tsk => { if (tsk.type) taskSet.add(tsk.type); });
-            reminders.forEach(rm => { if (rm.type) reminderSet.add(rm.type); });
+            items.forEach(item => {
+                if (item.type === 'event' && item.label) eventSet.add(item.label);
+                if (item.type === 'task' && item.label) taskSet.add(item.label);
+                if (item.type === 'block' && item.label) blockSet.add(item.label);
+            });
 
             const eventList = document.getElementById('eventTypes');
             const taskList = document.getElementById('taskTypes');
-            const reminderList = document.getElementById('reminderTypes');
             eventList.innerHTML = '';
             taskList.innerHTML = '';
-            reminderList.innerHTML = '';
+            const blockList = document.getElementById('blockTypes');
+            if (blockList) blockList.innerHTML = '';
 
             Array.from(eventSet).sort().forEach(type => {
                 const opt = document.createElement('option');
@@ -2673,11 +3530,13 @@
                 taskList.appendChild(opt);
             });
 
-            Array.from(reminderSet).sort().forEach(type => {
-                const opt = document.createElement('option');
-                opt.value = type;
-                reminderList.appendChild(opt);
-            });
+            if (blockList) {
+                Array.from(blockSet).sort().forEach(type => {
+                    const opt = document.createElement('option');
+                    opt.value = type;
+                    blockList.appendChild(opt);
+                });
+            }
         }
 
         // Initialize all time picker dropdowns.
@@ -2712,9 +3571,7 @@
                 });
 
                 [hour, minute, ampm].forEach(select => {
-                    select.addEventListener('change', () => {
-                        if (getSelectedReminderPreset()) updateReminderPresetPreview();
-                    });
+                    select.addEventListener('change', () => {});
                 });
             });
         }
@@ -2745,29 +3602,6 @@
             document.querySelectorAll('.day-checkbox').forEach(cb => cb.checked = false);
         }
 
-        // Smart reminder presets.
-        function setReminderPreset(preset) {
-            document.querySelectorAll('.reminder-preset').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.preset === preset);
-            });
-            updateReminderPresetPreview();
-        }
-
-        function getSelectedReminderPreset() {
-            const active = document.querySelector('.reminder-preset.active');
-            return active ? active.dataset.preset : '';
-        }
-
-        function getBaseTimeFromForm(category) {
-            if (category === 'task') return getTimePickerValue('itemDueTime');
-            return getTimePickerValue('itemTime');
-        }
-
-        function getBaseTimeFromItem(item) {
-            if (item.category === 'task') return item.dueTime || '';
-            return item.time || '';
-        }
-
         function shiftTime(time, minutesDelta) {
             if (!time) return '';
             const [hours, minutes] = time.split(':').map(Number);
@@ -2777,33 +3611,6 @@
             const h = Math.floor(clamped / 60);
             const m = clamped % 60;
             return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-        }
-
-        function computeReminderTime(baseTime, preset, fallbackTime) {
-            if (!preset) return fallbackTime;
-            if (preset === 'morning') return '08:00';
-            if (!baseTime) return '08:00';
-            if (preset === 'at') return baseTime;
-            if (preset === '10') return shiftTime(baseTime, -10);
-            if (preset === '60') return shiftTime(baseTime, -60);
-            return fallbackTime;
-        }
-
-        function updateReminderPresetPreview() {
-            const preset = getSelectedReminderPreset();
-            const category = document.getElementById('itemCategory').value;
-            const baseTime = getBaseTimeFromForm(category);
-            const current = getTimePickerValue('itemReminderTime');
-            const nextTime = computeReminderTime(baseTime, preset, current);
-            if (nextTime) setTimePickerValue('itemReminderTime', nextTime);
-        }
-
-        function getReminderTimeForItem(item) {
-            const preset = item.reminderPreset || '';
-            const baseTime = getBaseTimeFromItem(item);
-            const stored = item.reminderTime || '';
-            if (!preset) return stored || '08:00';
-            return computeReminderTime(baseTime, preset, stored);
         }
 
         // Read a time picker value in 24h format.
@@ -2840,7 +3647,8 @@
         // Add or update an item in the appropriate list.
         function addOrUpdateItem() {
             const category = document.getElementById('itemCategory').value;
-            const type = document.getElementById('itemKind').value.trim();
+            const label = document.getElementById('itemKind').value.trim();
+            const fallbackLabel = category === 'event' ? 'Event' : category === 'block' ? 'Focus Block' : 'Task';
             const title = document.getElementById('itemTitle').value.trim();
 
             if (!title) {
@@ -2850,57 +3658,97 @@
 
             const id = editingItem ? editingItem.id : Date.now().toString();
             const repeatValue = document.getElementById('itemRepeats').value;
-            const repeats = repeatValue !== 'no';
+            const repeats = repeatValue !== 'none';
 
             const recurringDays = [];
             document.querySelectorAll('.day-checkbox:checked').forEach(cb => {
-                recurringDays.push(parseInt(cb.value));
+                recurringDays.push(parseInt(cb.value, 10));
             });
 
             const selectedColor = document.querySelector('.color-option.selected');
             const colorIndex = Array.from(document.querySelectorAll('.color-option')).indexOf(selectedColor);
             const color = colors[colorIndex >= 0 ? colorIndex : 0];
+            const priority = document.getElementById('itemPriority').value || 'should';
+            const tag = document.getElementById('itemTag').value.trim();
+            const durationValue = parseInt(document.getElementById('itemDuration').value, 10);
+            let duration = Number.isFinite(durationValue) && durationValue > 0 ? durationValue : 30;
+            let location = document.getElementById('itemLocation').value.trim();
+            const status = category === 'task' ? document.getElementById('itemStatus').value : 'scheduled';
+            const checklist = document.getElementById('itemChecklist').value
+                .split('\n')
+                .map(line => line.replace(/^-/, '').trim())
+                .filter(Boolean);
+            const links = document.getElementById('itemLinks').value
+                .split(',')
+                .map(link => link.trim())
+                .filter(Boolean);
 
+            const startTime = getTimePickerValue('itemStartTime');
+            const endTime = getTimePickerValue('itemEndTime');
+            const startDate = document.getElementById('itemDate').value;
+            const intervalValue = parseInt(document.getElementById('repeatInterval').value, 10) || 1;
+            const repeatUnit = document.getElementById('repeatUnit').value;
+            const recurrence = repeats ? {
+                freq: repeatValue === 'custom' ? repeatUnit : repeatValue,
+                interval: repeatValue === 'custom' ? intervalValue : 1,
+                unit: repeatValue === 'custom' ? repeatUnit : repeatValue,
+                days: repeatValue === 'weekly' ? recurringDays : []
+            } : { freq: 'none', interval: 1, days: [] };
+
+            if (startTime && endTime) {
+                const computed = getDurationFromTimes(startTime, endTime);
+                if (computed) duration = computed;
+            }
+
+            let finalStatus = status;
+            if (category === 'task' && status === 'scheduled' && !startTime) {
+                finalStatus = 'inbox';
+            }
+            if (category !== 'task' && !startTime) {
+                alert('Please set a start time for events and focus blocks.');
+                return;
+            }
+
+            const computedEndTime = startTime ? minutesToTime(timeToMinutes(startTime) + duration) : '';
             const common = {
                 id,
-                category,
-                type: type || '',
+                type: category,
+                label: label || fallbackLabel,
                 title,
                 color,
                 description: document.getElementById('itemDescription').value.trim(),
-                reminderTime: getTimePickerValue('itemReminderTime'),
-                reminderPreset: getSelectedReminderPreset()
+                priority,
+                tag,
+                duration,
+                location,
+                checklist,
+                links,
+                status: finalStatus,
+                date: finalStatus === 'scheduled' ? startDate : '',
+                startTime: finalStatus === 'scheduled' ? startTime : '',
+                endTime: finalStatus === 'scheduled' ? (endTime || computedEndTime) : '',
+                recurrence
             };
 
-            if (category === 'event') {
-                const item = {
-                    ...common,
-                    time: getTimePickerValue('itemTime'),
-                    date: repeats ? '' : document.getElementById('itemDate').value,
-                    startDate: repeats ? document.getElementById('itemDate').value : '',
-                    recurringDays: repeats ? recurringDays : [],
-                    repeatCycle: repeats ? repeatValue : ''
-                };
-                upsertItem(events, item, id);
-            } else if (category === 'task') {
-                const item = {
-                    ...common,
-                    dueTime: getTimePickerValue('itemDueTime'),
-                    date: repeats ? '' : document.getElementById('itemDate').value,
-                    startDate: repeats ? document.getElementById('itemDate').value : '',
-                    recurringDays: repeats ? recurringDays : [],
-                    repeatCycle: repeats ? repeatValue : '',
-                    completed: getExistingCompleted('task', id)
-                };
-                upsertItem(tasks, item, id);
+            const existing = items.find(entry => entry.id === id);
+            if (editingItem && existing && existing.recurrence && existing.recurrence.freq !== 'none') {
+                const applySeries = document.getElementById('applySeriesToggle').checked;
+                if (!applySeries && editingItem.dateStr) {
+                    existing.overrides = existing.overrides || {};
+                    existing.overrides[editingItem.dateStr] = {
+                        ...common,
+                        date: editingItem.dateStr,
+                        status: finalStatus,
+                        startTime: startTime,
+                        endTime: endTime
+                    };
+                } else {
+                    Object.assign(existing, common);
+                }
+            } else if (existing) {
+                Object.assign(existing, common);
             } else {
-                const item = {
-                    ...common,
-                    date: document.getElementById('itemDate').value,
-                    time: getTimePickerValue('itemTime'),
-                    completed: getExistingCompleted('reminder', id)
-                };
-                upsertItem(reminders, item, id);
+                items.push({ ...common, exceptions: [], overrides: {} });
             }
 
             saveData();
@@ -2908,23 +3756,6 @@
             closeAddModal();
             renderView();
             scheduleReminders();
-        }
-
-        // Read the previous completion state for existing items.
-        function getExistingCompleted(category, id) {
-            if (category === 'task') {
-                const existing = tasks.find(tsk => tsk.id === id);
-                return existing ? existing.completed : false;
-            }
-            if (category === 'event') {
-                const existing = events.find(ev => ev.id === id);
-                return existing ? existing.completed : false;
-            }
-            if (category === 'reminder') {
-                const existing = reminders.find(rm => rm.id === id);
-                return existing ? existing.completed : false;
-            }
-            return false;
         }
 
         // Add a new item or update an existing one.
@@ -2940,19 +3771,13 @@
         // Delete the currently edited item.
         function deleteCurrentItem() {
             if (!editingItem) return;
-            deleteItem(editingItem.type, editingItem.id);
+            deleteItem(editingItem.id);
             closeAddModal();
         }
 
         // Delete an item from its list.
-        function deleteItem(type, id) {
-            if (type === 'event') {
-                events = events.filter(ev => ev.id !== id);
-            } else if (type === 'task') {
-                tasks = tasks.filter(tsk => tsk.id !== id);
-            } else {
-                reminders = reminders.filter(rm => rm.id !== id);
-            }
+        function deleteItem(id) {
+            items = items.filter(entry => entry.id !== id);
             saveData();
             refreshTypeSuggestions();
             renderView();
@@ -2964,13 +3789,20 @@
             document.getElementById('itemTitle').value = '';
             document.getElementById('itemKind').value = '';
             document.getElementById('itemDescription').value = '';
-            document.getElementById('itemRepeats').value = 'no';
+            document.getElementById('itemRepeats').value = 'none';
+            document.getElementById('repeatInterval').value = '1';
+            document.getElementById('repeatUnit').value = 'day';
+            document.getElementById('itemPriority').value = 'should';
+            document.getElementById('itemTag').value = '';
+            document.getElementById('itemDuration').value = '';
+            document.getElementById('itemLocation').value = '';
+            document.getElementById('itemStatus').value = 'inbox';
+            document.getElementById('itemChecklist').value = '';
+            document.getElementById('itemLinks').value = '';
             document.querySelectorAll('.day-checkbox').forEach(cb => cb.checked = false);
             document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
-            clearTimePicker('itemTime');
-            clearTimePicker('itemDueTime');
-            clearTimePicker('itemReminderTime');
-            setReminderPreset('');
+            clearTimePicker('itemStartTime');
+            clearTimePicker('itemEndTime');
         }
 
         // Format a Date object as YYYY-MM-DD.
@@ -2986,6 +3818,56 @@
             const ampm = h >= 12 ? 'PM' : 'AM';
             const h12 = h % 12 || 12;
             return `${h12}:${minutes} ${ampm}`;
+        }
+
+        function timeToMinutes(time) {
+            if (!time) return 0;
+            const [hours, minutes] = time.split(':').map(Number);
+            return (hours || 0) * 60 + (minutes || 0);
+        }
+
+        function minutesToTime(minutes) {
+            const clamped = Math.max(0, Math.min(minutes, 24 * 60 - 1));
+            const hours = Math.floor(clamped / 60);
+            const mins = clamped % 60;
+            return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+        }
+
+        function getDurationFromTimes(start, end) {
+            if (!start || !end) return 0;
+            const startMinutes = timeToMinutes(start);
+            const endMinutes = timeToMinutes(end);
+            return Math.max(endMinutes - startMinutes, 0);
+        }
+
+        function formatDuration(minutes) {
+            if (!minutes) return '';
+            const mins = parseInt(minutes, 10);
+            if (!Number.isFinite(mins) || mins <= 0) return '';
+            const hours = Math.floor(mins / 60);
+            const remaining = mins % 60;
+            if (hours && remaining) return `${hours}h ${remaining}m`;
+            if (hours) return `${hours}h`;
+            return `${remaining}m`;
+        }
+
+        function getPriorityLabel(priority) {
+            if (priority === 'must') return 'Must';
+            if (priority === 'should') return 'Should';
+            if (priority === 'optional') return 'Optional';
+            return 'Should';
+        }
+
+        function getPriorityClass(priority) {
+            if (priority === 'must') return 'priority-high';
+            if (priority === 'should') return 'priority-medium';
+            if (priority === 'optional') return 'priority-low';
+            return 'priority-medium';
+        }
+
+        function getPriorityRank(priority) {
+            const order = { must: 0, should: 1, optional: 2 };
+            return order[priority] ?? 1;
         }
 
         // Format a slot label like 1 PM.
@@ -3009,7 +3891,7 @@
         }
 
         function getItemSortValue(item) {
-            const time = item.time || item.dueTime || item.reminderTime || '';
+            const time = item.startTime || '';
             if (!time) return 24 * 60 + 1;
             const [hours, minutes] = time.split(':').map(Number);
             return (hours || 0) * 60 + (minutes || 0);
@@ -3029,7 +3911,7 @@
         function updateNotificationButton() {
             const btn = document.getElementById('notifyButton');
             if (!btn) return;
-            btn.textContent = notificationsEnabled ? 'Reminders On' : 'Reminders Off';
+            btn.textContent = notificationsEnabled ? 'Notifications On' : 'Notifications Off';
             btn.classList.toggle('active', notificationsEnabled);
         }
 
@@ -3073,7 +3955,7 @@
             if (!notificationsEnabled || !('Notification' in window) || Notification.permission !== 'granted') return;
 
             const now = new Date();
-            const maxWindowMs = 7 * 24 * 60 * 60 * 1000;
+            const maxWindowMs = 2 * 24 * 60 * 60 * 1000;
 
             const schedule = (title, body, when) => {
                 const delta = when - now;
@@ -3084,37 +3966,15 @@
                 reminderTimers.push(timer);
             };
 
-            const scheduleItem = (item, label) => {
-                const dateStr = item.date || getNextRecurringDate(item);
-                if (!dateStr) return;
-                const time = getReminderTimeForItem(item);
-                if (!time) return;
-                const when = new Date(`${dateStr}T${time}`);
-                schedule(`${label}: ${item.title}`, item.description || item.type || 'Reminder', when);
-            };
-
-            tasks.forEach(task => scheduleItem(task, 'Task'));
-            events.forEach(event => scheduleItem(event, 'Event'));
-            reminders.forEach(rem => scheduleItem(rem, 'Reminder'));
+            items.forEach(item => {
+                if (item.status !== 'scheduled' || !item.startTime) return;
+                const dateStr = item.date || formatDate(currentDate);
+                const start = new Date(`${dateStr}T${item.startTime}`);
+                const notifyAt = new Date(start.getTime() - 10 * 60 * 1000);
+                schedule(`${item.title} starting soon`, item.description || item.label || 'Upcoming', notifyAt);
+            });
         }
 
-        // Find the next date for a recurring item.
-        function getNextRecurringDate(item) {
-            if (!item.recurringDays || item.recurringDays.length === 0) return '';
-            const now = new Date();
-            for (let i = 0; i < 14; i++) {
-                const date = new Date(now);
-                date.setDate(date.getDate() + i);
-                if (item.recurringDays.includes(date.getDay())) {
-                    if (item.repeatCycle === 'biweekly' && item.startDate) {
-                        const diff = Math.floor((date - new Date(item.startDate + 'T00:00:00')) / (7 * 24 * 60 * 60 * 1000));
-                        if (diff % 2 !== 0) continue;
-                    }
-                    return formatDate(date);
-                }
-            }
-            return '';
-        }
     </script>
 </body>
 </html>
