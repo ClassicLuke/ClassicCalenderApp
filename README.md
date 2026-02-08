@@ -1,24 +1,35 @@
-# Classic Calendar App
+# ToneMatch Prototype
 
-A static, offline-capable planner with day, week, and month views. Built with vanilla HTML/CSS/JS for GitHub Pages and designed for quick planning, task tracking, and reminders.
+ToneMatch is a privacy-first, cross-platform prototype that estimates skin tone depth + undertone from a single selfie and recommends coordinated clothing colors, makeup families, and trending looks. This MVP is a static web app that runs entirely on-device in the browser and is structured to mirror the React Native module layout for easy porting.
 
-## Features
-- Daily, week, and month views
-- Events, tasks, and reminders with type suggestions and colors
-- Drag-and-drop rescheduling in day/week/month views
-- Event duration handling with overlap layout in day view
-- Multi-day event support
-- Advanced recurrence rules (weekly, biweekly, every N days, monthly by date, monthly by weekday pattern)
-- Notification reminders (browser support required)
-- Theme toggle and search/filter controls
-- Local-first storage via `localStorage`
-- Service worker asset caching for offline reloads
+## Core Principles
+- **Privacy-first:** image processing happens on-device. No uploads without explicit consent.
+- **No identity inference:** no race, age, or attractiveness predictions.
+- **Transparency:** show confidence and allow manual adjustments.
+- **Lighting robustness:** quality checks and retake guidance.
+
+## MVP Features
+- Selfie intake with guidance + quality checks (lighting, blur, face size).
+- Skin tone depth (0–100) + undertone (cool/warm/neutral/olive) with confidence.
+- Curated palettes (clothing + makeup) from local JSON.
+- Trending looks with steps, swatches, and tags.
+- Stencil overlay prototype with layer toggles and opacity slider.
+- Manual override screen for undertone and depth.
+
+## Project Structure
+```
+data/               # palettes.json + looks.json
+models/             # types/interfaces (JSDoc)
+services/           # camera, quality checks, tone analysis, palette + look engines
+ui/                 # screen modules
+scripts/            # app bootstrap
+styles/             # app styles
+index.html          # app shell
+```
 
 ## Getting Started
-1. Publish to GitHub Pages, or run a local static server.
-2. Open the app in a modern browser.
+Run a local static server and open the app:
 
-Example local server:
 ```bash
 python3 -m http.server 8080
 ```
@@ -26,25 +37,20 @@ python3 -m http.server 8080
 Then open [http://localhost:8080](http://localhost:8080).
 
 ## Tests
-Run core utility tests:
+Run the tone analysis unit tests:
+
 ```bash
-node --test tests/planner-core.test.js
+node --test tests/tone-analyze.test.js
 ```
 
-## Data Storage
-Planner items and preferences are stored in browser `localStorage`. Clearing site data removes saved items.
-
-## Offline
-The app registers `sw.js` and caches core assets after first load, so it can reopen while offline.
-
-## Project Structure
-- `index.html` - app markup
-- `styles/app.css` - app styles
-- `scripts/planner-core.js` - shared pure utility helpers
-- `scripts/app.js` - UI, state, rendering, and interactions
-- `sw.js` - service worker caching logic
-- `tests/planner-core.test.js` - core helper tests
-
 ## Notes
-- GitHub Pages deployment is fully supported.
-- Notifications and passcode lock rely on browser capabilities and permissions.
+- Face detection uses the browser `FaceDetector` API when available. If not supported, the app falls back to a centered sampling region and displays a warning.
+- All data is local JSON for the MVP; no network calls are required beyond loading assets.
+
+## TODO (v2 Ideas)
+- Improved white balance correction and illuminant estimation.
+- Model-based face segmentation to avoid hair/eyes/lips.
+- Brand-level shade matching with explicit opt-in.
+- User accounts with offline storage + sync.
+- Save and share looks with consent-based media handling.
+- Optional AR mesh integration for more precise stencil alignment.

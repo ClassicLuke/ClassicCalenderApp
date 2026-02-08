@@ -1,10 +1,10 @@
 {
-  "name": "Daily Planner",
-  "short_name": "Planner",
+  "name": "ToneMatch Prototype",
+  "short_name": "ToneMatch",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#0f0f14",
+  "theme_color": "#0f0f14",
   "icons": [
     {
       "src": "icons/icon-192.png",

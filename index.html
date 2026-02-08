@@ -3,313 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="color-scheme" content="light">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f0f14">
+    <meta name="color-scheme" content="dark light">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-    <title>Daily Planner</title>
+    <title>ToneMatch Prototype</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/app.css">
 </head>
 <body>
-    <div class="app-container">
-        <div class="header">
-            <div class="header-top">
-                <h1><span id="userNameDisplay">Your</span> Planner</h1>
-                <button class="settings-icon-button" onclick="openSettingsModal()" aria-label="Settings">
-                    <svg class="settings-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path>
-                    </svg>
-                </button>
+    <div class="app">
+        <header class="top-bar">
+            <div>
+                <p class="eyebrow">ToneMatch · Prototype</p>
+                <h1>Skin tone + palette matcher</h1>
             </div>
-            <div class="view-toggle">
-                <button class="active" onclick="switchView('day', this)">Day</button>
-                <button onclick="switchView('week', this)">Week</button>
-                <button onclick="switchView('month', this)">Month</button>
-            </div>
-            <div class="header-actions">
-                <div class="search-field">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <circle cx="11" cy="11" r="7"></circle>
-                        <path d="M20 20l-3.5-3.5"></path>
-                    </svg>
-                    <input type="search" id="searchInput" placeholder="Search items" oninput="updateSearch(this.value)" aria-label="Search items">
+            <div class="status-pill" id="privacyBadge">On-device processing</div>
+        </header>
+
+        <main class="screen-container">
+            <section class="screen active" id="screen-onboarding" aria-labelledby="onboarding-title">
+                <div class="screen-header">
+                    <h2 id="onboarding-title">Start with a clean selfie</h2>
+                    <p>We only analyze skin tone and undertone. No identity inference. Images stay on-device unless you explicitly opt in to upload.</p>
                 </div>
-                <div class="chip-group">
-                    <button class="chip-button active" data-filter="all" onclick="setFilter('all', this)">All</button>
-                    <button class="chip-button" data-filter="event" onclick="setFilter('event', this)">Events</button>
-                    <button class="chip-button" data-filter="task" onclick="setFilter('task', this)">Tasks</button>
-                    <button class="chip-button" data-filter="reminder" onclick="setFilter('reminder', this)">Reminders</button>
-                    <button class="chip-button" id="hideCompletedToggle" onclick="toggleHideCompleted(this)">Hide Done</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="date-nav">
-            <div class="nav-buttons">
-                <button onclick="changeDate(-1)" aria-label="Previous day">‹</button>
-            </div>
-            <div class="current-date" id="currentDate"></div>
-            <div class="nav-buttons" style="justify-self: end;">
-                <button onclick="changeDate(1)" aria-label="Next day">›</button>
-            </div>
-        </div>
-
-        <div class="daily-view" id="dailyView"></div>
-        <div class="week-view" id="weekView"></div>
-        <div class="month-view" id="monthView"></div>
-
-        <button class="add-button today-button-fab" onclick="goToday()" aria-label="Jump to today">Today</button>
-        <button class="add-button" onclick="openAddModal()" aria-label="Add item">+</button>
-    </div>
-
-    <div class="modal" id="addModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modalTitle">
-        <div class="modal-content">
-            <h2 id="modalTitle">Add Item</h2>
-
-            <div class="form-group">
-                <label>Category</label>
-                <select id="itemCategory" onchange="updateFormFields()">
-                    <option value="event">Event</option>
-                    <option value="task">Task</option>
-                    <option value="reminder">Reminder</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Type</label>
-                <input type="text" id="itemKind" list="eventTypes" placeholder="Optional">
-                <datalist id="eventTypes"></datalist>
-                <datalist id="taskTypes"></datalist>
-                <datalist id="reminderTypes"></datalist>
-                <div class="helper-text">Create your own type or pick a suggestion.</div>
-            </div>
-
-            <div class="form-group" id="titleGroup">
-                <label>Title</label>
-                <input type="text" id="itemTitle" placeholder="e.g., Read Chapter 3">
-            </div>
-
-            <div class="form-group" id="repeatToggleGroup">
-                <label>Repeat rule</label>
-                <select id="itemRepeats" onchange="updateRepeatVisibility()">
-                    <option value="no">No</option>
-                    <option value="weekly">Every week</option>
-                    <option value="biweekly">Every other week</option>
-                    <option value="everyNDays">Every N days</option>
-                    <option value="monthlyDate">Monthly (same date)</option>
-                    <option value="monthlyWeekday">Monthly (weekday pattern)</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="repeatIntervalGroup" style="display: none;">
-                <label>Repeat every</label>
-                <input type="number" id="itemRepeatInterval" min="2" max="365" value="3" inputmode="numeric">
-                <div class="helper-text">Example: 3 means every 3 days.</div>
-            </div>
-
-            <div class="form-group" id="monthlyWeekdayGroup" style="display: none;">
-                <label>Monthly pattern</label>
-                <div class="pattern-picker">
-                    <select id="itemMonthlyOrdinal">
-                        <option value="1">First</option>
-                        <option value="2">Second</option>
-                        <option value="3">Third</option>
-                        <option value="4">Fourth</option>
-                        <option value="last">Last</option>
-                    </select>
-                    <select id="itemMonthlyWeekday">
-                        <option value="0">Sunday</option>
-                        <option value="1">Monday</option>
-                        <option value="2">Tuesday</option>
-                        <option value="3">Wednesday</option>
-                        <option value="4">Thursday</option>
-                        <option value="5">Friday</option>
-                        <option value="6">Saturday</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group" id="dateGroup">
-                <label id="dateLabel">Date</label>
-                <input type="date" id="itemDate">
-            </div>
-
-            <div class="form-group" id="endDateGroup">
-                <label>End date</label>
-                <input type="date" id="itemEndDate">
-                <div class="helper-text">Use a later date for multi-day events.</div>
-            </div>
-
-            <div class="form-group" id="timeGroup">
-                <label>Time</label>
-                <div class="time-picker" data-field="itemTime">
-                    <select class="time-hour"></select>
-                    <select class="time-minute"></select>
-                    <select class="time-ampm"></select>
-                    <button class="time-clear" type="button" onclick="clearTimePicker('itemTime')">Clear</button>
-                </div>
-            </div>
-
-            <div class="form-group" id="dueTimeGroup">
-                <label>Due time</label>
-                <div class="time-picker" data-field="itemDueTime">
-                    <select class="time-hour"></select>
-                    <select class="time-minute"></select>
-                    <select class="time-ampm"></select>
-                    <button class="time-clear" type="button" onclick="clearTimePicker('itemDueTime')">Clear</button>
-                </div>
-            </div>
-
-            <div class="form-group" id="endTimeGroup">
-                <label>End time</label>
-                <div class="time-picker" data-field="itemEndTime">
-                    <select class="time-hour"></select>
-                    <select class="time-minute"></select>
-                    <select class="time-ampm"></select>
-                    <button class="time-clear" type="button" onclick="clearTimePicker('itemEndTime')">Clear</button>
-                </div>
-            </div>
-
-            <div class="form-group" id="descriptionGroup">
-                <label>Notes</label>
-                <textarea id="itemDescription" placeholder="Add details..."></textarea>
-            </div>
-
-            <div class="form-group" id="colorGroup">
-                <label>Color</label>
-                <div class="color-picker" id="colorPicker"></div>
-            </div>
-
-            <div class="form-group" id="recurringGroup" style="display: none;">
-                <label>Repeat days</label>
-                <div class="recurring-presets">
-                    <button class="chip-button" type="button" onclick="applyRecurringPreset('weekdays')">Weekdays</button>
-                    <button class="chip-button" type="button" onclick="applyRecurringPreset('weekends')">Weekends</button>
-                    <button class="chip-button" type="button" onclick="applyRecurringPreset('daily')">Daily</button>
-                    <button class="chip-button" type="button" onclick="clearRecurringPreset()">Clear</button>
-                </div>
-                <div class="recurring-days">
-                    <input type="checkbox" id="mon" class="day-checkbox" value="1">
-                    <label for="mon" class="day-label">Mon</label>
-                    <input type="checkbox" id="tue" class="day-checkbox" value="2">
-                    <label for="tue" class="day-label">Tue</label>
-                    <input type="checkbox" id="wed" class="day-checkbox" value="3">
-                    <label for="wed" class="day-label">Wed</label>
-                    <input type="checkbox" id="thu" class="day-checkbox" value="4">
-                    <label for="thu" class="day-label">Thu</label>
-                    <input type="checkbox" id="fri" class="day-checkbox" value="5">
-                    <label for="fri" class="day-label">Fri</label>
-                    <input type="checkbox" id="sat" class="day-checkbox" value="6">
-                    <label for="sat" class="day-label">Sat</label>
-                    <input type="checkbox" id="sun" class="day-checkbox" value="0">
-                    <label for="sun" class="day-label">Sun</label>
-                </div>
-            </div>
-
-            <div class="form-group" id="reminderGroup">
-                <label>Reminder time</label>
-                <div class="time-picker" data-field="itemReminderTime">
-                    <select class="time-hour"></select>
-                    <select class="time-minute"></select>
-                    <select class="time-ampm"></select>
-                    <button class="time-clear" type="button" onclick="clearTimePicker('itemReminderTime')">Clear</button>
-                </div>
-                <div class="reminder-presets">
-                    <button class="chip-button reminder-preset" type="button" data-preset="at" onclick="setReminderPreset('at')">At time</button>
-                    <button class="chip-button reminder-preset" type="button" data-preset="10" onclick="setReminderPreset('10')">10 min before</button>
-                    <button class="chip-button reminder-preset" type="button" data-preset="60" onclick="setReminderPreset('60')">1 hour before</button>
-                    <button class="chip-button reminder-preset" type="button" data-preset="morning" onclick="setReminderPreset('morning')">Morning of</button>
-                </div>
-                <div class="helper-text">Morning reminders fire at 8:00 AM if no time is set.</div>
-            </div>
-
-            <div class="form-actions">
-                <button class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
-                <button class="btn btn-danger" id="deleteButton" style="display:none;" onclick="deleteCurrentItem()">Delete</button>
-                <button class="btn btn-primary" id="saveButton" onclick="addOrUpdateItem()">Add</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="settingsHeading">
-        <div class="modal-content">
-            <h2 id="settingsHeading">Settings</h2>
-            <div class="form-group">
-                <label>Your name</label>
-                <input type="text" id="userNameInput" placeholder="e.g., Alex">
-            </div>
-            <div class="form-group">
-                <div class="toggle-row">
-                    <div class="toggle-row-labels">
-                        <div class="toggle-row-title">Dark mode</div>
-                        <div class="toggle-row-subtitle">Use a darker appearance.</div>
+                <div class="card">
+                    <h3>Photo checklist</h3>
+                    <ul class="checklist">
+                        <li>No makeup and no filter</li>
+                        <li>Face centered, neutral expression</li>
+                        <li>Indirect daylight, even lighting</li>
+                        <li>Plain background, no strong shadows</li>
+                    </ul>
+                    <div class="actions">
+                        <button class="primary" data-nav="capture">Take a selfie</button>
+                        <button class="ghost" data-nav="capture">Upload a photo</button>
                     </div>
-                    <input type="checkbox" class="toggle-input" id="darkModeToggle" role="switch">
                 </div>
-            </div>
-            <div class="form-group">
-                <label>Reminders</label>
-                <button class="chip-button" id="notifyButton" onclick="toggleNotifications()">Reminders Off</button>
-                <div class="helper-text">Enable browser notifications for reminders.</div>
-            </div>
-            <div class="form-group">
-                <label>Passcode lock</label>
-                <select id="passcodeToggle" onchange="updatePasscodeVisibility()">
-                    <option value="off">Off</option>
-                    <option value="on">On</option>
-                </select>
-                <div class="helper-text">If enabled, you will be asked to unlock on open.</div>
-            </div>
-            <div class="form-group" id="passcodeGroup">
-                <label>Set passcode</label>
-                <input type="password" id="passcodeInput" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="new-password" placeholder="4-8 digits">
-                <div class="helper-text">Leave blank to keep current passcode.</div>
-            </div>
-            <div class="form-actions">
-                <button class="btn btn-secondary" onclick="closeSettingsModal()">Close</button>
-                <button class="btn btn-primary" onclick="saveSettings()">Save</button>
-            </div>
-        </div>
+                <div class="callout">
+                    <strong>Transparency promise:</strong> You will see confidence scores and can adjust the result manually.
+                </div>
+            </section>
+
+            <section class="screen" id="screen-capture" aria-labelledby="capture-title">
+                <div class="screen-header">
+                    <h2 id="capture-title">Capture a selfie</h2>
+                    <p>We run quick quality checks for lighting, blur, and face size. If something looks off, we will suggest a retake.</p>
+                </div>
+                <div class="capture-grid">
+                    <div class="capture-card">
+                        <div class="capture-preview">
+                            <video id="cameraPreview" autoplay playsinline muted></video>
+                            <canvas id="captureCanvas" aria-hidden="true"></canvas>
+                            <img id="photoPreview" alt="Selfie preview" />
+                        </div>
+                        <div class="actions">
+                            <button class="secondary" id="startCamera">Use camera</button>
+                            <button class="secondary" id="takePhoto">Capture</button>
+                            <label class="file-button">
+                                Upload
+                                <input type="file" id="photoInput" accept="image/*" />
+                            </label>
+                        </div>
+                    </div>
+                    <div class="capture-card">
+                        <h3>Quality checks</h3>
+                        <ul class="status-list" id="qualityList"></ul>
+                        <div class="actions">
+                            <button class="primary" id="analyzeButton">Analyze tone</button>
+                            <button class="ghost" data-nav="onboarding">Back</button>
+                        </div>
+                        <p class="small-text" id="qualityTip"></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-results" aria-labelledby="results-title">
+                <div class="screen-header">
+                    <h2 id="results-title">Your results</h2>
+                    <p id="resultsSummary">Your photo suggests a balanced undertone with medium depth.</p>
+                </div>
+                <div class="results-grid">
+                    <div class="card">
+                        <h3>Skin tone</h3>
+                        <div class="metric">
+                            <span>Tone depth</span>
+                            <strong id="toneDepthValue">--</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Undertone</span>
+                            <strong id="undertoneValue">--</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Confidence</span>
+                            <strong id="confidenceValue">--</strong>
+                        </div>
+                        <div class="actions">
+                            <button class="secondary" data-nav="adjust">Adjust result</button>
+                            <button class="ghost" data-nav="capture">Retake photo</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Palette preview</h3>
+                        <div class="swatch-grid" id="swatchGrid"></div>
+                        <button class="ghost" data-nav="palette">See palette detail</button>
+                    </div>
+                </div>
+                <div class="actions spread">
+                    <button class="primary" data-nav="trending">See trending looks</button>
+                    <button class="secondary" data-nav="stencil">Try stencil overlay</button>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-adjust" aria-labelledby="adjust-title">
+                <div class="screen-header">
+                    <h2 id="adjust-title">Adjust your result</h2>
+                    <p>Fine-tune undertone and depth if you feel the estimate is off. Palette updates immediately.</p>
+                </div>
+                <div class="card">
+                    <label class="field-label">Undertone</label>
+                    <div class="pill-group" id="undertoneOptions">
+                        <button data-undertone="cool">Cool</button>
+                        <button data-undertone="warm">Warm</button>
+                        <button data-undertone="neutral">Neutral</button>
+                        <button data-undertone="olive">Olive</button>
+                    </div>
+                    <label class="field-label">Depth</label>
+                    <input type="range" id="depthSlider" min="0" max="100" step="1" />
+                    <div class="small-text" id="depthLabel"></div>
+                </div>
+                <div class="card">
+                    <h3>Updated palette</h3>
+                    <div class="swatch-grid" id="adjustSwatches"></div>
+                </div>
+                <div class="actions">
+                    <button class="primary" data-nav="results">Save updates</button>
+                    <button class="ghost" data-nav="results">Cancel</button>
+                </div>
+            </section>
+
+            <section class="screen" id="screen-palette" aria-labelledby="palette-title">
+                <div class="screen-header">
+                    <h2 id="palette-title">Palette detail</h2>
+                    <p>Suggested clothing colors and makeup families tuned to your depth and undertone.</p>
+                </div>
+                <div class="palette-columns">
+                    <div class="card">
+                        <h3>Clothing colors</h3>
+                        <div id="clothingGroups"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Makeup families</h3>
+                        <div id="makeupFamilies"></div>
+                    </div>
+                </div>
+                <button class="ghost" data-nav="results">Back to results</button>
+            </section>
+
+            <section class="screen" id="screen-trending" aria-labelledby="trending-title">
+                <div class="screen-header">
+                    <h2 id="trending-title">Trending looks for your palette</h2>
+                    <p>Curated looks tagged by undertone, depth, season, and vibe.</p>
+                </div>
+                <div id="looksGrid" class="looks-grid"></div>
+                <button class="ghost" data-nav="results">Back to results</button>
+            </section>
+
+            <section class="screen" id="screen-stencil" aria-labelledby="stencil-title">
+                <div class="screen-header">
+                    <h2 id="stencil-title">Stencil overlay</h2>
+                    <p>Guided placement for blush, contour, eyes, and lips. Use as a reference, not a strict template.</p>
+                </div>
+                <div class="stencil-wrapper">
+                    <div class="stencil-canvas">
+                        <img id="stencilPhoto" alt="Stencil base photo" />
+                        <svg id="stencilOverlay" viewBox="0 0 400 500" aria-hidden="true"></svg>
+                    </div>
+                    <div class="card">
+                        <h3>Overlay layers</h3>
+                        <div class="toggle-list">
+                            <label><input type="checkbox" data-layer="brows" checked> Brows</label>
+                            <label><input type="checkbox" data-layer="eyes" checked> Eyes</label>
+                            <label><input type="checkbox" data-layer="blush" checked> Blush</label>
+                            <label><input type="checkbox" data-layer="contour" checked> Contour</label>
+                            <label><input type="checkbox" data-layer="lips" checked> Lips</label>
+                        </div>
+                        <label class="field-label">Opacity</label>
+                        <input type="range" id="overlayOpacity" min="0.2" max="0.9" step="0.05" value="0.6" />
+                        <div class="actions">
+                            <button class="primary" data-nav="capture">Use a new photo</button>
+                            <button class="ghost" data-nav="results">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <div class="modal lock" id="lockModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="lockTitle">
-        <div class="modal-content">
-            <div class="lock-title" id="lockTitle">Locked</div>
-            <div class="lock-subtitle">Enter your passcode to continue.</div>
-            <div class="passcode-dots" id="passcodeDots">
-                <div class="passcode-dot"></div>
-                <div class="passcode-dot"></div>
-                <div class="passcode-dot"></div>
-                <div class="passcode-dot"></div>
-                <div class="passcode-dot"></div>
-                <div class="passcode-dot"></div>
-                <div class="passcode-dot"></div>
-                <div class="passcode-dot"></div>
-            </div>
-            <div class="keypad" id="passcodeKeypad">
-                <button onclick="pressPasscodeKey('1')">1</button>
-                <button onclick="pressPasscodeKey('2')">2</button>
-                <button onclick="pressPasscodeKey('3')">3</button>
-                <button onclick="pressPasscodeKey('4')">4</button>
-                <button onclick="pressPasscodeKey('5')">5</button>
-                <button onclick="pressPasscodeKey('6')">6</button>
-                <button onclick="pressPasscodeKey('7')">7</button>
-                <button onclick="pressPasscodeKey('8')">8</button>
-                <button onclick="pressPasscodeKey('9')">9</button>
-                <button class="keypad-action" onclick="clearPasscodeEntry()">Clear</button>
-                <button onclick="pressPasscodeKey('0')">0</button>
-                <button class="keypad-action" onclick="backspacePasscode()">Delete</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="scripts/planner-core.js"></script>
-    <script src="scripts/app.js"></script>
+    <script type="module" src="scripts/app.js"></script>
 </body>
 </html>
