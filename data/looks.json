@@ -1,0 +1,95 @@
+[
+    {
+        "id": "soft-glam-warm",
+        "name": "Soft Glam Warm Neutrals",
+        "tags": {
+            "undertone": ["warm", "neutral"],
+            "depth": ["Light", "Medium", "Tan"],
+            "season": ["fall", "spring"],
+            "vibe": ["soft glam", "everyday"]
+        },
+        "steps": [
+            "Apply a warm beige base across lids.",
+            "Sweep soft bronze into the crease.",
+            "Tap golden shimmer on the center lid.",
+            "Blend peach blush high on the cheeks.",
+            "Finish with a cinnamon nude lip."
+        ],
+        "swatches": [
+            { "name": "Warm Beige", "hex": "#d6c0a2" },
+            { "name": "Soft Bronze", "hex": "#9a6b49" },
+            { "name": "Golden Glow", "hex": "#e2b56c" }
+        ],
+        "difficulty": "Easy",
+        "vibe": "Warm, polished"
+    },
+    {
+        "id": "cool-rosy-clean",
+        "name": "Cool Rosy Clean Girl",
+        "tags": {
+            "undertone": ["cool", "neutral"],
+            "depth": ["Very Fair", "Fair", "Light", "Medium"],
+            "season": ["winter", "spring"],
+            "vibe": ["clean", "minimal"]
+        },
+        "steps": [
+            "Sheer veil of cool pink blush.",
+            "Light taupe sweep on lids.",
+            "Tightline with charcoal liner.",
+            "Gloss with a rosy tint."
+        ],
+        "swatches": [
+            { "name": "Cool Rose", "hex": "#d68a9a" },
+            { "name": "Cool Taupe", "hex": "#9b8b83" },
+            { "name": "Charcoal", "hex": "#3b3f46" }
+        ],
+        "difficulty": "Easy",
+        "vibe": "Fresh, rosy"
+    },
+    {
+        "id": "olive-modern-sculpt",
+        "name": "Olive Modern Sculpt",
+        "tags": {
+            "undertone": ["olive", "neutral"],
+            "depth": ["Medium", "Tan", "Deep"],
+            "season": ["summer", "fall"],
+            "vibe": ["sculpted", "modern"]
+        },
+        "steps": [
+            "Blend olive-khaki shadow in the crease.",
+            "Add soft contour under cheekbones.",
+            "Place warm berry blush mid-cheek.",
+            "Finish with a muted berry lip."
+        ],
+        "swatches": [
+            { "name": "Olive Smoke", "hex": "#6a6b4a" },
+            { "name": "Warm Berry", "hex": "#8c3c4b" },
+            { "name": "Khaki", "hex": "#a1956d" }
+        ],
+        "difficulty": "Medium",
+        "vibe": "Sculpted, earthy"
+    },
+    {
+        "id": "deep-warm-night",
+        "name": "Deep Warm Night Out",
+        "tags": {
+            "undertone": ["warm", "neutral"],
+            "depth": ["Deep", "Very Deep"],
+            "season": ["winter", "fall"],
+            "vibe": ["bold", "night out"]
+        },
+        "steps": [
+            "Layer copper shadow on lids.",
+            "Add winged liner with espresso brown.",
+            "Build terracotta blush on cheeks.",
+            "Finish with a brick red lip."
+        ],
+        "swatches": [
+            { "name": "Copper Leaf", "hex": "#b56b3b" },
+            { "name": "Brick Rose", "hex": "#9b4f45" },
+            { "name": "Espresso", "hex": "#3a2d22" }
+        ],
+        "difficulty": "Medium",
+        "vibe": "Bold, warm"
+    }
+]
